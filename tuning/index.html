@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vértice Labs // Terminal Pré-Dyno</title>
+<meta name="description" content="Triagem rápida de setup automotivo e prontidão de dinamômetro. Vértice Labs Curitiba.">
+<meta name="theme-color" content="#090a09">
+<link rel="canonical" href="https://verticelabs.me/tuning/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://verticelabs.me/tuning/">
+<meta property="og:title" content="Vértice Labs // Terminal Pré-Dyno">
+<meta property="og:description" content="Triagem técnica de setup automotivo antes do dinamômetro.">
+<meta name="twitter:card" content="summary">
+<script>
+const CONFIG = Object.freeze({
+  whatsapp: '5541998844684',
+  metaPixelId: '',
+  ga4Id: '',
+  googleAdsId: '',
+  googleAdsConversion: ''
+});
+</script>
+<style>
+:root {
+  --bg: #090a09;
+  --panel: #111310;
+  --panel-hi: #171a15;
+  --paper: #ecebe2;
+  --muted: #8e9285;
+  --lime: #d3fa43;
+  --amber: #f59e0b;
+  --red: #f05a3d;
+  --line: #262922;
+  --mono: 'JetBrains Mono', 'Cascadia Code', 'Courier New', monospace;
+  --head: Impact, 'Arial Narrow', sans-serif;
+  --body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image:
+    linear-gradient(to right, rgba(211,250,67,0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(211,250,67,0.025) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--paper);
+  font-family: var(--body);
+  line-height: 1.45;
+}
+.topline {
+  height: 5px;
+  background: repeating-linear-gradient(115deg, var(--lime) 0 16px, #090a09 16px 24px);
+}
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 8px;
+  z-index: 10;
+  background: var(--lime);
+  color: var(--bg);
+  padding: 8px 12px;
+  font-weight: 700;
+}
+.skip-link:focus { left: 8px; }
+header {
+  border-bottom: 1px solid var(--line);
+  background: rgba(9,10,9,0.88);
+  backdrop-filter: blur(8px);
+}
+nav {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: -1px;
+  color: var(--paper);
+  text-decoration: none;
+}
+.brand span { color: var(--lime); }
+.badge-live {
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lime);
+  border: 1px solid rgba(211,250,67,0.35);
+  background: rgba(211,250,67,0.06);
+  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 8px var(--lime);
+}
+main {
+  padding: 36px 0 64px;
+}
+.hero-head {
+  margin-bottom: 28px;
+}
+.hero-head h1 {
+  font-family: var(--head);
+  font-size: clamp(44px, 6vw, 76px);
+  text-transform: uppercase;
+  line-height: 0.94;
+  margin: 10px 0 12px;
+  letter-spacing: -0.02em;
+}
+.hero-head h1 em {
+  font-style: normal;
+  color: var(--lime);
+}
+.hero-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  max-width: 560px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 24px;
+  align-items: start;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 24px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+}
+.mono-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--paper);
+  font-weight: 700;
+}
+.mono-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--lime);
+  text-transform: uppercase;
+}
+.step-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.step-label span:last-child {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.chip {
+  background: var(--bg);
+  color: var(--muted);
+  border: 1px solid var(--line);
+  padding: 7px 11px;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.chip:hover, .chip.active {
+  border-color: var(--lime);
+  color: var(--lime);
+  background: rgba(211,250,67,0.06);
+}
+textarea {
+  width: 100%;
+  min-height: 104px;
+  background: var(--bg);
+  color: var(--paper);
+  border: 1px solid var(--line);
+  padding: 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 20px;
+}
+textarea:focus {
+  outline: 2px solid var(--lime);
+  border-color: transparent;
+}
+.scope-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.scope-btn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  padding: 12px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.scope-btn strong {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+.scope-btn small {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+}
+.scope-btn.active {
+  border-color: var(--lime);
+  background: rgba(211,250,67,0.08);
+}
+.scope-btn.active small {
+  color: var(--lime);
+}
+.btn-run {
+  width: 100%;
+  background: var(--paper);
+  color: var(--bg);
+  border: 0;
+  padding: 14px 20px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-run:hover {
+  background: var(--lime);
+}
+/* Right HUD */
+.hud-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.metric-box {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 14px;
+}
+.metric-box .label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+.metric-box .val {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--lime);
+}
+.gauge-bar {
+  height: 6px;
+  background: #22261e;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.gauge-fill {
+  height: 100%;
+  background: var(--lime);
+  width: 0%;
+  transition: width 0.35s ease, background-color 0.35s ease;
+}
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.t-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+.t-tag b {
+  color: var(--muted);
+  font-weight: 400;
+  margin-right: 4px;
+}
+.terminal-window {
+  background: #050605;
+  border: 1px solid var(--line);
+  padding: 16px;
+  font-family: var(--mono);
+  font-size: 12px;
+  min-height: 155px;
+  color: #c8d0bf;
+  margin-bottom: 18px;
+  position: relative;
+}
+.terminal-line {
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+.terminal-line .prompt {
+  color: var(--lime);
+  margin-right: 6px;
+}
+.terminal-line.warn {
+  color: var(--amber);
+}
+.terminal-line.ok {
+  color: var(--lime);
+}
+.cursor {
+  display: inline-block;
+  width: 7px;
+  height: 13px;
+  background: var(--lime);
+  vertical-align: middle;
+  animation: blink 0.9s infinite;
+}
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.btn-wa {
+  width: 100%;
+  background: var(--lime);
+  color: #090a09;
+  border: 0;
+  padding: 16px 20px;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+.btn-wa:hover {
+  background: #e2ff6f;
+  transform: translateY(-1px);
+}
+.sub-note {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 10px 0 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn-copy {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.btn-copy:hover { border-color: var(--lime); color: var(--lime); }
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .scope-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+<header>
+  <nav class="wrap" aria-label="Navegação principal">
+    <a class="brand" href="/" aria-label="Voltar ao laboratório Vértice">VÉRTICE<span>LABS®</span></a>
+    <a class="mono-sub" href="/">Laboratório principal</a>
+    <span class="badge-live"><span class="dot"></span> TELEMETRY HUD · CWB</span>
+  </nav>
+</header>
+
+<main class="wrap" id="main-content">
+  <div class="hero-head">
+    <h1>TRIAGEM <em>PRÉ-DYNO</em></h1>
+    <p>Esqueça formulários gigantes. Descreva o cofre em uma frase ou escolha um preset: o terminal analisa a prontidão e monta a ficha direto pro WhatsApp da oficina.</p>
+  </div>
+
+  <div class="grid">
+    <!-- INPUT SIMPLIFICADO (2 PASSOS EM VEZ DE 11 CAMPOS) -->
+    <section class="card" aria-label="Entrada de Setup">
+      <div class="card-header">
+        <span class="mono-title">01 // COFRE &amp; ESCOPO</span>
+        <span class="mono-sub">Tempo médio: 15s</span>
+      </div>
+
+      <div class="step-label">
+        <span>Atalhos de plataforma (1 toque)</span>
+        <span>Opcional</span>
+      </div>
+      <div class="presets" id="presetList">
+        <button type="button" class="chip active" data-setup="Gol GL 1994 AP 1.8 Turbo, FuelTech FT450 no etanol, bicos Deka 80lb/h, Wideband Nano, SparkPRO. Quero trocar bicos e passar no dyno.">VW AP Turbo + FT450</button>
+        <button type="button" class="chip" data-setup="BMW E36 325i M50 6cc, FuelTech FT550, chicote original adaptado, rodando na Podium. Falhando em alta rotação acima de 5500 rpm.">BMW E36 6cc + FT550</button>
+        <button type="button" class="chip" data-setup="Chevette 1986 swap GM Família II 2.0 Turbo, FT300, elétrica antiga dando queda de tensão na partida, preciso fazer chicote em malha náutica do zero.">Swap GM + Chicote Zero</button>
+        <button type="button" class="chip" data-setup="Golf GTI MK7 EA888 Gen3, turbina IS38, etanol E85, acerto fino de dinamômetro e revisão de linha de combustível.">EA888 IS38 + E85</button>
+      </div>
+
+      <div class="step-label">
+        <label for="rawSetup">Como o carro está montado e o que precisa fazer?</label>
+        <span>Texto livre</span>
+      </div>
+      <textarea id="rawSetup" placeholder="Ex: Gol 94 AP 1.8 turbo, FT450 no etanol, bicos 80lbs. Quero revisar chicote e acertar no dinamômetro...">Gol GL 1994 AP 1.8 Turbo, FuelTech FT450 no etanol, bicos Deka 80lb/h, Wideband Nano, SparkPRO. Quero trocar bicos e passar no dyno.</textarea>
+
+      <div class="step-label">
+        <span>Foco da bancada</span>
+        <span>Selecione 1</span>
+      </div>
+      <div class="scope-grid" id="scopeGrid">
+        <button type="button" class="scope-btn active" data-scope="Acerto Dyno / Pista" data-tier="R$ 1.8k – R$ 3.2k">
+          <strong>Acerto Dyno</strong>
+          <small>Mapa + Rolo / Pista</small>
+        </button>
+        <button type="button" class="scope-btn" data-scope="Elétrica / Chicote Zero" data-tier="R$ 3.0k – R$ 4.5k">
+          <strong>Chicote / Elétrica</strong>
+          <small>Malha náutica + Sensores</small>
+        </button>
+        <button type="button" class="scope-btn" data-scope="Projeto Completo" data-tier="R$ 3.5k – R$ 6.0k+">
+          <strong>Upgrade + Acerto</strong>
+          <small>Hardware + Calibração</small>
+        </button>
+      </div>
+
+      <button type="button" class="btn-run" id="btnAnalyze">
+        <span>[EXECUTAR LEITURA DE TELEMETRIA]</span>
+        <span>↻</span>
+      </button>
+    </section>
+
+    <!-- HUD DE TELEMETRIA + STREAMING -->
+    <section class="card" aria-label="Ficha de Entrada de Box">
+      <div class="card-header">
+        <span class="mono-title">02 // TELEMETRIA DE ENTRADA</span>
+        <span class="mono-sub" id="streamStatus">READY</span>
+      </div>
+
+      <div class="hud-top">
+        <div class="metric-box">
+          <span class="label">DYNO READINESS INDEX</span>
+          <div class="val" id="driScore">82% · APTO</div>
+          <div class="gauge-bar"><div class="gauge-fill" id="driBar" style="width:82%"></div></div>
+        </div>
+        <div class="metric-box">
+          <span class="label">ENQUADRAMENTO OPERACIONAL</span>
+          <div class="val" id="tierVal" style="color:var(--paper)">PROJETO SÉRIO</div>
+          <span class="label" id="tierSub" style="margin-top:6px;margin-bottom:0;color:var(--lime)">Ref: R$ 1.8k – R$ 3.2k</span>
+        </div>
+      </div>
+
+      <div class="tags-row" id="telemetryTags"></div>
+
+      <div class="terminal-window" id="terminalOutput" aria-live="polite"></div>
+
+      <button type="button" class="btn-wa" id="btnWhatsapp">
+        <span>Transmitir ficha para a oficina via WhatsApp</span>
+        <span>↗</span>
+      </button>
+
+      <div class="sub-note">
+        <span>Resumo mastigado sem formulário burocrático.</span>
+        <button type="button" class="btn-copy" id="btnCopy">Copiar ficha</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+let currentScope = 'Acerto Dyno / Pista';
+let currentTier = 'R$ 1.8k – R$ 3.2k';
+let streamTimer = null;
+let lastParsed = null;
+
+function parseSetup(text, scope, tier) {
+  const lower = text.toLowerCase();
+
+  // Detect ECU
+  let ecu = 'A definir';
+  const ecuMatch = text.match(/\b(ft\s?\d{3}|fueltech\s?ft\d{3}|vision\s?ft|injepro\s?[a-z0-9-]+|octtane\s?[a-z0-9-]+|megasquirt|original)\b/i);
+  if (ecuMatch) ecu = ecuMatch[0].toUpperCase();
+  else if (lower.includes('fueltech')) ecu = 'FUELTECH (Série PowerFT)';
+
+  // Detect Fuel
+  let fuel = 'A confirmar';
+  if (lower.includes('etanol') || lower.includes('alcool') || lower.includes('álcool') || lower.includes('e85') || lower.includes('e100')) fuel = 'ETANOL / E85';
+  else if (lower.includes('metanol')) fuel = 'METANOL';
+  else if (lower.includes('podium') || lower.includes('gasolina')) fuel = 'GASOLINA / PODIUM';
+
+  // Detect Induction
+  let induction = 'ASPIRADO';
+  if (lower.includes('turbo') || lower.includes('is38') || lower.includes('master power') || lower.includes('hx40') || lower.includes('bi-turbo')) induction = 'TURBO';
+  else if (lower.includes('nitro') || lower.includes('supercharger') || lower.includes('blower')) induction = 'FORÇADO';
+
+  // Detect Wiring / Sensors
+  const hasWideband = lower.includes('wideband') || lower.includes('nano') || lower.includes('sonda');
+  const wiringIssue = lower.includes('chicote antigo') || lower.includes('elétrica antiga') || lower.includes('queda de tensão') || lower.includes('adaptado') || lower.includes('falhando') || lower.includes('corte');
+
+  // Dyno Readiness Index Calculation (Base 50)
+  let score = 55;
+  const notes = [];
+
+  if (ecu !== 'A definir') {
+    score += 20;
+    notes.push(`[OK] Gestão identificada: ${ecu}`);
+  } else {
+    notes.push(`[!] Gestão eletrônica não informada (confirmar ECU)`);
+  }
+
+  if (fuel !== 'A confirmar') {
+    score += 10;
+    notes.push(`[OK] Mapa de combustível alvo: ${fuel}`);
+  }
+
+  if (hasWideband) {
+    score += 10;
+    notes.push(`[OK] Leitura de malha fechada / Wideband presente`);
+  }
+
+  if (wiringIssue || scope.includes('Chicote')) {
+    score -= 18;
+    notes.push(`[ALERTA] Revisão elétrica / chicote exigida antes de carga no rolo`);
+  } else {
+    score += 5;
+    notes.push(`[OK] Pronto para check-up pré-dyno de bancada`);
+  }
+
+  score = Math.max(25, Math.min(98, score));
+  let statusLabel = score >= 75 ? 'APTO P/ ROLO' : (score >= 55 ? 'REQUER PRÉ-CHECK' : 'BANCADA ELÉTRICA 1º');
+
+  return {
+    raw: text.trim(),
+    ecu,
+    fuel,
+    induction,
+    scope,
+    tier,
+    score,
+    statusLabel,
+    notes
+  };
+}
+
+function renderTelemetry(data) {
+  lastParsed = data;
+  $('driScore').textContent = `${data.score}% · ${data.statusLabel}`;
+  $('driBar').style.width = `${data.score}%`;
+  $('driBar').style.backgroundColor = data.score >= 75 ? 'var(--lime)' : (data.score >= 55 ? 'var(--amber)' : 'var(--red)');
+  $('tierVal').textContent = data.scope.toUpperCase();
+  $('tierSub').textContent = `Estimativa de bancada: ${data.tier}`;
+
+  // Render tags
+  const tags = [
+    { k: 'ECU', v: data.ecu },
+    { k: 'ADM', v: data.induction },
+    { k: 'COMB', v: data.fuel },
+    { k: 'ESCOPO', v: data.scope }
+  ];
+  $('telemetryTags').innerHTML = tags.map(t => `<span class="t-tag"><b>${t.k}:</b>${t.v}</span>`).join('');
+
+  // Stream terminal lines
+  if (streamTimer) clearInterval(streamTimer);
+  const term = $('terminalOutput');
+  term.innerHTML = '';
+  $('streamStatus').textContent = 'STREAMING...';
+
+  const lines = [
+    `> Analisando cofre: "${data.raw.slice(0, 68)}${data.raw.length > 68 ? '...' : ''}"`,
+    ...data.notes,
+    `> Enquadramento: ${data.scope} (${data.tier})`,
+    `> Ficha técnica compilada. Pronta para envio no WhatsApp.`
+  ];
+
+  let lineIdx = 0;
+  let charIdx = 0;
+  let currentDiv = null;
+
+  streamTimer = setInterval(() => {
+    if (lineIdx >= lines.length) {
+      clearInterval(streamTimer);
+      $('streamStatus').textContent = 'SYNCED';
+      const cursor = document.createElement('span');
+      cursor.className = 'cursor';
+      if (currentDiv) currentDiv.appendChild(cursor);
+      return;
+    }
+
+    const fullLine = lines[lineIdx];
+    if (charIdx === 0) {
+      currentDiv = document.createElement('div');
+      currentDiv.className = 'terminal-line' + (fullLine.includes('[ALERTA]') || fullLine.includes('[!]') ? ' warn' : (fullLine.includes('[OK]') ? ' ok' : ''));
+      term.appendChild(currentDiv);
+    }
+
+    currentDiv.textContent = fullLine.slice(0, charIdx + 3);
+    charIdx += 3;
+
+    if (charIdx >= fullLine.length) {
+      currentDiv.textContent = fullLine;
+      lineIdx++;
+      charIdx = 0;
+    }
+  }, 18);
+}
+
+function buildWhatsAppMessage(d) {
+  return [
+    `*[VÉRTICE LABS // TRIAGEM PRÉ-DYNO]*`,
+    `*Escopo:* ${d.scope}`,
+    `*Prontidão (DRI):* ${d.score}% (${d.statusLabel})`,
+    `*Tags:* ECU ${d.ecu} | ${d.induction} | ${d.fuel}`,
+    `*Relato do Cofre:* ${d.raw}`,
+    `*Faixa de Referência:* ${d.tier}`,
+    `--------------------------------`,
+    `Quero agendar avaliação técnica na oficina.`
+  ].join('\n');
+}
+
+function runCurrent() {
+  const txt = $('rawSetup').value.trim() || 'Projeto a descrever no WhatsApp';
+  const parsed = parseSetup(txt, currentScope, currentTier);
+  renderTelemetry(parsed);
+}
+
+document.querySelectorAll('.chip').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    $('rawSetup').value = btn.dataset.setup;
+    runCurrent();
+  });
+});
+
+document.querySelectorAll('.scope-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.scope-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentScope = btn.dataset.scope;
+    currentTier = btn.dataset.tier;
+    runCurrent();
+  });
+});
+
+$('btnAnalyze').addEventListener('click', runCurrent);
+
+let debounceTimer = null;
+$('rawSetup').addEventListener('input', () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(runCurrent, 350);
+});
+
+$('btnWhatsapp').addEventListener('click', () => {
+  if (!lastParsed) runCurrent();
+  const msg = buildWhatsAppMessage(lastParsed);
+  const url = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+});
+
+function copyTextFallback(text) {
+  const helper = document.createElement('textarea');
+  helper.value = text;
+  helper.setAttribute('readonly', '');
+  helper.style.position = 'fixed';
+  helper.style.opacity = '0';
+  document.body.appendChild(helper);
+  helper.select();
+  let copied = false;
+  try { copied = document.execCommand('copy'); } catch (error) { copied = false; }
+  helper.remove();
+  return copied;
+}
+
+$('btnCopy').addEventListener('click', async () => {
+  if (!lastParsed) runCurrent();
+  const message = buildWhatsAppMessage(lastParsed);
+  let copied = false;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(message);
+      copied = true;
+    } catch (error) { copied = false; }
+  }
+  copied = copied || copyTextFallback(message);
+  $('btnCopy').textContent = copied ? 'Copiado ✓' : 'Copie manualmente';
+  setTimeout(() => { $('btnCopy').textContent = 'Copiar ficha'; }, 1800);
+});
+
+// Run initial preset on load
+runCurrent();
+</script>
+</body>
+</html>
