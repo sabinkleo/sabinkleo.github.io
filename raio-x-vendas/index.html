@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Raio-X de Vendas | Vértice Labs</title>
+<meta name="description" content="Diagnóstico gratuito de rastreabilidade comercial e oportunidades de recuperação de leads. Simulação local, sem cadastro.">
+<meta name="theme-color" content="#090a09">
+<link rel="canonical" href="https://verticelabs.me/raio-x-vendas/">
+<meta property="og:title" content="Raio-X de Vendas // Vértice Labs">
+<meta property="og:description" content="Quantos leads deixam de virar vendas? Simule oportunidades e veja os gargalos do seu processo.">
+<style>
+:root{--bg:#090a09;--panel:#11140f;--line:#30382a;--ink:#f0efe6;--muted:#aab3a1;--lime:#d3fa43;--warn:#ffc66e;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background-image:linear-gradient(to right,rgba(211,250,67,.025) 1px,transparent 1px),linear-gradient(to bottom,rgba(211,250,67,.025) 1px,transparent 1px);background-size:28px 28px}
+a{color:var(--lime)}.line{height:5px;background:var(--lime)}.wrap{max-width:1100px;margin:auto;padding:0 22px}header{border-bottom:1px solid var(--line);background:#090a09e8}nav{height:70px;display:flex;align-items:center;justify-content:space-between}.brand{color:var(--ink);font-weight:900;font-size:21px;text-decoration:none;letter-spacing:-1px}.brand span{color:var(--lime)}.quiet,.eyebrow{font:12px var(--mono);color:var(--muted)}.eyebrow{text-transform:uppercase;letter-spacing:1.5px}main{padding:66px 0 95px}
+h1,h2,h3,p{margin-top:0}.hero{max-width:870px}h1{font:clamp(54px,9vw,112px)/.9 Impact,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:-1.7px;margin:18px 0 24px}h1 em{font-style:normal;color:var(--lime)}.sub{max-width:700px;color:var(--muted);font-size:19px}.pill{display:inline-block;border:1px solid #4b5f32;border-radius:30px;padding:7px 13px;font:11px var(--mono);color:var(--lime)}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:45px;align-items:start}.panel{border:1px solid var(--line);padding:29px;background:var(--panel);border-radius:12px}.panel h2{font-size:22px;letter-spacing:-.5px}.hint{font:13px/1.5 var(--mono);color:var(--muted)}.fields{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:22px 0}.field{display:block}.field b{font-size:13px;font-weight:650;display:block;margin-bottom:7px}.field small{font-size:11px;color:var(--muted);display:block}.field input,.field select{width:100%;background:#080b07;border:1px solid #41483d;color:var(--ink);font:18px var(--mono);border-radius:6px;padding:12px 13px;outline:none;min-width:0}.field input:focus,.field select:focus{border-color:var(--lime);box-shadow:0 0 0 2px #d3fa4325}select{cursor:pointer}.checks{display:grid;gap:11px}.checks .field select{font-size:14px}.tag{font:11px var(--mono);color:var(--lime);letter-spacing:1px}
+.big{font:clamp(42px,6vw,65px)/1 Impact,'Arial Narrow',sans-serif;color:var(--lime);margin:9px 0}.cap{color:var(--muted);font-size:13px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:22px 0}.metric{border:1px solid var(--line);background:#090b09;padding:15px;border-radius:7px}.metric strong{font-size:22px;display:block;margin:7px 0}.metric small{font-size:12px;color:var(--muted)}.result{border-top:1px solid var(--line);padding-top:18px;margin-top:16px}.result p{color:var(--muted);font-size:14px}.result strong{color:var(--ink)}.warning{border-left:3px solid var(--warn);padding:8px 11px;background:#ffc66e13;color:#f9dfbd;font-size:13px;margin:17px 0}button,.cta{cursor:pointer;border:0;border-radius:7px;background:var(--lime);color:#0a0b08;padding:15px 18px;font:800 14px system-ui,sans-serif;text-align:center;text-decoration:none;display:block;width:100%}button:hover,.cta:hover{filter:brightness(.9)}button.secondary{background:transparent;border:1px solid #6a7859;color:var(--ink);margin-top:9px}button:focus-visible,a:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.steps{margin-top:35px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{border-top:1px solid #667d3a;padding:17px 5px}.step b{display:block;font-size:15px;margin:6px 0}.step p{font-size:13px;color:var(--muted)}footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:12px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.steps{grid-template-columns:1fr}.panel{padding:22px}main{padding-top:47px}.quiet{display:none}}@media(max-width:400px){.fields,.metrics{grid-template-columns:1fr}h1{font-size:54px}}
+</style>
+</head>
+<body>
+<div class="line"></div>
+<header><nav class="wrap"><a href="/" class="brand">VÉRTICE<span>LABS®</span></a><span class="quiet">COMERCIAL // DIAGNÓSTICO V1</span></nav></header>
+<main class="wrap">
+<section class="hero"><span class="pill">FERRAMENTA GRATUITA • SEM CADASTRO</span><h1>VOCÊ PAGA PELO LEAD.<br><em>E DEPOIS?</em></h1><p class="sub">Simule quanto de margem de contribuição pode estar em jogo quando oportunidades não recebem resposta. Descubra o que medir antes de investir mais em anúncios.</p></section>
+<div class="layout">
+<section class="panel" aria-labelledby="formTitle">
+  <span class="eyebrow">01 / Simulador de oportunidades</span><h2 id="formTitle">Descreva sua operação</h2><p class="hint">Valores de exemplo. Altere para refletir seus últimos 30 dias.</p>
+  <div class="fields">
+    <label class="field"><b>Leads recebidos / mês</b><input id="leads" type="number" min="0" max="1000000" step="1" value="120" inputmode="numeric"></label>
+    <label class="field"><b>Sem resposta ou perdidos (%)</b><input id="missed" type="number" min="0" max="100" step="1" value="25" inputmode="decimal"></label>
+    <label class="field"><b>Conversão em venda (%)</b><input id="close" type="number" min="0" max="100" step="1" value="20" inputmode="decimal"></label>
+    <label class="field"><b>Ticket médio (R$)</b><input id="ticket" type="number" min="0" max="10000000" step="50" value="1200" inputmode="decimal"></label>
+    <label class="field"><b>Margem de contribuição (%)</b><input id="margin" type="number" min="0" max="100" step="1" value="40" inputmode="decimal"></label>
+    <label class="field"><b>Investimento em anúncios (R$/mês)</b><input id="ads" type="number" min="0" max="10000000" step="50" value="1500" inputmode="decimal"></label>
+  </div>
+  <h3>Você mede estas três coisas?</h3>
+  <div class="checks">
+    <label class="field"><b>Origem de cada lead</b><select id="source"><option value="no">Não / só achismo</option><option value="yes">Sim, com campanha identificada</option></select></label>
+    <label class="field"><b>Status da oportunidade / venda</b><select id="stage"><option value="no">Não / mensagens soltas</option><option value="yes">Sim, funil atualizado</option></select></label>
+    <label class="field"><b>Retorno aos interessados</b><select id="follow"><option value="no">Não existe rotina de follow-up</option><option value="yes">Sim, com responsável e prazo</option></select></label>
+  </div>
+</section>
+<section class="panel" aria-labelledby="resultTitle">
+  <span class="eyebrow">02 / Cenário calculado</span><h2 id="resultTitle">Possível recuperação</h2><p class="hint">Estimativa ilustrativa se os leads não atendidos pudessem ser recuperados e convertessem à taxa informada.</p>
+  <div class="big" id="potential" aria-live="polite">R$ 2.880</div><div class="cap">Margem de contribuição potencial por mês — não é faturamento confirmado nem lucro líquido.</div>
+  <div class="metrics"><div class="metric"><small>Leads sem atendimento</small><strong id="unanswered">30</strong><small>Oportunidades estimadas/mês</small></div><div class="metric"><small>Vendas adicionais possíveis</small><strong id="sales">6,0</strong><small>Se recuperação e conversão forem viáveis</small></div><div class="metric"><small>Indicador de processo</small><strong id="score">0/100</strong><small>Checklist simples, não auditoria</small></div><div class="metric"><small>Equilíbrio do 1º mês*</small><strong id="breakeven">4 vendas</strong><small>Hipótese: setup R$ 1.497 + suporte R$ 197</small></div></div>
+  <div class="result"><span class="tag">PRÓXIMA AÇÃO</span><p id="advice">Implante rastreamento e registre cada oportunidade.</p><div id="fit" class="warning" role="status">A projeção não garante retorno financeiro.</div></div>
+  <button type="button" id="whats">Enviar meu diagnóstico pelo WhatsApp ↗</button>
+  <button type="button" id="copy" class="secondary">Copiar resumo do diagnóstico</button><p class="hint" id="feedback" role="status" aria-live="polite"></p>
+  <p class="hint">*Preço ilustrativo para avaliar viabilidade. Valores do cliente, impostos, custo de aquisição e capacidade operacional precisam ser confirmados. Os dados são processados apenas neste navegador; ao clicar em WhatsApp você escolhe enviar o resumo.</p>
+</section>
+</div>
+<section class="steps" aria-label="Método de implantação">
+ <div class="step"><span class="tag">01 / IDENTIFICAR</span><b>De onde veio?</b><p>Links com UTM e registro de origem nas novas entradas. Sem inventar atribuição retrospectiva.</p></div>
+ <div class="step"><span class="tag">02 / OPERAR</span><b>O que aconteceu?</b><p>Etapas de atendimento, responsável, data de retorno e resultado da negociação.</p></div>
+ <div class="step"><span class="tag">03 / DECIDIR</span><b>O que deu dinheiro?</b><p>Relatório de origem, gasto, vendas registradas e contribuição por canal, conforme os dados disponíveis.</p></div>
+</section>
+</main>
+<footer><div class="wrap">© 2026 Vértice Labs • Diagnóstico informativo, não promessa de faturamento. Nenhum pixel de rastreamento neste módulo. <a href="/">Ver outros módulos</a>.</div></footer>
+<script>
+(function(){
+'use strict';
+var WA='5541998844684';
+var ids=['leads','missed','close','ticket','margin','ads','source','stage','follow'];
+var fmt=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+var dec=new Intl.NumberFormat('pt-BR',{maximumFractionDigits:1});
+var last='';
+function el(id){return document.getElementById(id);}
+function number(id,upper){var raw=Number(el(id).value);return Number.isFinite(raw)?Math.max(0,Math.min(upper,raw)):0;}
+function msgField(name,value){return name+': '+value;}
+function update(){
+ var leads=Math.floor(number('leads',1000000)), missed=number('missed',100), rate=number('close',100),ticket=number('ticket',10000000),margin=number('margin',100),ads=number('ads',10000000);
+ var lost=leads*missed/100, sales=lost*rate/100,contribution=sales*ticket*margin/100;
+ var score=(el('source').value==='yes'?35:0)+(el('stage').value==='yes'?35:0)+(el('follow').value==='yes'?30:0);
+ var perSale=ticket*margin/100,breakeven=perSale>0?Math.ceil((1497+197)/perSale):null;
+ el('potential').textContent=fmt.format(contribution);
+ el('unanswered').textContent=dec.format(lost);
+ el('sales').textContent=dec.format(sales);
+ el('score').textContent=score+'/100';
+ el('breakeven').textContent=breakeven===null?'—':dec.format(breakeven)+' vendas';
+ var todo=[];
+ if(el('source').value!=='yes')todo.push('identificar origem por campanha');
+ if(el('stage').value!=='yes')todo.push('registrar etapas do funil');
+ if(el('follow').value!=='yes')todo.push('definir responsável e prazo de retorno');
+ el('advice').textContent=todo.length?'Prioridade: '+todo.join('; ')+'.':'Processo básico declarado. Próximo passo: conferir dados reais de campanhas e vendas.';
+ var condition=contribution>=1694&&score<100&&leads>=30;
+ el('fit').textContent=condition?'Existe potencial matemático para uma implantação; valide recuperação real, custos e qualidade dos dados antes de contratar.':'Os números atuais não justificam automaticamente contratar. Corrija o processo sem custo e valide o ganho primeiro.';
+ var u=new URLSearchParams(location.search),ref=['utm_source','utm_medium','utm_campaign'].map(function(k){return u.get(k)||'';}).map(function(s){return s.slice(0,80).replace(/[\r\n]/g,' ');});
+ var origin=ref.some(Boolean)?ref.filter(Boolean).join(' / '):'não informada';
+ last=[
+ '*RAIO-X DE VENDAS | VÉRTICE LABS*',
+ msgField('Leads/mês',String(leads)),
+ msgField('Leads sem resposta (%)',dec.format(missed)+'%'),
+ msgField('Conversão assumida',dec.format(rate)+'%'),
+ msgField('Ticket médio',fmt.format(ticket)),
+ msgField('Margem de contribuição',dec.format(margin)+'%'),
+ msgField('Mídia mensal',fmt.format(ads)),
+ msgField('Oportunidades não atendidas',dec.format(lost)),
+ msgField('Vendas potenciais',dec.format(sales)),
+ msgField('Contribuição potencial',fmt.format(contribution)+'/mês'),
+ msgField('Checklist de processo',score+'/100'),
+ msgField('Origem da visita',origin),
+ 'IMPORTANTE: simulação hipotética, não vendas observadas.',
+ 'Quero avaliar se vale implantar um processo de recuperação de leads.'
+ ].join('\n');
+ el('feedback').textContent='';
+}
+ids.forEach(function(id){el(id).addEventListener('input',update);el(id).addEventListener('change',update);});
+el('whats').addEventListener('click',function(){window.open('https://wa.me/'+WA+'?text='+encodeURIComponent(last),'_blank','noopener,noreferrer');});
+el('copy').addEventListener('click',function(){
+ if(!navigator.clipboard||!window.isSecureContext){el('feedback').textContent='Cópia automática indisponível neste navegador. Use o botão WhatsApp.';return;}
+ navigator.clipboard.writeText(last).then(function(){el('feedback').textContent='Diagnóstico copiado.';},function(){el('feedback').textContent='Permissão de cópia negada pelo navegador.';});
+});
+update();
+})();
+</script>
+</body></html>
