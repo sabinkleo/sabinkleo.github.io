@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENAI Mecatrônica — Bancada Integrada de Eletricidade, Resistores e C</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, .font-mono, .font-mono-code { font-family: 'Fira Code', monospace; }
+        .whiteboard-surface {
+            background-color: #fcfcfd;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 18px 18px;
+        }
+        .color-swatch-active {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 3px #3b82f6, 0 4px 6px -1px rgba(0, 0, 0, 0.35);
+        }
+        .math-frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 0.22rem;
+            line-height: 1.1;
+        }
+        .math-frac-num {
+            border-bottom: 2px solid currentColor;
+            padding: 0 0.3rem 0.08rem;
+            font-weight: 800;
+        }
+        .math-frac-den {
+            padding: 0.08rem 0.3rem 0;
+            font-weight: 800;
+        }
+        .slide-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+<div style="background:#10140e;color:#d3fa43;padding:10px 16px;font:600 13px system-ui;display:flex;gap:15px;flex-wrap:wrap;align-items:center">
+<a style="color:#d3fa43" href="../../">VÉRTICE LABS</a>
+<a style="color:#d3fa43" href="../">Ferramentas</a>
+<span style="color:#ccd6c2">Projeto estudantil independente · Não é portal oficial SENAI</span>
+</div>
+
+    <!-- CABEÇALHO INSTITUCIONAL PADRÃO SENAI / SISTEMA FIEP -->
+    <header class="sticky top-0 z-40 bg-[#002663] border-b-4 border-[#E30613] shadow-2xl">
+        <div class="max-w-[1440px] mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-[#E30613] text-white font-black text-sm sm:text-base px-3 py-1.5 rounded tracking-widest shadow">
+                    SENAI
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-lg font-extrabold text-white tracking-tight flex items-center gap-2 flex-wrap">
+                        <span>BANCADA TÉCNICA DE MECATRÔNICA &amp; ELETRICIDADE</span>
+                        <span class="text-[11px] font-mono bg-white/15 px-2 py-0.5 rounded text-amber-300 border border-white/20">Protocolo DQK</span>
+                    </h1>
+                    <p class="text-[11px] text-blue-200">
+                        Sistema Fiep • Eletricidade Geral, Associação em Paralelo (a, b, c), Código de Cores e Linguagem C (N1014)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navegação Principal entre os 4 Módulos -->
+            <nav class="flex flex-wrap items-center gap-1.5 bg-slate-950/70 p-1.5 rounded-xl border border-blue-400/30 text-xs">
+                <button onclick="switchMainTab('eletricidade')" id="tab-btn-eletricidade" class="px-3.5 py-2 rounded-lg font-extrabold transition-all bg-[#E30613] text-white shadow">
+                    ⚡ 1. Leis de Ohm &amp; Paralelo (a, b, c)
+                </button>
+                <button onclick="switchMainTab('resistores')" id="tab-btn-resistores" class="px-3.5 py-2 rounded-lg font-bold transition-all text-blue-100 hover:bg-white/10">
+                    🎨 2. Cores de Resistores (Lousa)
+                </button>
+                <button onclick="switchMainTab('c-lab')" id="tab-btn-c-lab" class="px-3.5 py-2 rounded-lg font-bold transition-all text-blue-100 hover:bg-white/10">
+                    💻 3. Programação em C (5 Etapas)
+                </button>
+                <button onclick="switchMainTab('colinha')" id="tab-btn-colinha" class="px-3.5 py-2 rounded-lg font-bold transition-all text-blue-100 hover:bg-white/10">
+                    📘 4. Colinha C &amp; Fórmulas SENAI
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 1: ELETRICIDADE GERAL, PARALELO (a, b, c), ENERGIA E POUILLET  -->
+    <!-- ===================================================================== -->
+    <div id="module-eletricidade" class="max-w-[1440px] w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <!-- Sub-abas do Módulo 1 -->
+        <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div class="flex flex-wrap items-center gap-1.5 text-xs">
+                <button onclick="switchElecSubTab('assoc')" id="subtab-btn-assoc" class="px-3.5 py-2 rounded-lg font-extrabold bg-[#0047B6] text-white shadow transition">
+                    🔗 1. Associação em Paralelo (Lousa a, b, c + Casio)
+                </button>
+                <button onclick="switchElecSubTab('energy')" id="subtab-btn-energy" class="px-3.5 py-2 rounded-lg font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    💡 2. Potência &amp; Energia (kWh e Lousa a,b,c)
+                </button>
+                <button onclick="switchElecSubTab('pouillet')" id="subtab-btn-pouillet" class="px-3.5 py-2 rounded-lg font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition">
+                    🔌 3. 2ª Lei de Ohm (Fio 10m / 11mm²)
+                </button>
+            </div>
+            <span class="text-[11px] font-mono text-amber-300 bg-amber-950/40 px-3 py-1 rounded-lg border border-amber-500/30">
+                🧠 Protocolo DQK: Nenhuma etapa matemática é pulada!
+            </span>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- SUB-ABA 1A: ASSOCIAÇÃO DE RESISTORES (LOUSA a, b, c + TINKERCAD)  -->
+        <!-- ================================================================= -->
+        <div id="subtab-assoc" class="space-y-6">
+
+            <!-- Barra Superior: Botões dos Exercícios Reais da Lousa (a, b, c) e da TV (Tinkercad/Casio) -->
+            <div class="bg-white rounded-xl shadow-xl border-l-8 border-l-[#0047B6] border border-slate-300 p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 text-slate-900">
+                <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-[#E30613] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">Exercícios da Lousa</span>
+                        <span class="text-xs font-extrabold uppercase tracking-wider text-[#003893]">
+                            Ex.: Calcular e Conferir na Prática — Tudo em Paralelo (a, b e c)
+                        </span>
+                    </div>
+                    <p id="assoc-problem-desc" class="text-xs sm:text-sm text-slate-700 font-medium">
+                        <strong>Exercício c) da Lousa:</strong> Três resistores em paralelo com <strong>R₁ = 1 kΩ</strong>, <strong>R₂ = 10 kΩ</strong> e <strong>R₃ = 15 kΩ</strong> ➔ <strong>R<sub>eq</sub> = 857,14 Ω (0,857 kΩ)</strong>.
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-2 shrink-0">
+                    <button onclick="loadAssocPreset('lousa-a')" class="bg-slate-800 hover:bg-slate-700 text-white font-extrabold text-xs px-3 py-2 rounded-lg shadow transition">
+                        🔴 a) 1 kΩ ∥ 10 kΩ (909,09 Ω)
+                    </button>
+                    <button onclick="loadAssocPreset('lousa-b')" class="bg-[#0047B6] hover:bg-blue-700 text-white font-extrabold text-xs px-3 py-2 rounded-lg shadow transition">
+                        🔴 b) 10 kΩ ∥ 15 kΩ (6 kΩ)
+                    </button>
+                    <button onclick="loadAssocPreset('lousa-c')" class="bg-[#E30613] hover:bg-red-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-lg shadow transition ring-2 ring-red-300">
+                        🔥 c) 1 kΩ ∥ 10 kΩ ∥ 15 kΩ (857,14 Ω)
+                    </button>
+                    <button onclick="loadAssocPreset('tinkercad-casio')" class="bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-xs px-3 py-2 rounded-lg shadow transition">
+                        🖥️ TV Tinkercad: 100k ∥ 470k ∥ 220k (59,98 kΩ)
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESUMO VISUAL LADO A LADO DOS 3 EXERCÍCIOS DO QUADRO: a), b) e c) -->
+            <div class="bg-white rounded-xl shadow-2xl border-4 border-slate-300 overflow-hidden whiteboard-surface text-slate-900">
+                <div class="bg-gradient-to-r from-[#003893] to-[#0047B6] text-white px-5 py-3 flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-[#E30613] text-white text-[10px] font-black px-2 py-0.5 rounded uppercase">Gabarito Rápido da Lousa</span>
+                        <h3 class="text-xs sm:text-sm font-extrabold uppercase tracking-wide">
+                            Comparativo Direto na Lousa: Exercícios a), b) e c) Todos em Paralelo
+                        </h3>
+                    </div>
+                    <span class="text-[11px] font-mono text-blue-100">Clique em qualquer cartão para carregar os valores na calculadora abaixo</span>
+                </div>
+
+                <div class="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-3 gap-4 font-mono-code text-xs">
+                    <!-- Cartão a) -->
+                    <div onclick="loadAssocPreset('lousa-a')" class="cursor-pointer bg-slate-50 hover:bg-blue-50/70 p-4 rounded-xl border-2 border-slate-300 hover:border-blue-500 transition space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                            <span class="text-sm font-black text-red-600">a) R₁ = 1 kΩ ∥ R₂ = 10 kΩ</span>
+                            <span class="text-[10px] font-sans bg-slate-200 px-2 py-0.5 rounded font-bold text-slate-700">2 Resistores</span>
+                        </div>
+                        <div class="text-slate-700 space-y-1">
+                            <div>• <strong>Na Lousa:</strong> <code>(1/(1·10³) + 1/(10·10³))⁻¹</code></div>
+                            <div>• <strong>Produto ÷ Soma:</strong> <code>(1 · 10) / (1 + 10) = 10 / 11 kΩ</code></div>
+                            <div>• <strong>Em kΩ:</strong> <code>0,90909 kΩ</code></div>
+                        </div>
+                        <div class="bg-blue-100 border border-blue-300 text-blue-950 font-black text-sm px-3 py-1.5 rounded-lg">
+                            R<sub>eq</sub> = 909,09 Ω
+                        </div>
+                    </div>
+
+                    <!-- Cartão b) -->
+                    <div onclick="loadAssocPreset('lousa-b')" class="cursor-pointer bg-blue-50/60 hover:bg-blue-100/70 p-4 rounded-xl border-2 border-blue-400 transition space-y-2">
+                        <div class="flex items-center justify-between border-b border-blue-200 pb-1.5">
+                            <span class="text-sm font-black text-red-600">b) R₁ = 10 kΩ ∥ R₂ = 15 kΩ</span>
+                            <span class="text-[10px] font-sans bg-blue-200 px-2 py-0.5 rounded font-bold text-blue-900">2 Resistores</span>
+                        </div>
+                        <div class="text-slate-800 space-y-1">
+                            <div>• <strong>Na Lousa:</strong> <code>(1/(10·10³) + 1/(15·10³))⁻¹</code></div>
+                            <div>• <strong>Produto ÷ Soma:</strong> <code>(10 · 15) / (10 + 15) = 150 / 25</code></div>
+                            <div>• <strong>MMC(10,15)=30:</strong> <code>(3/30 + 2/30)⁻¹ = (5/30)⁻¹ = 30/5</code></div>
+                        </div>
+                        <div class="bg-emerald-100 border border-emerald-400 text-emerald-950 font-black text-sm px-3 py-1.5 rounded-lg">
+                            R<sub>eq</sub> = 6 kΩ (6.000 Ω)
+                        </div>
+                    </div>
+
+                    <!-- Cartão c) -->
+                    <div onclick="loadAssocPreset('lousa-c')" class="cursor-pointer bg-red-50/60 hover:bg-red-100/70 p-4 rounded-xl border-2 border-red-400 transition space-y-2">
+                        <div class="flex items-center justify-between border-b border-red-200 pb-1.5">
+                            <span class="text-sm font-black text-red-700">c) 1 kΩ ∥ 10 kΩ ∥ 15 kΩ</span>
+                            <span class="text-[10px] font-sans bg-red-200 px-2 py-0.5 rounded font-bold text-red-900">3 Resistores</span>
+                        </div>
+                        <div class="text-slate-800 space-y-1">
+                            <div>• <strong>Na Lousa:</strong> <code>(1/(1·10³) + 1/(10·10³) + 1/(15·10³))⁻¹</code></div>
+                            <div>• <strong>MMC(1,10,15)=30:</strong> <code>((30+3+2)/30)⁻¹ = 30/35 = 6/7 kΩ</code></div>
+                            <div>• <strong>Pulo do Gato (usando b):</strong> <code>1k ∥ 6k = (1·6)/(1+6) = 6/7 kΩ</code></div>
+                        </div>
+                        <div class="bg-amber-100 border border-amber-400 text-amber-950 font-black text-sm px-3 py-1.5 rounded-lg">
+                            R<sub>eq</sub> = 857,14 Ω (0,857 kΩ)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                <!-- COLUNA ESQUERDA (5 cols): ENTRADAS + VISOR DA CASIO fx-82ES + PROTOBOARD -->
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-5 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <div>
+                                <h3 class="text-sm font-extrabold uppercase text-white">🔗 Calculadora Universal de Paralelo</h3>
+                                <p class="text-[11px] text-slate-400">Altere qualquer resistor para ver a conta passo a passo</p>
+                            </div>
+                            <div class="inline-flex p-1 bg-slate-950 rounded-lg border border-slate-800">
+                                <button onclick="setAssocCount(2)" id="btn-assoc-count-2" class="px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white">2 Resistores</button>
+                                <button onclick="setAssocCount(3)" id="btn-assoc-count-3" class="px-2.5 py-1 rounded text-xs font-extrabold bg-emerald-600 text-white">3 Resistores</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <!-- R1 -->
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+                                <label class="text-xs font-bold text-sky-300 flex justify-between">
+                                    <span>Resistor R₁:</span>
+                                    <span id="assoc-r1-sci-badge" class="font-mono text-[11px] text-slate-400">1 · 10³ Ω</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="assoc-r1" value="1" step="any" oninput="updateAssocCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                                    <select id="assoc-r1-unit" onchange="updateAssocCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                        <option value="1">Ω (Ohms)</option>
+                                        <option value="1000" selected>kΩ (× 10³ Ω)</option>
+                                        <option value="1000000">MΩ (× 10⁶ Ω)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- R2 -->
+                            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+                                <label class="text-xs font-bold text-amber-300 flex justify-between">
+                                    <span>Resistor R₂:</span>
+                                    <span id="assoc-r2-sci-badge" class="font-mono text-[11px] text-slate-400">10 · 10³ Ω</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="assoc-r2" value="10" step="any" oninput="updateAssocCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                                    <select id="assoc-r2-unit" onchange="updateAssocCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                        <option value="1">Ω (Ohms)</option>
+                                        <option value="1000" selected>kΩ (× 10³ Ω)</option>
+                                        <option value="1000000">MΩ (× 10⁶ Ω)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- R3 -->
+                            <div id="assoc-box-r3" class="bg-slate-950 p-3 rounded-lg border border-emerald-500/40 space-y-1">
+                                <label class="text-xs font-bold text-emerald-300 flex justify-between">
+                                    <span>Resistor R₃ (3º Ramo em Paralelo):</span>
+                                    <span id="assoc-r3-sci-badge" class="font-mono text-[11px] text-slate-400">15 · 10³ Ω</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="number" id="assoc-r3" value="15" step="any" oninput="updateAssocCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                                    <select id="assoc-r3-unit" onchange="updateAssocCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                        <option value="1">Ω (Ohms)</option>
+                                        <option value="1000" selected>kΩ (× 10³ Ω)</option>
+                                        <option value="1000000">MΩ (× 10⁶ Ω)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Tensão da Fonte e Valor Medido na Prática -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+                                    <label class="text-[11px] font-bold text-slate-300 block">Tensão V da Fonte (opcional):</label>
+                                    <input type="number" id="assoc-v" value="12" step="any" oninput="updateAssocCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                </div>
+                                <div class="bg-slate-950 p-3 rounded-lg border border-blue-500/40 space-y-1">
+                                    <label class="text-[11px] font-bold text-blue-300 block">Medido no Multímetro (Ω):</label>
+                                    <input type="number" id="assoc-measured-ohms" value="857" step="any" oninput="updateAssocCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-emerald-300">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SIMULADOR DO VISOR DA CALCULADORA CASIO fx-82ES -->
+                        <div class="bg-slate-800 border-2 border-slate-600 rounded-2xl p-4 shadow-inner space-y-2.5">
+                            <div class="flex items-center justify-between text-[11px] font-mono text-slate-300">
+                                <span class="font-bold tracking-wider uppercase text-white">CASIO <span class="text-amber-400">fx-82ES PLUS</span></span>
+                                <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-emerald-300 border border-slate-700">NATURAL-V.P.A.M.</span>
+                            </div>
+                            <div class="bg-[#c5d6af] text-slate-950 border-4 border-slate-900 rounded-lg p-3 font-mono shadow-inner space-y-1.5">
+                                <div id="casio-lcd-expr" class="text-xs sm:text-sm font-bold tracking-tight overflow-x-auto whitespace-nowrap border-b border-slate-700/30 pb-1">
+                                    (1÷1×10³+1÷10×10³+1÷15×10³)⁻¹
+                                </div>
+                                <div id="casio-lcd-result" class="text-right text-lg sm:text-xl font-black tracking-wider">
+                                    857.1428571
+                                </div>
+                            </div>
+                            <div id="casio-keys-guide" class="text-[11px] text-slate-300 leading-relaxed font-mono bg-slate-900/90 p-2.5 rounded-lg border border-slate-700"></div>
+                        </div>
+
+                        <button onclick="sendAssocToCLab()" class="w-full bg-[#0047B6] hover:bg-blue-600 text-white font-extrabold text-xs py-3 px-4 rounded-lg shadow-lg transition flex items-center justify-center gap-2">
+                            <span>💻</span>
+                            <span>Enviar esta Associação em Paralelo para a Bancada C ➔</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- COLUNA DIREITA (7 cols): LOUSA DO PROFESSOR + ESQUEMA PARALELO -->
+                <div class="lg:col-span-7 space-y-5">
+                    <div class="bg-white rounded-xl shadow-2xl border-4 border-slate-300 overflow-hidden whiteboard-surface text-slate-900">
+                        <div class="bg-slate-200 border-b border-slate-300 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2">
+                            <span class="text-xs font-extrabold text-[#003893] uppercase tracking-wider">
+                                📋 Lousa do Professor — Ex.: Calcular e Conferir na Prática (Paralelo e Série)
+                            </span>
+                            <button onclick="copyAssocWhiteboard()" class="text-[11px] font-bold bg-white hover:bg-slate-50 text-slate-700 px-3 py-1 rounded border border-slate-400 shadow-sm">
+                                📋 Copiar Resolução p/ Caderno
+                            </button>
+                        </div>
+
+                        <div class="p-5 sm:p-6 space-y-6 font-mono-code">
+
+                            <!-- 1. Desenho Técnico da Lousa -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-slate-50 p-4 rounded-xl border border-slate-300">
+                                <div class="md:col-span-7 flex flex-col items-center">
+                                    <div class="text-[11px] font-sans font-extrabold uppercase text-[#003893] mb-1 self-start">
+                                        1. Desenho do Circuito em Paralelo na Lousa:
+                                    </div>
+                                    <svg id="assoc-parallel-svg" viewBox="0 0 360 165" class="w-full max-w-[350px]"></svg>
+                                </div>
+                                <div class="md:col-span-5 space-y-2 text-xs font-sans border-t md:border-t-0 md:border-l border-slate-300 pt-3 md:pt-0 md:pl-4">
+                                    <div class="font-extrabold text-emerald-900 uppercase text-[11px]">
+                                        🔍 Regra de Ouro do Paralelo:
+                                    </div>
+                                    <p class="text-slate-700 leading-relaxed text-[11px]">
+                                        Todos os terminais de cima estão ligados no mesmo fio (nó A) e todos os de baixo no mesmo fio (nó B).
+                                    </p>
+                                    <div class="bg-amber-50 border border-amber-300 rounded-lg p-2 text-[11px] text-amber-950 font-semibold">
+                                        ⚠️ <strong>Prova Real Imediata:</strong> O resultado $R_{eq}$ tem que dar <strong>MENOR</strong> que o menor resistor do circuito!
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. Método 1 da Lousa: Soma dos Inversos elevada a -1 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 border-b-2 border-dashed border-slate-300 pb-5">
+                                <div class="space-y-3 border-b md:border-b-0 md:border-r border-slate-300 pb-4 md:pb-0 md:pr-4">
+                                    <div class="text-[11px] font-bold text-[#E30613] uppercase font-sans">
+                                        2. Método 1 (Escrito na Lousa): Soma dos Inversos $(\dots)^{-1}$
+                                    </div>
+                                    <div id="wb-assoc-inv-formula" class="bg-blue-50 p-3.5 rounded-xl border-2 border-blue-200 text-sm font-extrabold text-blue-950 flex items-center flex-wrap gap-1.5"></div>
+                                    <div id="wb-assoc-inv-steps" class="bg-slate-100 p-3 rounded-lg border border-slate-300 text-xs space-y-1.5 text-slate-800"></div>
+                                </div>
+
+                                <!-- 3. Método 2: Produto pela Soma (ou de 2 em 2 no Papel) -->
+                                <div class="space-y-3">
+                                    <div class="text-[11px] font-bold text-[#003893] uppercase font-sans">
+                                        3. Método 2 (No Papel sem Científica): Produto ÷ Soma / De 2 em 2
+                                    </div>
+                                    <div id="wb-assoc-par-formula" class="bg-emerald-50 p-3.5 rounded-xl border-2 border-emerald-300 text-sm font-extrabold text-emerald-950 flex items-center flex-wrap gap-1.5"></div>
+                                    <div id="wb-assoc-paper-steps" class="bg-slate-100 p-3 rounded-lg border border-slate-300 text-xs space-y-1.5 text-slate-800"></div>
+                                </div>
+                            </div>
+
+                            <!-- 4. Resultado Final em Paralelo vs Conferência Prática + Comparativo em Série -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-emerald-50 border-2 border-emerald-400 rounded-xl p-4 space-y-1.5">
+                                    <div class="text-[10px] font-sans font-extrabold uppercase text-emerald-800">
+                                        4. Resultado Equivalente em PARALELO ($R_{eq}$):
+                                    </div>
+                                    <div id="wb-assoc-par-req" class="text-2xl sm:text-3xl font-extrabold text-emerald-950"></div>
+                                    <div id="wb-assoc-par-i1i2" class="text-xs text-emerald-900 font-bold"></div>
+                                    <div id="wb-assoc-bench-check" class="text-[11px] pt-1 border-t border-emerald-300 text-slate-800"></div>
+                                </div>
+
+                                <div class="bg-blue-50 border border-blue-300 rounded-xl p-4 space-y-1.5">
+                                    <div class="text-[10px] font-sans font-extrabold uppercase text-[#003893]">
+                                        5. E se estivessem em SÉRIE? (Soma Direta):
+                                    </div>
+                                    <div id="wb-assoc-serie-req" class="text-xl sm:text-2xl font-extrabold text-blue-950"></div>
+                                    <div id="wb-assoc-serie-i" class="text-xs text-slate-800"></div>
+                                    <div id="wb-assoc-serie-v1v2" class="text-xs text-blue-900 font-bold"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- SUB-ABA 1B: POTÊNCIA E ENERGIA ELÉTRICA (SLIDES TV + LOUSA a,b,c) -->
+        <!-- ================================================================= -->
+        <div id="subtab-energy" class="hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-xl border-4 border-slate-300 overflow-hidden">
+                <div class="p-4 sm:p-5 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-slate-50 border-b border-slate-200">
+                    <div class="space-y-1.5 max-w-4xl">
+                        <div class="text-[11px] font-extrabold uppercase tracking-wider text-[#0047B6]" id="energy-slide-label">
+                            Slide 2 da Sala (Incógnita: Tempo Δt)
+                        </div>
+                        <p id="energy-slide-quote" class="text-sm sm:text-base text-slate-800 font-medium leading-relaxed">
+                            “<strong>Durante quanto tempo</strong> uma <strong>TV de plasma de 240 W</strong> teria de ficar ligada para consumir <strong>4 kWh</strong>?”
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-2 shrink-0">
+                        <button onclick="loadTeacherChainPreset('chuveiro-lousa')" class="bg-[#E30613] hover:bg-red-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                            🧑‍🏫 Lousa (a, b, c): R=10Ω, V=220V ➔ 4,84kW ➔ 72,6kWh ➔ R$ 55,90
+                        </button>
+                        <button onclick="loadEnergyPreset('tv-plasma-240w')" class="bg-amber-600 hover:bg-amber-500 text-white font-extrabold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                            📺 Slide 2: TV Plasma 240 W / 4 kWh
+                        </button>
+                        <button onclick="loadEnergyPreset('tv-lampada-60w')" class="bg-[#0047B6] hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                            💡 Slide 1: Lâmpada 60 W / 365d
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BLOCO LOUSA DO PROFESSOR (DEDUÇÃO + a,b,c + BANCADA 127V) -->
+            <div class="bg-white rounded-xl shadow-2xl border-4 border-slate-300 overflow-hidden whiteboard-surface text-slate-900">
+                <div class="bg-gradient-to-r from-[#003893] to-[#0047B6] text-white px-5 py-3 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="bg-[#E30613] text-white text-[11px] font-black px-2.5 py-0.5 rounded uppercase tracking-wider">Foto da Lousa</span>
+                        <h3 class="text-sm sm:text-base font-extrabold uppercase tracking-wide">
+                            Lousa do Professor (Deduções + Exercício a, b, c + Prática 127 V)
+                        </h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="copyTeacherChainWhiteboard()" class="text-xs font-bold bg-white/15 hover:bg-white/25 text-white px-3 py-1.5 rounded-lg border border-white/30 transition">
+                            📋 Copiar Lousa (a, b, c)
+                        </button>
+                        <button onclick="sendTeacherChainToCLab()" class="text-xs font-extrabold bg-emerald-400 hover:bg-emerald-300 text-slate-950 px-3 py-1.5 rounded-lg shadow transition">
+                            💻 Enviar a, b, c p/ Código C ➔
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-5 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 font-mono-code">
+                    <div class="lg:col-span-4 space-y-4 border-b lg:border-b-0 lg:border-r-2 border-dashed border-slate-300 pb-5 lg:pb-0 lg:pr-5">
+                        <div class="text-xs font-sans font-extrabold uppercase text-[#003893]">1. Dedução das Fórmulas de Potência</div>
+                        <div class="bg-blue-50 p-3.5 rounded-xl border-2 border-blue-200 space-y-3 text-xs">
+                            <div class="bg-white p-2.5 rounded-lg border border-blue-200 space-y-1">
+                                <div class="text-[11px] font-sans text-slate-600 font-semibold">Substituindo <code>I = V / R</code> em <code>P = V · I</code>:</div>
+                                <div class="text-sm font-extrabold text-slate-900">P = V · (V / R) ➔ P = V² / R</div>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-blue-200 space-y-1">
+                                <div class="text-[11px] font-sans text-slate-600 font-semibold">Substituindo <code>V = I · R</code> em <code>P = V · I</code>:</div>
+                                <div class="text-sm font-extrabold text-slate-900">P = I · R · I ➔ P = I² · R</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-4 border-b lg:border-b-0 lg:border-r-2 border-dashed border-slate-300 pb-5 lg:pb-0 lg:pr-5">
+                        <div class="text-xs font-sans font-extrabold uppercase text-[#E30613]">2. Exercício Encadeado 6 (a ➔ b ➔ c)</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-slate-100 p-3 rounded-xl border border-slate-300 font-sans text-xs">
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-0.5">Modo Letra a):</label>
+                                <select id="tc-mode-a" onchange="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-xs font-bold text-blue-900">
+                                    <option value="VR" selected>V e R (P=V²/R)</option>
+                                    <option value="VI">V e I (P=V·I)</option>
+                                    <option value="IR">I e R (P=I²·R)</option>
+                                </select>
+                            </div>
+                            <div id="tc-box-r">
+                                <label class="font-bold text-slate-700 block mb-0.5">R (Ω):</label>
+                                <input type="number" id="tc-r" value="10" step="any" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-slate-900">
+                            </div>
+                            <div id="tc-box-v">
+                                <label class="font-bold text-slate-700 block mb-0.5">V (Volts):</label>
+                                <input type="number" id="tc-v" value="220" step="any" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-slate-900">
+                            </div>
+                            <div id="tc-box-i" class="hidden">
+                                <label class="font-bold text-slate-700 block mb-0.5">I (A):</label>
+                                <input type="number" id="tc-i" value="22" step="any" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-slate-900">
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-0.5">Tempo/dia (h):</label>
+                                <input type="number" id="tc-t-day" value="0.5" step="any" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-slate-900">
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-0.5">Dias:</label>
+                                <input type="number" id="tc-days" value="30" step="any" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-slate-900">
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block mb-0.5">Tarifa (R$):</label>
+                                <input type="number" id="tc-rate" value="0.77" step="0.01" oninput="updateTeacherChain()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-sm font-bold text-emerald-800">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2.5">
+                            <div class="bg-slate-50 p-3 rounded-xl border-l-4 border-l-red-600 border border-slate-300 space-y-1">
+                                <div id="tc-out-a-header" class="text-xs font-extrabold text-red-700"></div>
+                                <div id="tc-out-a-steps" class="text-xs font-bold text-slate-800"></div>
+                                <div id="tc-out-a-box" class="inline-block border-2 border-slate-800 px-2.5 py-0.5 rounded bg-amber-50 text-sm font-extrabold text-blue-950"></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border-l-4 border-l-red-600 border border-slate-300 space-y-1">
+                                <div id="tc-out-b-steps" class="text-xs font-bold text-slate-800"></div>
+                                <div id="tc-out-b-box" class="inline-block border-2 border-slate-800 px-2.5 py-0.5 rounded bg-emerald-50 text-sm font-extrabold text-emerald-950"></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border-l-4 border-l-red-600 border border-slate-300 space-y-1">
+                                <div id="tc-out-c-steps" class="text-xs font-bold text-slate-800"></div>
+                                <div id="tc-out-c-box" class="inline-block border-2 border-slate-800 px-2.5 py-0.5 rounded bg-blue-50 text-sm font-extrabold text-blue-950"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 space-y-3">
+                        <div class="text-xs font-sans font-extrabold uppercase text-emerald-800">3. Prática 127 V (Lâmpada)</div>
+                        <div class="bg-slate-100 p-3 rounded-xl border border-slate-300 space-y-2 text-xs font-sans">
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="font-bold text-slate-700 block text-[11px]">Tensão (V):</label>
+                                    <input type="number" id="bench-v" value="127" step="any" oninput="updateBenchLamp()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-xs font-bold text-slate-900">
+                                </div>
+                                <div>
+                                    <label class="font-bold text-slate-700 block text-[11px]">Potência (W):</label>
+                                    <input type="number" id="bench-p" value="60" step="any" oninput="updateBenchLamp()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-xs font-bold text-slate-900">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 block text-[11px]">Corrente Medida I_med (A):</label>
+                                <input type="number" id="bench-i-meas" value="0.46" step="any" oninput="updateBenchLamp()" class="w-full bg-white border border-slate-400 rounded px-2 py-1 font-mono text-xs font-bold text-blue-900">
+                            </div>
+                            <div id="bench-lamp-output" class="bg-white p-2.5 rounded-lg border border-slate-300 font-mono text-[11px] space-y-1 text-slate-800"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculadora E = P * Δt -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <div class="lg:col-span-5 bg-slate-900 border border-slate-700/80 rounded-xl p-5 shadow-xl space-y-4">
+                    <div class="flex flex-wrap gap-1.5">
+                        <button onclick="setEnergyTarget('E')" id="btn-en-target-E" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">1. Achar E</button>
+                        <button onclick="setEnergyTarget('t')" id="btn-en-target-t" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-amber-500 text-slate-950">2. Achar Δt</button>
+                        <button onclick="setEnergyTarget('P')" id="btn-en-target-P" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300">3. Achar P</button>
+                    </div>
+                    <div id="energy-finger-tip" class="bg-amber-950/40 border border-amber-500/40 rounded-lg p-2.5 text-xs text-amber-200 font-mono"></div>
+
+                    <div id="energy-box-input-E" class="bg-slate-950 p-3 rounded-lg border border-emerald-500/40 space-y-1.5">
+                        <label class="text-xs font-bold text-emerald-300 block">Energia (E):</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="energy-input-e" value="4" step="any" oninput="updateEnergyCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                            <select id="energy-input-e-unit" onchange="updateEnergyCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                <option value="1000" selected>kWh</option>
+                                <option value="1">Wh</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="energy-box-input-P" class="bg-slate-950 p-3 rounded-lg border border-sky-500/40 space-y-1.5">
+                        <label class="text-xs font-bold text-sky-300 block">Potência (P):</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="energy-power" value="240" step="any" oninput="updateEnergyCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                            <select id="energy-power-unit" onchange="updateEnergyCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white">
+                                <option value="1" selected>W</option>
+                                <option value="1000">kW</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="energy-box-input-t" class="bg-slate-950 p-3 rounded-lg border border-amber-500/40 space-y-2 hidden">
+                        <label class="text-xs font-bold text-amber-300 block">Tempo/dia e Dias:</label>
+                        <div class="flex gap-2">
+                            <input type="number" id="energy-hours-day" value="24" step="any" oninput="updateEnergyCalculator()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-sm font-mono text-white">
+                            <select id="energy-time-unit" onchange="updateEnergyCalculator()" class="bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-xs font-mono text-white">
+                                <option value="1" selected>h/dia</option>
+                                <option value="0.0166666667">min/dia</option>
+                            </select>
+                            <input type="number" id="energy-days" value="365" step="any" oninput="updateEnergyCalculator()" class="w-24 bg-slate-900 border border-slate-700 rounded px-2 py-1.5 text-sm font-mono text-white">
+                        </div>
+                    </div>
+                    <input type="hidden" id="energy-qty" value="1">
+                    <input type="hidden" id="energy-tariff" value="0.89">
+                </div>
+
+                <div class="lg:col-span-7 bg-white rounded-xl shadow-2xl border-4 border-slate-300 overflow-hidden whiteboard-surface text-slate-900 p-5 font-mono-code space-y-4">
+                    <div id="wb-energy-header-title" class="text-xs font-extrabold text-[#003893] uppercase"></div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div id="wb-energy-data" class="bg-slate-100 p-3 rounded-lg border border-slate-300 text-xs space-y-1"></div>
+                        <div id="wb-energy-methods" class="bg-blue-50 p-3 rounded-lg border border-blue-200 text-xs space-y-1"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-emerald-50 border border-emerald-400 rounded-xl p-3">
+                            <div id="wb-energy-result-label" class="text-[10px] font-sans font-bold uppercase text-emerald-800"></div>
+                            <div id="wb-energy-result-kwh" class="text-xl font-extrabold text-emerald-950"></div>
+                            <div id="wb-energy-result-wh" class="text-xs text-emerald-800"></div>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-300 rounded-xl p-3">
+                            <div id="wb-energy-secondary-label" class="text-[10px] font-sans font-bold uppercase text-amber-900"></div>
+                            <div id="wb-energy-cost" class="text-sm font-extrabold text-amber-950"></div>
+                            <div id="wb-energy-joules" class="text-xs text-amber-800"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- SUB-ABA 1C: 2ª LEI DE OHM / POUILLET (FIO CONDUTOR 10m / 11mm²)   -->
+        <!-- ================================================================= -->
+        <div id="subtab-pouillet" class="hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-2xl border-4 border-slate-300 overflow-hidden whiteboard-surface text-slate-900 p-5 sm:p-6 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-300 pb-3">
+                    <h3 class="text-sm sm:text-base font-extrabold text-[#003893] uppercase">
+                        🔌 2ª Lei de Ohm (Lei de Pouillet): R = ρ · (L / A) — Fio de Cobre 10 m e 11 mm²
+                    </h3>
+                    <button onclick="loadPreset('fio-cobre-pouillet'); switchMainTab('c-lab');" class="bg-[#0047B6] hover:bg-blue-700 text-white text-xs font-extrabold px-3 py-1.5 rounded-lg">
+                        💻 Ver em Código C ➔
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs font-sans">
+                    <div class="bg-slate-100 p-3 rounded-lg border border-slate-300">
+                        <label class="font-bold text-slate-700 block mb-1">Resistividade ρ (Ω·mm²/m):</label>
+                        <input type="number" id="pou-rho" value="0.0172" step="any" oninput="updatePouilletSimple()" class="w-full bg-white border border-slate-400 rounded px-2.5 py-1.5 font-mono font-bold text-slate-900">
+                    </div>
+                    <div class="bg-slate-100 p-3 rounded-lg border border-slate-300">
+                        <label class="font-bold text-slate-700 block mb-1">Comprimento L (m):</label>
+                        <input type="number" id="pou-l" value="10" step="any" oninput="updatePouilletSimple()" class="w-full bg-white border border-slate-400 rounded px-2.5 py-1.5 font-mono font-bold text-slate-900">
+                    </div>
+                    <div class="bg-slate-100 p-3 rounded-lg border border-slate-300">
+                        <label class="font-bold text-slate-700 block mb-1">Área A (mm²):</label>
+                        <input type="number" id="pou-a" value="11" step="any" oninput="updatePouilletSimple()" class="w-full bg-white border border-slate-400 rounded px-2.5 py-1.5 font-mono font-bold text-slate-900">
+                    </div>
+                    <div id="pou-res-box" class="bg-emerald-50 border-2 border-emerald-400 rounded-lg p-3 flex flex-col justify-center font-mono">
+                        <div class="text-[10px] font-sans font-bold uppercase text-emerald-800">Resistência R:</div>
+                        <div class="text-lg font-black text-emerald-950">0,01564 Ω</div>
+                        <div class="text-[11px] text-emerald-800">15,64 mΩ</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 2: CÓDIGO DE CORES DE RESISTORES (MÉTODO DA LOUSA)             -->
+    <!-- ===================================================================== -->
+    <div id="module-resistores" class="hidden max-w-[1440px] w-full mx-auto p-4 sm:p-6 space-y-6">
+
+        <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3">
+            <nav class="flex flex-wrap items-center gap-1.5 text-xs">
+                <button id="nav-calc" class="nav-tab active-tab px-3.5 py-2 rounded-lg font-extrabold transition-all bg-[#0047B6] text-white shadow">
+                    🧮 Calculadora &amp; Lousa do Professor
+                </button>
+                <button id="nav-reverse" class="nav-tab px-3.5 py-2 rounded-lg font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+                    🔍 Valor Ôhmico ➔ Cores
+                </button>
+                <button id="nav-practice" class="nav-tab px-3.5 py-2 rounded-lg font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+                    🎯 Simulado de Prova (Treino)
+                </button>
+                <button id="nav-table" class="nav-tab px-3.5 py-2 rounded-lg font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800">
+                    📖 Tabela de Cores Oficial
+                </button>
+                <button id="nav-ohm" class="hidden"></button>
+            </nav>
+            <button onclick="sendCurrentResistorToCLab()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow">
+                <span>💻</span>
+                <span>Abrir este Resistor na Bancada de C ➔</span>
+            </button>
+        </div>
+
+        <!-- VIEW 1: CALCULADORA & LOUSA DIDÁTICA -->
+        <div id="view-calculator" class="space-y-6">
+            <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Tipo de Resistor:</span>
+                    <div class="inline-flex p-1 bg-slate-950 rounded-xl border border-slate-800">
+                        <button id="btn-mode-4" class="px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all bg-amber-600 text-white shadow-md flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-300"></span>
+                            Padrão (4 Faixas)
+                        </button>
+                        <button id="btn-mode-5" class="px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-400 hover:text-white hover:bg-slate-800 flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+                            Precisão (5 Faixas)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="text-xs text-slate-400 font-medium">Exemplos da Lousa:</span>
+                    <button id="btn-load-ex1" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        <span>Exemplo 1: <strong>560 kΩ ±10%</strong> (VD AZ AM PT)</span>
+                    </button>
+                    <button id="btn-load-ex2" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span>Exemplo 2: <strong>10 kΩ ±5%</strong> (MR PR LJ DO)</span>
+                    </button>
+                    <button id="btn-load-ex3" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                        <span>Exemplo 5 Faixas: <strong>237 Ω ±1%</strong> (VM LJ VT PR MR)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resistor Visual Graphic -->
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-xs uppercase tracking-wider font-semibold text-slate-400 mb-2 flex items-center gap-2">
+                        <span>Visualização do Componente Real</span>
+                        <span id="badge-body-type" class="px-2 py-0.5 rounded text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30">Corpo Bege (Resistor de Carbono Padrão)</span>
+                    </div>
+
+                    <div class="w-full max-w-2xl py-2 flex justify-center">
+                        <svg id="resistor-svg" viewBox="0 0 620 180" class="w-full max-h-48 drop-shadow-2xl">
+                            <defs>
+                                <linearGradient id="leadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#94a3b8" />
+                                    <stop offset="35%" stop-color="#f8fafc" />
+                                    <stop offset="65%" stop-color="#cbd5e1" />
+                                    <stop offset="100%" stop-color="#64748b" />
+                                </linearGradient>
+                                <linearGradient id="bodyBeigeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#d4af37" />
+                                    <stop offset="15%" stop-color="#fae8b2" />
+                                    <stop offset="40%" stop-color="#f3d898" />
+                                    <stop offset="75%" stop-color="#d4b26f" />
+                                    <stop offset="100%" stop-color="#997734" />
+                                </linearGradient>
+                                <linearGradient id="bodyBlueGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#2563eb" />
+                                    <stop offset="18%" stop-color="#93c5fd" />
+                                    <stop offset="45%" stop-color="#60a5fa" />
+                                    <stop offset="75%" stop-color="#2563eb" />
+                                    <stop offset="100%" stop-color="#1e3a8a" />
+                                </linearGradient>
+                                <linearGradient id="bandGloss" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+                                    <stop offset="30%" stop-color="#ffffff" stop-opacity="0.1" />
+                                    <stop offset="70%" stop-color="#000000" stop-opacity="0.2" />
+                                    <stop offset="100%" stop-color="#000000" stop-opacity="0.5" />
+                                </linearGradient>
+                            </defs>
+
+                            <rect x="10" y="82" width="130" height="16" fill="url(#leadGrad)" rx="3" />
+                            <rect x="480" y="82" width="130" height="16" fill="url(#leadGrad)" rx="3" />
+
+                            <path id="resistor-body-cap1" d="M 130 90 C 130 52, 160 45, 175 45 L 175 135 C 160 135, 130 128, 130 90 Z" fill="url(#bodyBeigeGrad)" />
+                            <rect id="resistor-body-mid" x="175" y="55" width="270" height="70" fill="url(#bodyBeigeGrad)" />
+                            <path id="resistor-body-cap2" d="M 445 45 C 460 45, 490 52, 490 90 C 490 128, 460 135, 445 135 L 445 45 Z" fill="url(#bodyBeigeGrad)" />
+
+                            <g id="bands-group">
+                                <rect id="svg-band-1" x="160" y="46" width="20" height="88" fill="#16a34a" rx="1" />
+                                <rect x="160" y="46" width="20" height="88" fill="url(#bandGloss)" rx="1" />
+
+                                <rect id="svg-band-2" x="215" y="55" width="20" height="70" fill="#2563eb" rx="1" />
+                                <rect x="215" y="55" width="20" height="70" fill="url(#bandGloss)" rx="1" />
+
+                                <rect id="svg-band-3" x="270" y="55" width="20" height="70" fill="#facc15" rx="1" />
+                                <rect x="270" y="55" width="20" height="70" fill="url(#bandGloss)" rx="1" />
+
+                                <rect id="svg-band-4" x="325" y="55" width="20" height="70" fill="#000000" rx="1" />
+                                <rect id="svg-band-4-gloss" x="325" y="55" width="20" height="70" fill="url(#bandGloss)" rx="1" />
+
+                                <rect id="svg-band-tol" x="430" y="46" width="22" height="88" fill="#94a3b8" rx="1" />
+                                <rect x="430" y="46" width="22" height="88" fill="url(#bandGloss)" rx="1" />
+                            </g>
+
+                            <g id="svg-annotations" class="text-[11px] font-mono-code font-bold fill-slate-300">
+                                <line x1="170" y1="138" x2="170" y2="155" stroke="#94a3b8" stroke-dasharray="2,2" />
+                                <text id="label-band-1" x="170" y="168" text-anchor="middle">1ª: 5 (VD)</text>
+
+                                <line x1="225" y1="130" x2="225" y2="155" stroke="#94a3b8" stroke-dasharray="2,2" />
+                                <text id="label-band-2" x="225" y="168" text-anchor="middle">2ª: 6 (AZ)</text>
+
+                                <line id="line-band-3" x1="280" y1="130" x2="280" y2="155" stroke="#94a3b8" stroke-dasharray="2,2" />
+                                <text id="label-band-3" x="280" y="168" text-anchor="middle">Mult: x10k (AM)</text>
+
+                                <line id="line-band-4" x1="335" y1="130" x2="335" y2="155" stroke="#94a3b8" stroke-dasharray="2,2" display="none" />
+                                <text id="label-band-4" x="335" y="168" text-anchor="middle" display="none">Mult: x1</text>
+
+                                <line x1="441" y1="138" x2="441" y2="155" stroke="#94a3b8" stroke-dasharray="2,2" />
+                                <text id="label-band-tol" x="441" y="168" text-anchor="middle">Tol: ±10% (PT)</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs sm:text-sm">
+                        <span class="text-slate-400">Valor Nominal Direto:</span>
+                        <span id="header-nominal-val" class="text-xl sm:text-2xl font-extrabold text-amber-400 font-mono-code tracking-wide">
+                            560 kΩ <span class="text-sm font-normal text-slate-300">±10%</span>
+                        </span>
+                        <span id="header-range-val" class="text-xs bg-slate-950/80 px-3 py-1 rounded-full text-slate-300 border border-slate-700">
+                            Faixa: <span class="text-emerald-400 font-semibold">504 kΩ</span> a <span class="text-emerald-400 font-semibold">616 kΩ</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Layout: 2 Columns -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="bg-slate-900/95 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-200">🎨 Seleção de Faixas de Cores</h2>
+                            <span class="text-xs text-slate-400">Clique na cor</span>
+                        </div>
+
+                        <div class="space-y-1.5" id="container-band1">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-300">1ª Faixa (1º Dígito):</span>
+                                <span id="badge-band1" class="font-mono-code font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Verde = 5 (VD)</span>
+                            </div>
+                            <div id="swatches-band1" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5"></div>
+                        </div>
+
+                        <div class="space-y-1.5" id="container-band2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-slate-300">2ª Faixa (2º Dígito):</span>
+                                <span id="badge-band2" class="font-mono-code font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Azul = 6 (AZ)</span>
+                            </div>
+                            <div id="swatches-band2" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5"></div>
+                        </div>
+
+                        <div class="space-y-1.5 hidden" id="container-band3">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-sky-400">3ª Faixa (3º Dígito de Precisão):</span>
+                                <span id="badge-band3" class="font-mono-code font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Violeta = 7 (VT)</span>
+                            </div>
+                            <div id="swatches-band3" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5"></div>
+                        </div>
+
+                        <div class="space-y-1.5" id="container-mult">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-amber-300" id="label-mult-title">3ª Faixa (Multiplicador):</span>
+                                <span id="badge-mult" class="font-mono-code font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Amarelo = × 10k Ω (AM)</span>
+                            </div>
+                            <div id="swatches-mult" class="grid grid-cols-6 sm:grid-cols-6 gap-1.5"></div>
+                        </div>
+
+                        <div class="space-y-1.5" id="container-tol">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-emerald-400" id="label-tol-title">4ª Faixa (Tolerância):</span>
+                                <span id="badge-tol" class="font-mono-code font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-800">Prateado = ± 10% (PT)</span>
+                            </div>
+                            <div id="swatches-tol" class="grid grid-cols-4 sm:grid-cols-8 gap-1.5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="bg-white rounded-2xl shadow-2xl border-4 border-slate-300 relative overflow-hidden flex flex-col whiteboard-surface">
+                        <div class="bg-gradient-to-b from-slate-200 to-slate-300 border-b border-slate-400 px-4 py-2 flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Lousa do Professor (Resolução do Exercício)</span>
+                            <button id="btn-copy-whiteboard" class="text-[11px] font-semibold bg-slate-100 hover:bg-white text-slate-700 px-2.5 py-1 rounded border border-slate-400 shadow-sm">
+                                📋 Copiar para Caderno
+                            </button>
+                        </div>
+
+                        <div class="p-5 sm:p-7 space-y-6 text-slate-900 font-mono-code">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 border-b-2 border-dashed border-slate-300 pb-6">
+                                <div class="md:col-span-6 space-y-4 border-b md:border-b-0 md:border-r border-slate-300 pb-4 md:pb-0 md:pr-4">
+                                    <div id="wb-siglas" class="flex items-center gap-5 sm:gap-7 text-xl sm:text-2xl font-extrabold text-blue-800 tracking-wider pl-6"></div>
+                                    <div id="wb-substituicao" class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center flex-wrap gap-3"></div>
+                                    <div class="bg-slate-100/90 p-3 rounded-xl border border-slate-300 text-xs space-y-1 text-slate-800">
+                                        <div id="wb-conta-nominal-1"></div>
+                                        <div id="wb-conta-nominal-2"></div>
+                                        <div id="wb-conta-nominal-3" class="text-slate-600 text-xs"></div>
+                                    </div>
+                                    <div class="text-2xl sm:text-3xl font-extrabold text-blue-900" id="wb-nominal"></div>
+                                    <div class="space-y-1 pt-2 border-t border-slate-200">
+                                        <div class="text-xl font-extrabold text-emerald-800" id="wb-rmax-final"></div>
+                                        <div class="text-xl font-extrabold text-amber-800" id="wb-rmin-final"></div>
+                                    </div>
+                                </div>
+
+                                <div class="md:col-span-6 space-y-4">
+                                    <div class="bg-blue-50/90 p-3.5 rounded-xl border-2 border-blue-200 space-y-2">
+                                        <div id="wb-delta-formula" class="text-lg font-extrabold text-blue-950 flex items-center flex-wrap gap-1.5"></div>
+                                        <div id="wb-delta-ohms-detail" class="text-xs text-slate-700 border-t border-blue-200/70 pt-1.5"></div>
+                                    </div>
+                                    <div class="bg-emerald-50/90 p-3 rounded-xl border border-emerald-300 space-y-1">
+                                        <div class="text-base font-extrabold text-emerald-950" id="wb-rmax-calc"></div>
+                                        <div class="text-xs text-emerald-800" id="wb-rmax-ohms-calc"></div>
+                                    </div>
+                                    <div class="bg-amber-50/90 p-3 rounded-xl border border-amber-300 space-y-1">
+                                        <div class="text-base font-extrabold text-amber-950" id="wb-rmin-calc"></div>
+                                        <div class="text-xs text-amber-800" id="wb-rmin-ohms-calc"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-[11px] font-semibold font-sans text-slate-600">
+                                    <span id="bar-min-label"></span>
+                                    <span id="bar-nom-label" class="text-blue-900 font-bold"></span>
+                                    <span id="bar-max-label"></span>
+                                                                </div>
+                                <div id="multimeter-pointer-container" class="hidden">
+                                    <div id="multimeter-pointer"><span id="multimeter-pointer-text"></span></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-100 p-4 rounded-xl border border-slate-300 space-y-3 font-sans">
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <input type="number" id="input-multimeter" step="any" placeholder="Valor Medido (ex: 558.5)" class="flex-1 bg-white border border-slate-400 rounded-lg px-3 py-1.5 text-slate-900 font-mono-code text-sm">
+                                    <select id="select-multimeter-unit" class="w-24 bg-white border border-slate-400 rounded-lg px-2 py-1.5 text-slate-900 font-mono-code text-sm">
+                                        <option value="1">Ω</option>
+                                        <option value="1000" selected>kΩ</option>
+                                        <option value="1000000">MΩ</option>
+                                    </select>
+                                    <button id="btn-eval-measurement" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2 rounded-lg">Avaliar Resistor</button>
+                                </div>
+                                <div id="eval-result-box" class="hidden p-3 rounded-lg border text-xs">
+                                    <span id="eval-status-icon"></span>
+                                    <div id="eval-status-title" class="font-bold text-sm"></div>
+                                    <div id="eval-status-desc" class="text-slate-600"></div>
+                                </div>
+                            </div>
+
+                            <div class="hidden">
+                                <div id="math-step1-formula"></div><div id="math-step1-subst"></div><div id="math-step1-res"></div>
+                                <div id="math-step2-formula"></div><div id="math-step2-subst"></div><div id="math-step2-res"></div>
+                                <div id="math-step3-subst"></div><div id="math-step3-res"></div>
+                                <div id="math-step4-subst"></div><div id="math-step4-res"></div>
+                                <div id="math-range-summary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: REVERSA -->
+        <div id="view-reverse" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-3xl mx-auto space-y-4">
+                <h2 class="text-lg font-bold text-white">🔍 Calculadora Reversa: Valor Ôhmico ➔ Cores</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <input type="number" id="input-rev-val" value="47" step="any" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2 text-white font-mono-code">
+                    <select id="select-rev-unit" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono-code">
+                        <option value="1">Ω</option>
+                        <option value="1000" selected>kΩ</option>
+                        <option value="1000000">MΩ</option>
+                    </select>
+                    <select id="select-rev-tol" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono-code">
+                        <option value="5" selected>± 5% (Dourado)</option>
+                        <option value="10">± 10% (Prateado)</option>
+                        <option value="1">± 1% (Marrom)</option>
+                    </select>
+                </div>
+                <div class="inline-flex p-1 bg-slate-950 rounded-xl border border-slate-800">
+                    <button id="btn-rev-mode-4" class="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white">4 Faixas</button>
+                    <button id="btn-rev-mode-5" class="px-3 py-1 rounded-lg text-xs font-semibold text-slate-400">5 Faixas</button>
+                </div>
+                <button id="btn-calc-reverse" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl">Calcular Cores</button>
+                <div id="reverse-result-card" class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                    <span id="rev-res-nominal" class="text-sm font-bold text-amber-400 font-mono-code"></span>
+                    <div id="rev-bands-display" class="flex flex-wrap items-center justify-center gap-4 py-2"></div>
+                    <div id="rev-explanation" class="text-xs text-slate-300 font-mono-code"></div>
+                    <button id="btn-send-to-calc" class="text-xs text-blue-400 font-semibold">Abrir na Lousa Principal ➔</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: TREINO -->
+        <div id="view-practice" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl max-w-4xl mx-auto space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-white">🎯 Modo Treino</h2>
+                    <button id="btn-new-quiz" class="bg-emerald-600 text-white font-bold text-xs px-4 py-2 rounded-xl">🔄 Novo Exercício</button>
+                </div>
+                <div id="quiz-bands-display" class="flex flex-wrap items-center gap-3 py-2"></div>
+                <div class="text-xs text-slate-400 font-mono-code" id="quiz-bands-text"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div><input type="number" id="quiz-input-r" placeholder="R Nominal (Ω)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono-code text-sm"><span id="quiz-feedback-r" class="text-xs block"></span></div>
+                    <div><input type="number" id="quiz-input-tol" placeholder="Tolerância (%)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono-code text-sm"><span id="quiz-feedback-tol" class="text-xs block"></span></div>
+                    <div><input type="number" id="quiz-input-delta" placeholder="ΔR (Ω)" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono-code text-sm"><span id="quiz-feedback-delta" class="text-xs block"></span></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" id="quiz-input-rmin" placeholder="Rmín (Ω)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono-code text-xs">
+                        <input type="number" id="quiz-input-rmax" placeholder="Rmáx (Ω)" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white font-mono-code text-xs">
+                        <span id="quiz-feedback-range" class="col-span-2 text-xs block"></span>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-quiz-check" class="bg-blue-600 text-white font-bold text-xs px-5 py-2 rounded-xl">Conferir</button>
+                    <button id="btn-quiz-reveal" class="bg-slate-800 text-slate-200 font-semibold text-xs px-5 py-2 rounded-xl">Ver Gabarito</button>
+                </div>
+                <div id="quiz-solution-box" class="hidden bg-white text-slate-900 p-4 rounded-xl font-mono-code text-xs">
+                    <div id="quiz-solution-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: TABELA -->
+        <div id="view-table" class="hidden space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <div class="overflow-x-auto rounded-xl border border-slate-800">
+                    <table class="w-full text-left text-xs font-mono-code border-collapse">
+                        <thead>
+                            <tr class="bg-slate-950 border-b border-slate-800 text-slate-300">
+                                <th class="p-3">Cor</th><th class="p-3 text-center">Sigla</th><th class="p-3 text-center">1ª</th><th class="p-3 text-center">2ª</th><th class="p-3 text-center">3ª</th><th class="p-3 text-center">Mult</th><th class="p-3 text-center">Tol</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-slate-800/80"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-ohm" class="hidden"></div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 3: BANCADA DE PROGRAMAÇÃO EM C (PROTOCOLO DE 5 ETAPAS SENAI)   -->
+    <!-- ===================================================================== -->
+    <div id="module-c-lab" class="hidden max-w-[1440px] w-full mx-auto p-4 sm:p-6 space-y-5">
+
+        <div class="bg-slate-900 border border-slate-700/80 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <span class="text-xs font-extrabold uppercase text-blue-300">Exercício Guiado SENAI:</span>
+                <select id="preset-selector" onchange="loadPreset(this.value)" class="bg-slate-950 border border-slate-700 text-xs text-white rounded-lg px-3 py-2 font-medium">
+                    <optgroup label="⚡ Eletricidade &amp; Paralelo (Foco Prova SENAI)">
+                        <option value="assoc-paralelo-3res" selected>🔗 Lousa c) 3 Resistores em Paralelo: 1 kΩ ∥ 10 kΩ ∥ 15 kΩ (857,14 Ω)</option>
+                        <option value="assoc-paralelo-lousa">🔗 Lousa a) e b) 2 Resistores em Paralelo: 10 kΩ ∥ 15 kΩ (6.000 Ω)</option>
+                        <option value="exercicio-lousa-abc">🧑‍🏫 Lousa Completa (a, b, c): R=10Ω, V=220V ➔ P=4,84kW ➔ E=72,6kWh ➔ R$ 55,90</option>
+                        <option value="fio-cobre-pouillet">🔌 2ª Lei de Ohm: Resistência do Fio de Cobre (10m, 11mm², ρ=0.0172)</option>
+                        <option value="painel-50c">🌡️ Painel Elétrico &gt; 50 °C (Média de 2 Sensores + Alerta)</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="copyGeneratedCCode()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs px-3.5 py-2 rounded-lg shadow transition">
+                    📋 Copiar Código C
+                </button>
+            </div>
+        </div>
+
+        <div id="workbench-col" class="space-y-5">
+            <!-- ETAPA 1 -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+                <h2 class="font-bold text-white text-base mb-3">Etapa 1: Decomposição E / P / S</h2>
+                <input type="text" id="ex-title" oninput="saveStateFromInputs()" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2 text-xs sm:text-sm text-white mb-3">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-slate-950 border border-sky-500/30 rounded-lg p-3">
+                        <span class="text-xs font-extrabold text-sky-400 uppercase block mb-1">1. ENTRADA (scanf)</span>
+                        <textarea id="eps-entrada" oninput="saveStateFromInputs()" rows="4" class="w-full bg-transparent text-xs font-mono text-slate-100 focus:outline-none"></textarea>
+                    </div>
+                    <div class="bg-slate-950 border border-amber-500/30 rounded-lg p-3">
+                        <span class="text-xs font-extrabold text-amber-400 uppercase block mb-1">2. PROCESSAMENTO</span>
+                        <textarea id="eps-proc" oninput="saveStateFromInputs()" rows="4" class="w-full bg-transparent text-xs font-mono text-slate-100 focus:outline-none"></textarea>
+                    </div>
+                    <div class="bg-slate-950 border border-emerald-500/40 rounded-lg p-3">
+                        <span class="text-xs font-extrabold text-emerald-400 uppercase block mb-1">3. SAÍDA (printf)</span>
+                        <textarea id="eps-saida" oninput="saveStateFromInputs()" rows="4" class="w-full bg-transparent text-xs font-mono text-slate-100 focus:outline-none"></textarea>
+                    </div>
+                </div>
+            </article>
+
+            <!-- ETAPA 2 -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+                <h2 class="font-bold text-white text-base mb-3">Etapa 2: Gavetas de Memória (Variáveis em C)</h2>
+                <div class="overflow-x-auto border border-slate-800 rounded-lg">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-950 text-slate-400 border-b border-slate-800 text-[11px] uppercase">
+                                <th class="py-2.5 px-3">Variável</th>
+                                <th class="py-2.5 px-3">Tipo</th>
+                                <th class="py-2.5 px-3">Por que este tipo?</th>
+                                <th class="py-2.5 px-3">Formato</th>
+                                <th class="py-2.5 px-3">Comando C</th>
+                            </tr>
+                        </thead>
+                        <tbody id="var-table-body" class="divide-y divide-slate-800/70"></tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- ETAPA 3 -->
+            <article class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+                <h2 class="font-bold text-white text-base mb-3">Etapa 3: Teste de Mesa Passo a Passo</h2>
+                <div id="sim-inputs-container" class="bg-slate-950 border border-slate-800 rounded-lg p-3.5 mb-3"></div>
+                <div class="overflow-x-auto border border-slate-800 rounded-lg">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead id="trace-table-head" class="bg-slate-950 text-slate-400 border-b border-slate-800 text-[11px] uppercase"></thead>
+                        <tbody id="trace-table-body" class="divide-y divide-slate-800/70 font-mono"></tbody>
+                    </table>
+                </div>
+                <div id="sim-summary-box" class="mt-3 bg-emerald-950/30 border border-emerald-500/30 rounded-lg p-3.5"></div>
+            </article>
+
+            <!-- ETAPA 5 -->
+            <article class="bg-slate-900 border border-blue-500/40 rounded-xl p-5 shadow-xl">
+                <h2 class="font-bold text-white text-base mb-3">Etapa 4 e 5: Código em C Completo (Pronto para GCC)</h2>
+                <textarea id="custom-process-code" oninput="saveStateFromInputs()" rows="4" spellcheck="false" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-amber-200 mb-3"></textarea>
+                <div class="bg-slate-950 border border-slate-800 rounded-lg overflow-hidden">
+                    <pre id="generated-c-code" class="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed"></pre>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MÓDULO 4: COLINHA RÁPIDA DE C & FORMULÁRIO SENAI                      -->
+    <!-- ===================================================================== -->
+    <div id="module-colinha" class="hidden max-w-[1440px] w-full mx-auto p-4 sm:p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+                <h2 class="font-extrabold text-white text-sm uppercase border-b border-slate-800 pb-2">⚡ Formulário Oficial SENAI — Associação em Paralelo</h2>
+                <div class="space-y-2 text-xs font-mono text-slate-200">
+                    <div class="bg-slate-950 p-3 rounded-lg border border-blue-500/40">
+                        <div class="text-blue-400 font-bold">1. Fórmula Universal da Lousa (2, 3 ou mais resistores):</div>
+                        <div class="text-sm font-extrabold text-white my-1">R_eq = (1/R₁ + 1/R₂ + 1/R₃)⁻¹</div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-emerald-500/40">
+                        <div class="text-emerald-400 font-bold">2. Fórmula Rápida no Papel (APENAS p/ 2 resistores):</div>
+                        <div class="text-sm font-extrabold text-white my-1">R_eq = (R₁ · R₂) / (R₁ + R₂)</div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-amber-500/40">
+                        <div class="text-amber-400 font-bold">3. Gabarito dos Exercícios a), b) e c) da Lousa:</div>
+                        <div>• <strong>a) 1 kΩ ∥ 10 kΩ:</strong> (1·10)/(1+10) = 10/11 kΩ = <strong>909,09 Ω</strong></div>
+                        <div>• <strong>b) 10 kΩ ∥ 15 kΩ:</strong> (10·15)/(10+15) = 150/25 kΩ = <strong>6 kΩ (6.000 Ω)</strong></div>
+                        <div>• <strong>c) 1 kΩ ∥ 10 kΩ ∥ 15 kΩ:</strong> 1 kΩ ∥ 6 kΩ = (1·6)/(1+6) = 6/7 kΩ = <strong>857,14 Ω</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
+                <h2 class="font-extrabold text-white text-sm uppercase border-b border-slate-800 pb-2">💻 Esqueleto Padrão de C (Apostila N1014)</h2>
+                <pre class="bg-slate-950 p-4 rounded-lg border border-slate-800 text-xs font-mono text-emerald-300 overflow-x-auto"><code>#include &lt;stdio.h&gt;
+
+int main(void) {
+    float R1 = 1000.0f, R2 = 10000.0f, R3 = 15000.0f;
+    float R_eq = 1.0f / ((1.0f / R1) + (1.0f / R2) + (1.0f / R3));
+    printf("R_eq = %.2f Ohms\n", R_eq); // 857.14 Ohms
+    return 0;
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 border border-blue-500 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+        <span id="toast-msg">Pronto!</span>
+    </div>
+
+    <script>
+        'use strict';
+
+        const NL = String.fromCharCode(10);
+        const CNL = String.fromCharCode(92) + 'n';
+
+        // ============================================================================
+        // NAVEGAÇÃO ENTRE OS 4 MÓDULOS E SUB-ABAS
+        // ============================================================================
+        function switchMainTab(mod) {
+            const mods = ['eletricidade', 'resistores', 'c-lab', 'colinha'];
+            mods.forEach(m => {
+                const div = document.getElementById('module-' + m);
+                const btn = document.getElementById('tab-btn-' + m);
+                if (div) div.classList.toggle('hidden', m !== mod);
+                if (btn) {
+                    btn.className = (m === mod)
+                        ? 'px-3.5 py-2 rounded-lg font-extrabold transition-all bg-[#E30613] text-white shadow'
+                        : 'px-3.5 py-2 rounded-lg font-bold transition-all text-blue-100 hover:bg-white/10';
+                }
+            });
+        }
+
+        function switchElecSubTab(sub) {
+            const subs = ['assoc', 'energy', 'pouillet'];
+            subs.forEach(s => {
+                const div = document.getElementById('subtab-' + s);
+                const btn = document.getElementById('subtab-btn-' + s);
+                if (div) div.classList.toggle('hidden', s !== sub);
+                if (btn) {
+                    btn.className = (s === sub)
+                        ? 'px-3.5 py-2 rounded-lg font-extrabold bg-[#0047B6] text-white shadow transition'
+                        : 'px-3.5 py-2 rounded-lg font-bold text-slate-300 hover:text-white hover:bg-slate-800 transition';
+                }
+            });
+        }
+
+        // ============================================================================
+        // SUB-ABA 1A: ASSOCIAÇÃO DE RESISTORES EM PARALELO (LOUSA a, b, c + CASIO)
+        // ============================================================================
+        let assocResistorCount = 3;
+
+        function formatOhms(val) {
+            if (val === null || isNaN(val)) return '0 Ω';
+            const abs = Math.abs(val);
+            if (abs >= 1000000) {
+                const num = val / 1000000;
+                return (Number.isInteger(num) ? num : parseFloat(num.toFixed(3))) + ' MΩ';
+            } else if (abs >= 1000) {
+                const num = val / 1000;
+                return (Number.isInteger(num) ? num : parseFloat(num.toFixed(3))) + ' kΩ';
+            } else {
+                const num = parseFloat(val.toFixed(2));
+                return num + ' Ω';
+            }
+        }
+
+        function formatWhiteboardShort(val) {
+            if (val >= 1000000) {
+                const num = val / 1000000;
+                return (Number.isInteger(num) ? num : parseFloat(num.toFixed(2))) + 'M';
+            } else if (val >= 1000) {
+                const num = val / 1000;
+                return (Number.isInteger(num) ? num : parseFloat(num.toFixed(2))) + 'k';
+            } else {
+                return parseFloat(val.toFixed(2)).toString();
+            }
+        }
+
+        function setAssocCount(n) {
+            assocResistorCount = n === 3 ? 3 : 2;
+            const b2 = document.getElementById('btn-assoc-count-2');
+            const b3 = document.getElementById('btn-assoc-count-3');
+            const box3 = document.getElementById('assoc-box-r3');
+
+            if (b2 && b3) {
+                b2.className = assocResistorCount === 2
+                    ? 'px-2.5 py-1 rounded text-xs font-extrabold bg-[#0047B6] text-white'
+                    : 'px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white';
+                b3.className = assocResistorCount === 3
+                    ? 'px-2.5 py-1 rounded text-xs font-extrabold bg-emerald-600 text-white'
+                    : 'px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white';
+            }
+            if (box3) {
+                box3.classList.toggle('hidden', assocResistorCount !== 3);
+            }
+            updateAssocCalculator();
+        }
+
+        function loadAssocPreset(preset) {
+            const desc = document.getElementById('assoc-problem-desc');
+            if (preset === 'lousa-a') {
+                setAssocCount(2);
+                document.getElementById('assoc-r1').value = 1;
+                document.getElementById('assoc-r1-unit').value = '1000';
+                document.getElementById('assoc-r2').value = 10;
+                document.getElementById('assoc-r2-unit').value = '1000';
+                document.getElementById('assoc-measured-ohms').value = 909;
+                if (desc) {
+                    desc.innerHTML = '<strong>Exercício a) da Lousa:</strong> Dois resistores em paralelo com <strong>R₁ = 1 kΩ (1·10³ Ω)</strong> e <strong>R₂ = 10 kΩ (10·10³ Ω)</strong> ➔ <strong>R<sub>eq</sub> = 909,09 Ω</strong>.';
+                }
+                updateAssocCalculator();
+                showToast('Lousa a) carregado: 1 kΩ ∥ 10 kΩ = 909,09 Ω');
+            } else if (preset === 'lousa-b') {
+                setAssocCount(2);
+                document.getElementById('assoc-r1').value = 10;
+                document.getElementById('assoc-r1-unit').value = '1000';
+                document.getElementById('assoc-r2').value = 15;
+                document.getElementById('assoc-r2-unit').value = '1000';
+                document.getElementById('assoc-measured-ohms').value = 6000;
+                if (desc) {
+                    desc.innerHTML = '<strong>Exercício b) da Lousa:</strong> Dois resistores em paralelo com <strong>R₁ = 10 kΩ (10·10³ Ω)</strong> e <strong>R₂ = 15 kΩ (15·10³ Ω)</strong> ➔ <strong>R<sub>eq</sub> = 6 kΩ (6.000 Ω)</strong>.';
+                }
+                updateAssocCalculator();
+                showToast('Lousa b) carregado: 10 kΩ ∥ 15 kΩ = 6 kΩ (6.000 Ω)');
+            } else if (preset === 'lousa-c') {
+                setAssocCount(3);
+                document.getElementById('assoc-r1').value = 1;
+                document.getElementById('assoc-r1-unit').value = '1000';
+                document.getElementById('assoc-r2').value = 10;
+                document.getElementById('assoc-r2-unit').value = '1000';
+                document.getElementById('assoc-r3').value = 15;
+                document.getElementById('assoc-r3-unit').value = '1000';
+                document.getElementById('assoc-measured-ohms').value = 857;
+                if (desc) {
+                    desc.innerHTML = '<strong>Exercício c) da Lousa:</strong> Três resistores em paralelo com <strong>R₁ = 1 kΩ</strong>, <strong>R₂ = 10 kΩ</strong> e <strong>R₃ = 15 kΩ</strong> ➔ <strong>R<sub>eq</sub> = 857,14 Ω (0,857 kΩ)</strong>.';
+                }
+                updateAssocCalculator();
+                showToast('Lousa c) carregado: 1 kΩ ∥ 10 kΩ ∥ 15 kΩ = 857,14 Ω');
+            } else if (preset === 'tinkercad-casio') {
+                setAssocCount(3);
+                document.getElementById('assoc-r1').value = 100;
+                document.getElementById('assoc-r1-unit').value = '1000';
+                document.getElementById('assoc-r2').value = 470;
+                document.getElementById('assoc-r2-unit').value = '1000';
+                document.getElementById('assoc-r3').value = 220;
+                document.getElementById('assoc-r3-unit').value = '1000';
+                document.getElementById('assoc-measured-ohms').value = 59977;
+                if (desc) {
+                    desc.innerHTML = '<strong>Circuito da TV (Tinkercad + Casio fx-82ES):</strong> Três resistores em paralelo: <strong>100 kΩ ∥ 470 kΩ ∥ 220 kΩ</strong> ➔ <strong>59,98 kΩ</strong>.';
+                }
+                updateAssocCalculator();
+                showToast('Tinkercad + Casio carregado: 100k ∥ 470k ∥ 220k = 59,98 kΩ');
+            }
+        }
+
+        function formatSciNotation(rawVal, unitMult) {
+            if (unitMult === 1000) return rawVal + ' · 10³ Ω';
+            if (unitMult === 1000000) return rawVal + ' · 10⁶ Ω';
+            return rawVal + ' Ω';
+        }
+
+        function updateAssocCalculator() {
+            const r1El = document.getElementById('assoc-r1');
+            if (!r1El) return;
+
+            const raw1 = Math.max(0.001, parseFloat(r1El.value) || 1);
+            const unit1 = parseFloat((document.getElementById('assoc-r1-unit') || {}).value) || 1;
+            const r1 = raw1 * unit1;
+
+            const raw2 = Math.max(0.001, parseFloat((document.getElementById('assoc-r2') || {}).value) || 10);
+            const unit2 = parseFloat((document.getElementById('assoc-r2-unit') || {}).value) || 1;
+            const r2 = raw2 * unit2;
+
+            const raw3 = Math.max(0.001, parseFloat((document.getElementById('assoc-r3') || {}).value) || 15);
+            const unit3 = parseFloat((document.getElementById('assoc-r3-unit') || {}).value) || 1;
+            const r3 = raw3 * unit3;
+
+            const v = Math.max(0, parseFloat((document.getElementById('assoc-v') || {}).value) || 12);
+            const rMeas = Math.max(0, parseFloat((document.getElementById('assoc-measured-ohms') || {}).value) || 0);
+
+            const b1 = document.getElementById('assoc-r1-sci-badge');
+            const b2 = document.getElementById('assoc-r2-sci-badge');
+            const b3 = document.getElementById('assoc-r3-sci-badge');
+            if (b1) b1.textContent = formatSciNotation(raw1, unit1) + ' (' + r1.toLocaleString('pt-BR') + ' Ω)';
+            if (b2) b2.textContent = formatSciNotation(raw2, unit2) + ' (' + r2.toLocaleString('pt-BR') + ' Ω)';
+            if (b3) b3.textContent = formatSciNotation(raw3, unit3) + ' (' + r3.toLocaleString('pt-BR') + ' Ω)';
+
+            const is3 = assocResistorCount === 3;
+            const reqSerie = is3 ? (r1 + r2 + r3) : (r1 + r2);
+            const invSum = is3 ? ((1 / r1) + (1 / r2) + (1 / r3)) : ((1 / r1) + (1 / r2));
+            const reqPar = 1 / invSum;
+
+            // SVG do Circuito
+            const svgEl = document.getElementById('assoc-parallel-svg');
+            if (svgEl) {
+                const lbl1 = unit1 === 1000 ? (raw1 + ' kΩ') : (r1 + ' Ω');
+                const lbl2 = unit2 === 1000 ? (raw2 + ' kΩ') : (r2 + ' Ω');
+                const lbl3 = unit3 === 1000 ? (raw3 + ' kΩ') : (r3 + ' Ω');
+
+                if (!is3) {
+                    svgEl.innerHTML = [
+                        '<line x1="20" y1="25" x2="260" y2="25" stroke="#0f172a" stroke-width="3"/>',
+                        '<line x1="20" y1="140" x2="260" y2="140" stroke="#0f172a" stroke-width="3"/>',
+                        '<circle cx="105" cy="25" r="4" fill="#0f172a"/><circle cx="105" cy="140" r="4" fill="#0f172a"/>',
+                        '<circle cx="230" cy="25" r="4" fill="#0f172a"/><circle cx="230" cy="140" r="4" fill="#0f172a"/>',
+                        '<path d="M 105 25 L 105 52 L 97 57 L 113 65 L 97 73 L 113 81 L 97 89 L 113 97 L 105 103 L 105 140" fill="none" stroke="#1d4ed8" stroke-width="3"/>',
+                        '<text x="120" y="86" fill="#1e3a8a" font-size="13" font-weight="800" font-family="monospace">R₁=' + lbl1 + '</text>',
+                        '<path d="M 230 25 L 230 52 L 222 57 L 238 65 L 222 73 L 238 81 L 222 89 L 238 97 L 230 103 L 230 140" fill="none" stroke="#b45309" stroke-width="3"/>',
+                        '<text x="245" y="86" fill="#78350f" font-size="13" font-weight="800" font-family="monospace">R₂=' + lbl2 + '</text>'
+                    ].join('');
+                } else {
+                    svgEl.innerHTML = [
+                        '<line x1="15" y1="25" x2="310" y2="25" stroke="#0f172a" stroke-width="3"/>',
+                        '<line x1="15" y1="140" x2="310" y2="140" stroke="#0f172a" stroke-width="3"/>',
+                        '<circle cx="70" cy="25" r="4" fill="#0f172a"/><circle cx="70" cy="140" r="4" fill="#0f172a"/>',
+                        '<circle cx="175" cy="25" r="4" fill="#0f172a"/><circle cx="175" cy="140" r="4" fill="#0f172a"/>',
+                        '<circle cx="280" cy="25" r="4" fill="#0f172a"/><circle cx="280" cy="140" r="4" fill="#0f172a"/>',
+                        '<path d="M 70 25 L 70 52 L 63 57 L 77 65 L 63 73 L 77 81 L 63 89 L 77 97 L 70 103 L 70 140" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>',
+                        '<text x="82" y="86" fill="#1e3a8a" font-size="11" font-weight="800" font-family="monospace">R₁=' + lbl1 + '</text>',
+                        '<path d="M 175 25 L 175 52 L 168 57 L 182 65 L 168 73 L 182 81 L 168 89 L 182 97 L 175 103 L 175 140" fill="none" stroke="#b45309" stroke-width="2.5"/>',
+                        '<text x="187" y="86" fill="#78350f" font-size="11" font-weight="800" font-family="monospace">R₂=' + lbl2 + '</text>',
+                        '<path d="M 280 25 L 280 52 L 273 57 L 287 65 L 273 73 L 287 81 L 273 89 L 287 97 L 280 103 L 280 140" fill="none" stroke="#047857" stroke-width="2.5"/>',
+                        '<text x="292" y="86" fill="#065f46" font-size="11" font-weight="800" font-family="monospace">R₃=' + lbl3 + '</text>'
+                    ].join('');
+                }
+            }
+
+            // Casio fx-82ES
+            const d1Str = unit1 === 1000 ? (raw1 + '×10³') : r1.toString();
+            const d2Str = unit2 === 1000 ? (raw2 + '×10³') : r2.toString();
+            const d3Str = unit3 === 1000 ? (raw3 + '×10³') : r3.toString();
+
+            const casioExprEl = document.getElementById('casio-lcd-expr');
+            const casioResEl = document.getElementById('casio-lcd-result');
+            const casioGuideEl = document.getElementById('casio-keys-guide');
+
+            if (casioExprEl && casioResEl && casioGuideEl) {
+                casioExprEl.textContent = !is3
+                    ? '(1÷(' + d1Str + ')+1÷(' + d2Str + '))⁻¹'
+                    : '(1÷' + d1Str + '+1÷' + d2Str + '+1÷' + d3Str + ')⁻¹';
+                casioResEl.textContent = reqPar >= 1000
+                    ? (reqPar / 1000).toPrecision(8) + '×10³'
+                    : reqPar.toPrecision(8);
+                casioGuideEl.innerHTML = '⌨️ <strong>Teclas na Casio fx-82ES:</strong> <code>(</code> <code>1</code> <code>÷</code> <code>' + raw1 + '</code> ' + (unit1 === 1000 ? '<code>[×10ˣ]</code> <code>3</code> ' : '') + '<code>+</code> <code>1</code> <code>÷</code> <code>' + raw2 + '</code> ' + (unit2 === 1000 ? '<code>[×10ˣ]</code> <code>3</code> ' : '') + (is3 ? ('<code>+</code> <code>1</code> <code>÷</code> <code>' + raw3 + '</code> ' + (unit3 === 1000 ? '<code>[×10ˣ]</code> <code>3</code> ' : '')) : '') + '<code>)</code> <code>[x⁻¹]</code> <code>=</code>';
+            }
+
+            // Método 1 da Lousa
+            const invFormulaEl = document.getElementById('wb-assoc-inv-formula');
+            const invStepsEl = document.getElementById('wb-assoc-inv-steps');
+            if (invFormulaEl && invStepsEl) {
+                const den1 = unit1 === 1000 ? (raw1 + '·10³') : r1;
+                const den2 = unit2 === 1000 ? (raw2 + '·10³') : r2;
+                const den3 = unit3 === 1000 ? (raw3 + '·10³') : r3;
+
+                invFormulaEl.innerHTML = [
+                    '<span>R<sub>eq</sub> =</span>',
+                    '<span class="text-xl font-normal">(</span>',
+                    '<span class="math-frac text-blue-900"><span class="math-frac-num">1</span><span class="math-frac-den">' + den1 + '</span></span>',
+                    '<span>+</span>',
+                    '<span class="math-frac text-blue-900"><span class="math-frac-num">1</span><span class="math-frac-den">' + den2 + '</span></span>',
+                    is3 ? ('<span>+</span><span class="math-frac text-blue-900"><span class="math-frac-num">1</span><span class="math-frac-den">' + den3 + '</span></span>') : '',
+                    '<span class="text-xl font-normal">)</span><sup class="text-red-600 font-black">-1</sup>'
+                ].join('');
+
+                invStepsEl.innerHTML = [
+                    '<div>• <strong>1/R₁:</strong> 1 ÷ ' + r1.toLocaleString('pt-BR') + ' = <code>' + (1 / r1).toFixed(6) + ' S</code></div>',
+                    '<div>• <strong>1/R₂:</strong> 1 ÷ ' + r2.toLocaleString('pt-BR') + ' = <code>' + (1 / r2).toFixed(6) + ' S</code></div>',
+                    is3 ? ('<div>• <strong>1/R₃:</strong> 1 ÷ ' + r3.toLocaleString('pt-BR') + ' = <code>' + (1 / r3).toFixed(6) + ' S</code></div>') : '',
+                    '<div>• <strong>Soma lá dentro:</strong> <code>' + invSum.toFixed(7) + ' S</code></div>',
+                    '<div>• <strong>Inverso (x⁻¹):</strong> 1 ÷ ' + invSum.toFixed(7) + ' = <strong class="text-blue-900">' + reqPar.toFixed(2) + ' Ω (' + (reqPar / 1000).toFixed(4) + ' kΩ)</strong></div>'
+                ].join('');
+            }
+
+            // Método 2 (No Papel: Produto pela Soma ou De 2 em 2)
+            const parFormulaEl = document.getElementById('wb-assoc-par-formula');
+            const paperStepsEl = document.getElementById('wb-assoc-paper-steps');
+            if (parFormulaEl && paperStepsEl) {
+                if (!is3) {
+                    const useK = (unit1 === 1000 && unit2 === 1000);
+                    const a = useK ? raw1 : r1;
+                    const b = useK ? raw2 : r2;
+                    const uStr = useK ? ' kΩ' : ' Ω';
+                    const prod = a * b;
+                    const sum = a + b;
+                    const resPaper = prod / sum;
+
+                    parFormulaEl.innerHTML = [
+                        '<span>R<sub>eq</sub> =</span>',
+                        '<span class="math-frac"><span class="math-frac-num">R₁ · R₂</span><span class="math-frac-den">R₁ + R₂</span></span>',
+                        '<span>=</span>',
+                        '<span class="math-frac"><span class="math-frac-num">' + a + ' · ' + b + '</span><span class="math-frac-den">' + a + ' + ' + b + '</span></span>',
+                        '<span>=</span>',
+                        '<span class="math-frac"><span class="math-frac-num">' + parseFloat(prod.toFixed(2)) + '</span><span class="math-frac-den">' + parseFloat(sum.toFixed(2)) + '</span></span>',
+                        '<span>= <strong>' + parseFloat(resPaper.toFixed(4)) + uStr + '</strong></span>'
+                    ].join('');
+
+                    paperStepsEl.innerHTML = [
+                        '<div>• <strong>1º) Multiplica em cima (Produto):</strong> ' + a + ' × ' + b + ' = <strong>' + parseFloat(prod.toFixed(2)) + '</strong></div>',
+                        '<div>• <strong>2º) Soma embaixo (Soma):</strong> ' + a + ' + ' + b + ' = <strong>' + parseFloat(sum.toFixed(2)) + '</strong></div>',
+                        '<div>• <strong>3º) Divide um pelo outro:</strong> ' + parseFloat(prod.toFixed(2)) + ' ÷ ' + parseFloat(sum.toFixed(2)) + ' = <strong class="text-emerald-900">' + parseFloat(resPaper.toFixed(4)) + uStr + ' (' + parseFloat(reqPar.toFixed(2)).toLocaleString('pt-BR') + ' Ω)</strong></div>'
+                    ].join('');
+                } else {
+                    const r23 = (r2 * r3) / (r2 + r3);
+                    parFormulaEl.innerHTML = '<span>Fazendo de 2 em 2 no papel: primeiro <strong>R₂₃ = (R₂·R₃)/(R₂+R₃)</strong> e depois <strong>R<sub>eq</sub> = (R₁·R₂₃)/(R₁+R₂₃)</strong></span>';
+                    paperStepsEl.innerHTML = [
+                        '<div>• <strong>Passo A (Junta R₂ ∥ R₃):</strong> (' + formatOhms(r2) + ' × ' + formatOhms(r3) + ') ÷ (' + formatOhms(r2) + ' + ' + formatOhms(r3) + ') = <strong>' + formatOhms(r23) + '</strong></div>',
+                        '<div>• <strong>Passo B (Junta R₁ ∥ R₂₃):</strong> (' + formatOhms(r1) + ' × ' + formatOhms(r23) + ') ÷ (' + formatOhms(r1) + ' + ' + formatOhms(r23) + ') = <strong class="text-emerald-900">' + reqPar.toFixed(2) + ' Ω (' + formatOhms(reqPar) + ')</strong></div>'
+                    ].join('');
+                }
+            }
+
+            const iSerie = v / reqSerie;
+            const iParTotal = v / reqPar;
+
+            document.getElementById('wb-assoc-par-req').textContent = 'R_eq = ' + reqPar.toFixed(2) + ' Ω (' + (reqPar / 1000).toFixed(4) + ' kΩ)';
+            document.getElementById('wb-assoc-par-i1i2').textContent = 'Com V = ' + v + ' V: I_total = ' + (iParTotal * 1000).toFixed(2) + ' mA';
+
+            const benchEl = document.getElementById('wb-assoc-bench-check');
+            if (benchEl) {
+                if (rMeas > 0) {
+                    const errPct = ((rMeas - reqPar) / reqPar) * 100;
+                    const ok = Math.abs(errPct) <= 10;
+                    benchEl.innerHTML = (ok ? '✅ ' : '⚠️ ') + '<strong>Conferência na Prática:</strong> Medido = <strong>' + rMeas.toLocaleString('pt-BR') + ' Ω</strong> | Calculado = <strong>' + reqPar.toFixed(2) + ' Ω</strong> (Erro: ' + (errPct >= 0 ? '+' : '') + errPct.toFixed(2) + '%)';
+                } else {
+                    benchEl.textContent = 'Digite o valor medido no multímetro à esquerda.';
+                }
+            }
+
+            document.getElementById('wb-assoc-serie-req').textContent = 'R_eq = ' + formatOhms(reqSerie) + ' (' + reqSerie.toLocaleString('pt-BR') + ' Ω)';
+            document.getElementById('wb-assoc-serie-i').textContent = 'Soma direta: R₁ + R₂' + (is3 ? ' + R₃' : '') + ' | Corrente c/ ' + v + 'V: ' + (iSerie * 1000).toFixed(2) + ' mA';
+            document.getElementById('wb-assoc-serie-v1v2').textContent = 'Em série a resistência AUMENTA; em paralelo ela DIMINUI.';
+        }
+
+        function copyAssocWhiteboard() {
+            const raw1 = parseFloat(document.getElementById('assoc-r1').value) || 1;
+            const unit1 = parseFloat(document.getElementById('assoc-r1-unit').value) || 1;
+            const r1 = raw1 * unit1;
+            const raw2 = parseFloat(document.getElementById('assoc-r2').value) || 10;
+            const unit2 = parseFloat(document.getElementById('assoc-r2-unit').value) || 1;
+            const r2 = raw2 * unit2;
+            const is3 = assocResistorCount === 3;
+            const raw3 = parseFloat(document.getElementById('assoc-r3').value) || 15;
+            const unit3 = parseFloat(document.getElementById('assoc-r3-unit').value) || 1;
+            const r3 = raw3 * unit3;
+            const invSum = is3 ? ((1 / r1) + (1 / r2) + (1 / r3)) : ((1 / r1) + (1 / r2));
+            const reqPar = 1 / invSum;
+
+            const text = [
+                'EX.: CALCULAR E CONFERIR NA PRÁTICA (PARALELO)',
+                '------------------------------------------------',
+                'R1 = ' + formatOhms(r1) + ' (' + r1 + ' Ω)',
+                'R2 = ' + formatOhms(r2) + ' (' + r2 + ' Ω)',
+                is3 ? ('R3 = ' + formatOhms(r3) + ' (' + r3 + ' Ω)') : '',
+                'Fórmula: R_eq = (1/R1 + 1/R2' + (is3 ? ' + 1/R3' : '') + ')⁻¹',
+                'Resultado: R_eq = ' + reqPar.toFixed(2) + ' Ω (' + (reqPar / 1000).toFixed(4) + ' kΩ)'
+            ].filter(Boolean).join(NL);
+            copyText(text, 'Resolução copiada!');
+        }
+
+        // ============================================================================
+        // SUB-ABA 1B & 1C: ENERGIA E POUILLET
+        // ============================================================================
+        let energyTarget = 't';
+
+        function updatePouilletSimple() {
+            const rho = parseFloat((document.getElementById('pou-rho') || {}).value) || 0.0172;
+            const l = parseFloat((document.getElementById('pou-l') || {}).value) || 10;
+            const a = Math.max(0.0001, parseFloat((document.getElementById('pou-a') || {}).value) || 11);
+            const r = rho * (l / a);
+            const box = document.getElementById('pou-res-box');
+            if (box) {
+                box.innerHTML = '<div class="text-[10px] font-sans font-bold uppercase text-emerald-800">Resistência R:</div>' +
+                    '<div class="text-lg font-black text-emerald-950">' + r.toFixed(5) + ' Ω</div>' +
+                    '<div class="text-[11px] text-emerald-800">' + (r * 1000).toFixed(2) + ' mΩ</div>';
+            }
+        }
+
+        function loadTeacherChainPreset() {
+            document.getElementById('tc-mode-a').value = 'VR';
+            document.getElementById('tc-r').value = 10;
+            document.getElementById('tc-v').value = 220;
+            document.getElementById('tc-t-day').value = 0.5;
+            document.getElementById('tc-days').value = 30;
+            document.getElementById('tc-rate').value = 0.77;
+            updateTeacherChain();
+        }
+
+        function updateTeacherChain() {
+            const mode = (document.getElementById('tc-mode-a') || {}).value || 'VR';
+            const r = Math.max(0.001, parseFloat((document.getElementById('tc-r') || {}).value) || 10);
+            const v = parseFloat((document.getElementById('tc-v') || {}).value) || 220;
+            const i = parseFloat((document.getElementById('tc-i') || {}).value) || 22;
+            const tDay = parseFloat((document.getElementById('tc-t-day') || {}).value) || 0.5;
+            const days = parseFloat((document.getElementById('tc-days') || {}).value) || 30;
+            const rate = parseFloat((document.getElementById('tc-rate') || {}).value) || 0.77;
+
+            document.getElementById('tc-box-r').classList.toggle('hidden', mode === 'VI');
+            document.getElementById('tc-box-v').classList.toggle('hidden', mode === 'IR');
+            document.getElementById('tc-box-i').classList.toggle('hidden', mode === 'VR');
+
+            let pW = 0;
+            if (mode === 'VR') pW = (v * v) / r;
+            else if (mode === 'VI') pW = v * i;
+            else pW = (i * i) * r;
+
+            const pKw = pW / 1000;
+            const eKwh = pKw * tDay * days;
+            const cost = eKwh * rate;
+
+            document.getElementById('tc-out-a-header').textContent = 'a) R = ' + r + ' Ω, V = ' + v + ' V';
+            document.getElementById('tc-out-a-steps').textContent = 'P = V² / R = ' + v + '² / ' + r + ' = ' + pW.toFixed(0) + ' W';
+            document.getElementById('tc-out-a-box').textContent = 'P = ' + pKw.toFixed(2) + ' kW';
+
+            document.getElementById('tc-out-b-steps').textContent = 'b) E = P · t = ' + pKw.toFixed(2) + ' · 10³ · ' + tDay + ' · ' + days;
+            document.getElementById('tc-out-b-box').textContent = 'E = ' + eKwh.toFixed(2) + ' kWh';
+
+            document.getElementById('tc-out-c-steps').textContent = 'c) C = E · $ = ' + eKwh.toFixed(2) + ' · ' + rate.toFixed(2);
+            document.getElementById('tc-out-c-box').textContent = 'C = R$ ' + cost.toFixed(2);
+        }
+
+        function updateBenchLamp() {
+            const v = Math.max(1, parseFloat((document.getElementById('bench-v') || {}).value) || 127);
+            const p = parseFloat((document.getElementById('bench-p') || {}).value) || 60;
+            const iMeas = parseFloat((document.getElementById('bench-i-meas') || {}).value) || 0.46;
+            const iCalc = p / v;
+            const out = document.getElementById('bench-lamp-output');
+            if (out) {
+                out.innerHTML = '<div>• <strong>I_calculada = P / V:</strong> ' + p + ' / ' + v + ' = <strong>' + iCalc.toFixed(3) + ' A</strong></div>' +
+                    '<div>• <strong>I_medida:</strong> <strong>' + iMeas.toFixed(3) + ' A</strong></div>';
+            }
+        }
+
+        function setEnergyTarget(t) {
+            energyTarget = t;
+            document.getElementById('energy-box-input-E').classList.toggle('hidden', t === 'E');
+            document.getElementById('energy-box-input-P').classList.toggle('hidden', t === 'P');
+            document.getElementById('energy-box-input-t').classList.toggle('hidden', t === 't');
+            updateEnergyCalculator();
+        }
+
+        function loadEnergyPreset(p) {
+            if (p === 'tv-plasma-240w') {
+                document.getElementById('energy-input-e').value = 4;
+                document.getElementById('energy-input-e-unit').value = '1000';
+                document.getElementById('energy-power').value = 240;
+                document.getElementById('energy-power-unit').value = '1';
+                setEnergyTarget('t');
+            } else if (p === 'tv-lampada-60w') {
+                document.getElementById('energy-power').value = 60;
+                document.getElementById('energy-power-unit').value = '1';
+                document.getElementById('energy-hours-day').value = 24;
+                document.getElementById('energy-days').value = 365;
+                setEnergyTarget('E');
+            }
+        }
+
+        function updateEnergyCalculator() {
+            const eRaw = parseFloat((document.getElementById('energy-input-e') || {}).value) || 4;
+            const eUnit = parseFloat((document.getElementById('energy-input-e-unit') || {}).value) || 1000;
+            const eWh = eRaw * eUnit;
+            const eKwh = eWh / 1000;
+
+            const pRaw = parseFloat((document.getElementById('energy-power') || {}).value) || 240;
+            const pUnit = parseFloat((document.getElementById('energy-power-unit') || {}).value) || 1;
+            const pW = Math.max(0.001, pRaw * pUnit);
+            const pKw = pW / 1000;
+
+            const hDay = parseFloat((document.getElementById('energy-hours-day') || {}).value) || 24;
+            const tUnit = parseFloat((document.getElementById('energy-time-unit') || {}).value) || 1;
+            const days = parseFloat((document.getElementById('energy-days') || {}).value) || 365;
+            const totalH = Math.max(0.001, hDay * tUnit * days);
+
+            const titleEl = document.getElementById('wb-energy-header-title');
+            const dataEl = document.getElementById('wb-energy-data');
+            const methEl = document.getElementById('wb-energy-methods');
+            const resKwhEl = document.getElementById('wb-energy-result-kwh');
+            const resWhEl = document.getElementById('wb-energy-result-wh');
+            const costEl = document.getElementById('wb-energy-cost');
+            const jEl = document.getElementById('wb-energy-joules');
+            const tipEl = document.getElementById('energy-finger-tip');
+
+            if (!titleEl) return;
+
+            if (energyTarget === 't') {
+                const dt = eWh / pW;
+                const hInt = Math.floor(dt);
+                const mInt = Math.round((dt - hInt) * 60);
+                tipEl.innerHTML = '🖐️ Tampando <strong>Δt</strong>: <strong>Δt = E ÷ P</strong>';
+                titleEl.textContent = 'Lousa SENAI — Achar Tempo (Δt = E ÷ P)';
+                dataEl.innerHTML = '<div>• E = ' + eKwh + ' kWh = <strong>' + eWh + ' Wh</strong></div><div>• P = <strong>' + pW + ' W</strong> (' + pKw + ' kW)</div>';
+                methEl.innerHTML = '<div>• Δt = ' + eWh + ' Wh ÷ ' + pW + ' W = <strong>' + dt.toFixed(2) + ' h</strong></div>';
+                resKwhEl.textContent = 'Δt = ' + dt.toFixed(2) + ' h';
+                resWhEl.textContent = hInt + ' h e ' + mInt + ' min';
+                costEl.textContent = 'Conversão: 0,' + Math.round((dt - hInt) * 100) + ' h × 60 = ' + mInt + ' min';
+                jEl.textContent = '';
+            } else if (energyTarget === 'E') {
+                const calcKwh = pKw * totalH;
+                tipEl.innerHTML = '🖐️ Tampando <strong>E</strong>: <strong>E = P · Δt</strong>';
+                titleEl.textContent = 'Lousa SENAI — Achar Energia (E = P · Δt)';
+                dataEl.innerHTML = '<div>• P = ' + pW + ' W = <strong>' + pKw + ' kW</strong></div><div>• Δt = <strong>' + totalH + ' h</strong></div>';
+                methEl.innerHTML = '<div>• E = ' + pKw + ' kW × ' + totalH + ' h = <strong>' + calcKwh.toFixed(2) + ' kWh</strong></div>';
+                resKwhEl.textContent = 'E = ' + calcKwh.toFixed(2) + ' kWh';
+                resWhEl.textContent = (calcKwh * 1000).toLocaleString('pt-BR') + ' Wh';
+                costEl.textContent = 'Custo (R$ 0,89): R$ ' + (calcKwh * 0.89).toFixed(2);
+                jEl.textContent = '';
+            } else {
+                const calcW = eWh / totalH;
+                tipEl.innerHTML = '🖐️ Tampando <strong>P</strong>: <strong>P = E ÷ Δt</strong>';
+                titleEl.textContent = 'Lousa SENAI — Achar Potência (P = E ÷ Δt)';
+                dataEl.innerHTML = '<div>• E = <strong>' + eWh + ' Wh</strong></div><div>• Δt = <strong>' + totalH + ' h</strong></div>';
+                methEl.innerHTML = '<div>• P = ' + eWh + ' Wh ÷ ' + totalH + ' h = <strong>' + calcW.toFixed(2) + ' W</strong></div>';
+                resKwhEl.textContent = 'P = ' + calcW.toFixed(2) + ' W';
+                resWhEl.textContent = (calcW / 1000).toFixed(4) + ' kW';
+                costEl.textContent = '';
+                jEl.textContent = '';
+            }
+        }
+
+        function copyTeacherChainWhiteboard() {
+            copyText('a) P = 220² / 10 = 4,84 kW\nb) E = 4,84 · 0,5 · 30 = 72,6 kWh\nc) C = 72,6 · 0,77 = R$ 55,90', 'Copiado!');
+        }
+
+        function sendTeacherChainToCLab() {
+            loadPreset('exercicio-lousa-abc');
+            switchMainTab('c-lab');
+        }
+
+        function sendAssocToCLab() {
+            const raw1 = parseFloat(document.getElementById('assoc-r1').value) || 1;
+            const unit1 = parseFloat(document.getElementById('assoc-r1-unit').value) || 1;
+            const r1 = raw1 * unit1;
+            const raw2 = parseFloat(document.getElementById('assoc-r2').value) || 10;
+            const unit2 = parseFloat(document.getElementById('assoc-r2-unit').value) || 1;
+            const r2 = raw2 * unit2;
+            const raw3 = parseFloat(document.getElementById('assoc-r3').value) || 15;
+            const unit3 = parseFloat(document.getElementById('assoc-r3-unit').value) || 1;
+            const r3 = raw3 * unit3;
+
+            if (assocResistorCount === 3) {
+                loadPreset('assoc-paralelo-3res');
+                simInputValues = { R1: r1, R2: r2, R3: r3 };
+            } else {
+                loadPreset('assoc-paralelo-lousa');
+                simInputValues = { R1: r1, R2: r2 };
+            }
+            renderTraceSimulator();
+            switchMainTab('c-lab');
+            showToast('Enviado para a Bancada de Código C!');
+        }
+
+        // ============================================================================
+        // MÓDULO 2: CÓDIGO DE CORES DE RESISTORES
+        // ============================================================================
+        const COLOR_DATA = [
+            { id: 'black',  name: 'Preto',    sigla: 'PR', digit: 0, mult: 1,         multText: '× 1 Ω',     tol: null,  tolText: '-',       hex: '#000000', textLight: true },
+            { id: 'brown',  name: 'Marrom',   sigla: 'MR', digit: 1, mult: 10,        multText: '× 10 Ω',    tol: 1,     tolText: '± 1%',    hex: '#78350f', textLight: true },
+            { id: 'red',    name: 'Vermelho', sigla: 'VM', digit: 2, mult: 100,       multText: '× 100 Ω',   tol: 2,     tolText: '± 2%',    hex: '#dc2626', textLight: true },
+            { id: 'orange', name: 'Laranja',  sigla: 'LJ', digit: 3, mult: 1000,      multText: '× 1k Ω',    tol: null,  tolText: '-',       hex: '#ea580c', textLight: true },
+            { id: 'yellow', name: 'Amarelo',  sigla: 'AM', digit: 4, mult: 10000,     multText: '× 10k Ω',   tol: null,  tolText: '-',       hex: '#eab308', textLight: false },
+            { id: 'green',  name: 'Verde',    sigla: 'VD', digit: 5, mult: 100000,    multText: '× 100k Ω',  tol: 0.5,   tolText: '± 0.5%',  hex: '#16a34a', textLight: true },
+            { id: 'blue',   name: 'Azul',     sigla: 'AZ', digit: 6, mult: 1000000,   multText: '× 1M Ω',    tol: 0.25,  tolText: '± 0.25%', hex: '#2563eb', textLight: true },
+            { id: 'violet', name: 'Violeta',  sigla: 'VT', digit: 7, mult: 10000000,  multText: '× 10M Ω',   tol: 0.1,   tolText: '± 0.1%',  hex: '#9333ea', textLight: true },
+            { id: 'gray',   name: 'Cinza',    sigla: 'CZ', digit: 8, mult: null,      multText: '-',         tol: 0.05,  tolText: '± 0.05%', hex: '#64748b', textLight: true },
+            { id: 'white',  name: 'Branco',   sigla: 'BR', digit: 9, mult: null,      multText: '-',         tol: null,  tolText: '-',       hex: '#f8fafc', textLight: false },
+            { id: 'gold',   name: 'Dourado',  sigla: 'DO', digit: null, mult: 0.1,    multText: '× 0.1 Ω',   tol: 5,     tolText: '± 5%',    hex: '#ca8a04', textLight: true },
+            { id: 'silver', name: 'Prateado', sigla: 'PT', digit: null, mult: 0.01,   multText: '× 0.01 Ω',  tol: 10,    tolText: '± 10%',   hex: '#94a3b8', textLight: false }
+        ];
+
+        let currentMode = 4;
+        let selectedBand1 = 'green';
+        let selectedBand2 = 'blue';
+        let selectedBand3 = 'violet';
+        let selectedMult  = 'yellow';
+        let selectedTol   = 'silver';
+        let quizCurrent = null;
+
+        function getColor(id) {
+            return COLOR_DATA.find(c => c.id === id) || COLOR_DATA[0];
+        }
+
+        function initResistorModule() {
+            const tabs = [
+                { btn: 'nav-calc', view: 'view-calculator' },
+                { btn: 'nav-reverse', view: 'view-reverse' },
+                { btn: 'nav-practice', view: 'view-practice' },
+                { btn: 'nav-table', view: 'view-table' }
+            ];
+            tabs.forEach(t => {
+                const el = document.getElementById(t.btn);
+                if (!el) return;
+                el.addEventListener('click', () => {
+                    tabs.forEach(other => {
+                        const b = document.getElementById(other.btn);
+                        const v = document.getElementById(other.view);
+                        if (b && v) {
+                            b.className = 'nav-tab px-3.5 py-2 rounded-lg font-bold transition-all text-slate-300 hover:text-white hover:bg-slate-800';
+                            v.classList.add('hidden');
+                        }
+                    });
+                    el.className = 'nav-tab active-tab px-3.5 py-2 rounded-lg font-extrabold transition-all bg-[#0047B6] text-white shadow';
+                    document.getElementById(t.view).classList.remove('hidden');
+                    if (t.view === 'view-practice' && !quizCurrent) generateNewQuiz();
+                });
+            });
+
+            initSwatches();
+            renderReferenceTable();
+            updateCalculator();
+
+            document.getElementById('btn-mode-4').addEventListener('click', () => setMode(4));
+            document.getElementById('btn-mode-5').addEventListener('click', () => setMode(5));
+            document.getElementById('btn-load-ex1').addEventListener('click', () => {
+                setMode(4); selectedBand1 = 'green'; selectedBand2 = 'blue'; selectedMult = 'yellow'; selectedTol = 'silver';
+                initSwatches(); updateCalculator();
+            });
+            document.getElementById('btn-load-ex2').addEventListener('click', () => {
+                setMode(4); selectedBand1 = 'brown'; selectedBand2 = 'black'; selectedMult = 'orange'; selectedTol = 'gold';
+                initSwatches(); updateCalculator();
+            });
+            document.getElementById('btn-load-ex3').addEventListener('click', () => {
+                setMode(5); selectedBand1 = 'red'; selectedBand2 = 'orange'; selectedBand3 = 'violet'; selectedMult = 'black'; selectedTol = 'brown';
+                initSwatches(); updateCalculator();
+            });
+            document.getElementById('btn-eval-measurement').addEventListener('click', evaluateMultimeter);
+            document.getElementById('btn-calc-reverse').addEventListener('click', calculateReverse);
+            for (const m of [4,5]) document.getElementById('btn-rev-mode-'+m).addEventListener('click',()=>{
+                reverseMode=m;
+                for(const n of [4,5]){
+                    const b=document.getElementById('btn-rev-mode-'+n);
+                    b.className='px-3 py-1 rounded-lg text-xs font-semibold '+(n===m?'bg-blue-600 text-white':'text-slate-400');
+                }
+                calculateReverse();
+            });
+            document.getElementById('btn-send-to-calc').addEventListener('click',()=>{
+                if(!reverseSelection)return;
+                setMode(reverseMode);
+                selectedBand1=reverseSelection[0].id;
+                selectedBand2=reverseSelection[1].id;
+                if(reverseMode===5)selectedBand3=reverseSelection[2].id;
+                selectedMult=reverseSelection[reverseMode-2].id;
+                selectedTol=reverseSelection[reverseMode-1].id;
+                initSwatches();updateCalculator();
+                document.getElementById('nav-calc').click();
+            });
+            calculateReverse();
+            document.getElementById('btn-new-quiz').addEventListener('click', generateNewQuiz);
+            document.getElementById('btn-quiz-check').addEventListener('click', checkQuizAnswer);
+            document.getElementById('btn-quiz-reveal').addEventListener('click', revealQuizSolution);
+        }
+
+        function initSwatches() {
+            renderSwatchGroup('swatches-band1', COLOR_DATA.filter(c => c.digit !== null), selectedBand1, c => { selectedBand1 = c.id; updateCalculator(); });
+            renderSwatchGroup('swatches-band2', COLOR_DATA.filter(c => c.digit !== null), selectedBand2, c => { selectedBand2 = c.id; updateCalculator(); });
+            renderSwatchGroup('swatches-band3', COLOR_DATA.filter(c => c.digit !== null), selectedBand3, c => { selectedBand3 = c.id; updateCalculator(); });
+            renderSwatchGroup('swatches-mult', COLOR_DATA.filter(c => c.mult !== null), selectedMult, c => { selectedMult = c.id; updateCalculator(); });
+            renderSwatchGroup('swatches-tol', COLOR_DATA.filter(c => c.tol !== null), selectedTol, c => { selectedTol = c.id; updateCalculator(); });
+        }
+
+        function renderSwatchGroup(containerId, list, activeId, onSelect) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = '';
+            list.forEach(item => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'h-7 rounded-lg flex items-center justify-center text-[10px] font-bold transition-all border ' + (item.id === activeId ? 'color-swatch-active z-10' : 'border-slate-700');
+                btn.style.backgroundColor = item.hex;
+                btn.style.color = item.textLight ? '#ffffff' : '#0f172a';
+                btn.textContent = item.sigla;
+                btn.addEventListener('click', () => {
+                    onSelect(item);
+                    Array.from(container.children).forEach(c => c.classList.remove('color-swatch-active', 'z-10'));
+                    btn.classList.add('color-swatch-active', 'z-10');
+                });
+                container.appendChild(btn);
+            });
+        }
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('container-band3').classList.toggle('hidden', mode === 4);
+            updateCalculator();
+        }
+
+        function updateCalculator() {
+            const c1 = getColor(selectedBand1);
+            const c2 = getColor(selectedBand2);
+            const c3 = getColor(selectedBand3);
+            const cm = getColor(selectedMult);
+            const ct = getColor(selectedTol);
+
+            document.getElementById('badge-band1').textContent = c1.name + ' = ' + c1.digit + ' (' + c1.sigla + ')';
+            document.getElementById('badge-band2').textContent = c2.name + ' = ' + c2.digit + ' (' + c2.sigla + ')';
+            document.getElementById('badge-band3').textContent = c3.name + ' = ' + c3.digit + ' (' + c3.sigla + ')';
+            document.getElementById('badge-mult').textContent  = cm.name + ' = ' + cm.multText + ' (' + cm.sigla + ')';
+            document.getElementById('badge-tol').textContent   = ct.name + ' = ' + ct.tolText + ' (' + ct.sigla + ')';
+
+            const digitsCombined = currentMode === 4 ? ((c1.digit * 10) + c2.digit) : ((c1.digit * 100) + (c2.digit * 10) + c3.digit);
+            const nominalOhms = digitsCombined * cm.mult;
+            const tolPercent = ct.tol;
+            const deltaOhms = nominalOhms * (tolPercent / 100);
+            const rMax = nominalOhms + deltaOhms;
+            const rMin = nominalOhms - deltaOhms;
+
+            document.getElementById('svg-band-1').setAttribute('fill', c1.hex);
+            document.getElementById('svg-band-2').setAttribute('fill', c2.hex);
+            document.getElementById('svg-band-3').setAttribute('fill', currentMode === 4 ? cm.hex : c3.hex);
+            document.getElementById('svg-band-tol').setAttribute('fill', ct.hex);
+
+            document.getElementById('header-nominal-val').innerHTML = formatOhms(nominalOhms) + ' <span class="text-sm font-normal text-slate-300">±' + tolPercent + '%</span>';
+            document.getElementById('header-range-val').innerHTML = 'Faixa: <span class="text-emerald-400 font-semibold">' + formatOhms(rMin) + '</span> a <span class="text-emerald-400 font-semibold">' + formatOhms(rMax) + '</span>';
+
+            const multShort = formatWhiteboardShort(cm.mult);
+            const nomShort = formatWhiteboardShort(nominalOhms);
+            const deltaShort = formatWhiteboardShort(deltaOhms);
+
+            document.getElementById('wb-siglas').innerHTML = '<span>' + c1.sigla + '</span><span>' + c2.sigla + '</span>' + (currentMode === 5 ? ('<span>' + c3.sigla + '</span>') : '') + '<span>' + cm.sigla + '</span><span>' + ct.sigla + '</span>';
+            document.getElementById('wb-substituicao').innerHTML = '<span>R = ' + digitsCombined + '</span><span class="text-amber-700">· ' + multShort + '</span><span class="text-slate-600">±' + tolPercent + '%</span>';
+            document.getElementById('wb-conta-nominal-1').innerHTML = '• Dígitos: <strong>' + digitsCombined + '</strong>';
+            document.getElementById('wb-conta-nominal-2').innerHTML = '• Multiplicando: <strong>' + digitsCombined + ' × ' + multShort + ' = ' + formatOhms(nominalOhms) + '</strong>';
+            document.getElementById('wb-conta-nominal-3').innerHTML = '• Em Ω: <strong>' + nominalOhms.toLocaleString('pt-BR') + ' Ω</strong>';
+            document.getElementById('wb-nominal').innerHTML = 'R = ' + formatOhms(nominalOhms) + ' ±' + tolPercent + '%';
+            document.getElementById('wb-rmax-final').textContent = 'Rmáx = ' + formatOhms(rMax);
+            document.getElementById('wb-rmin-final').textContent = 'Rmín = ' + formatOhms(rMin);
+
+            document.getElementById('wb-delta-formula').innerHTML = nomShort + ' · (' + tolPercent + ' / 100) = <span class="text-emerald-700 underline">' + formatOhms(deltaOhms) + '</span>';
+            document.getElementById('wb-delta-ohms-detail').innerHTML = 'Em Ω: <strong>' + deltaOhms.toLocaleString('pt-BR') + ' Ω</strong>';
+            document.getElementById('wb-rmax-calc').innerHTML = 'máx. = ' + nomShort + ' + ' + deltaShort + ' = ' + formatOhms(rMax);
+            document.getElementById('wb-rmax-ohms-calc').innerHTML = 'Em Ω: <strong>' + rMax.toLocaleString('pt-BR') + ' Ω</strong>';
+            document.getElementById('wb-rmin-calc').innerHTML = 'mín. = ' + nomShort + ' - ' + deltaShort + ' = ' + formatOhms(rMin);
+            document.getElementById('wb-rmin-ohms-calc').innerHTML = 'Em Ω: <strong>' + rMin.toLocaleString('pt-BR') + ' Ω</strong>';
+        }
+
+        function evaluateMultimeter() {
+            const val = parseFloat(document.getElementById('input-multimeter').value);
+            const unit = parseFloat(document.getElementById('select-multimeter-unit').value);
+            if (isNaN(val) || val <= 0) return;
+            const meas = val * unit;
+            const c1 = getColor(selectedBand1), c2 = getColor(selectedBand2), c3 = getColor(selectedBand3), cm = getColor(selectedMult), ct = getColor(selectedTol);
+            const nom = (currentMode === 4 ? ((c1.digit * 10) + c2.digit) : ((c1.digit * 100) + (c2.digit * 10) + c3.digit)) * cm.mult;
+            const delta = nom * (ct.tol / 100);
+            const ok = meas >= (nom - delta) && meas <= (nom + delta);
+            const box = document.getElementById('eval-result-box');
+            box.classList.remove('hidden');
+            document.getElementById('eval-status-title').textContent = ok ? '✅ RESISTOR APROVADO' : '❌ FORA DA FAIXA';
+            document.getElementById('eval-status-desc').textContent = 'Medido: ' + formatOhms(meas) + ' | Faixa: [' + formatOhms(nom - delta) + ' a ' + formatOhms(nom + delta) + ']';
+        }
+
+
+        let reverseMode = 4;
+        let reverseSelection = null;
+        function calculateReverse() {
+            const raw = document.getElementById('input-rev-val').value;
+            const val = Number(raw), unit = Number(document.getElementById('select-rev-unit').value);
+            const ohms = val * unit;
+            const out = document.getElementById('rev-res-nominal');
+            const bands = document.getElementById('rev-bands-display');
+            const explain = document.getElementById('rev-explanation');
+            reverseSelection = null;
+            bands.replaceChildren();
+            if (raw.trim() === '' || !Number.isFinite(ohms) || ohms <= 0) {
+                out.textContent = 'Informe uma resistência positiva e finita.';
+                explain.textContent = ''; return;
+            }
+            const tol = Number(document.getElementById('select-rev-tol').value);
+            const tolColor = COLOR_DATA.find(c => c.tol === tol);
+            const minDigits = reverseMode === 4 ? 10 : 100;
+            const maxDigits = reverseMode === 4 ? 99 : 999;
+            let choice = null;
+            for (const mult of COLOR_DATA.filter(c => c.mult !== null)) {
+                const digits = Math.round(ohms / mult.mult);
+                if (digits < minDigits || digits > maxDigits) continue;
+                if (Math.abs(digits * mult.mult - ohms) > Math.max(1e-10, ohms * 1e-10)) continue;
+                const chars = String(digits).split('').map(v => COLOR_DATA.find(c => c.digit === Number(v)));
+                if (chars.every(Boolean)) { choice = {colors:[...chars,mult,tolColor],mult,digits};break; }
+            }
+            out.textContent = formatOhms(ohms) + ' ±' + tol + '%';
+            if (!choice) {
+                explain.textContent = 'Este valor não pode ser representado exatamente com ' + reverseMode + ' faixas e os multiplicadores disponíveis. Experimente outro valor ou modo.';
+                return;
+            }
+            reverseSelection = choice.colors;
+            for (const color of choice.colors) {
+                const box = document.createElement('div');
+                box.className = 'flex flex-col items-center gap-1';
+                const swatch = document.createElement('span');
+                swatch.style.cssText = 'display:block;width:26px;height:55px;border:1px solid #94a3b8;border-radius:5px;background:' + color.hex;
+                const text = document.createElement('span');
+                text.className = 'text-[10px] font-mono text-white';
+                text.textContent = color.sigla;
+                box.append(swatch,text);bands.appendChild(box);
+            }
+            explain.textContent = choice.digits + ' × ' + choice.mult.mult + ' Ω = ' + formatOhms(ohms) + ' ±' + tol + '% · ' + choice.colors.map(c=>c.name).join(' / ');
+        }
+
+        function generateNewQuiz() {
+            const digits = COLOR_DATA.filter(c => c.digit !== null && c.digit > 0);
+            const c1 = digits[Math.floor(Math.random() * digits.length)];
+            const c2 = COLOR_DATA.filter(c => c.digit !== null)[Math.floor(Math.random() * 10)];
+            const cm = getColor('orange');
+            const ct = getColor('gold');
+            const nom = ((c1.digit * 10) + c2.digit) * cm.mult;
+            const delta = nom * (ct.tol / 100);
+            quizCurrent = { c1, c2, cm, ct, nominalOhms: nom, tolPercent: ct.tol, deltaOhms: delta, rMin: nom - delta, rMax: nom + delta };
+            document.getElementById('quiz-bands-text').textContent = c1.name + ' (' + c1.sigla + ') - ' + c2.name + ' (' + c2.sigla + ') - ' + cm.name + ' (' + cm.sigla + ') - ' + ct.name + ' (' + ct.sigla + ')';
+            const box = document.getElementById('quiz-bands-display');
+            box.replaceChildren();
+            for(const color of [c1,c2,cm,ct]){
+                const band = document.createElement('span');
+                band.className='rounded px-3 py-2 text-sm font-bold';
+                band.style.backgroundColor=color.hex;
+                band.style.color=color.textLight?'white':'#111827';
+                band.textContent=color.sigla;
+                box.appendChild(band);
+            }
+            ['r','tol','delta','rmin','rmax'].forEach(k=>document.getElementById('quiz-input-'+k).value='');
+            ['r','tol','delta','range'].forEach(k=>document.getElementById('quiz-feedback-'+k).textContent='');
+            document.getElementById('quiz-solution-box').classList.add('hidden');
+        }
+
+        function checkQuizAnswer() {
+            if(!quizCurrent)return;
+            const q = quizCurrent;
+            function check(field,expected,feedback){
+                const el=document.getElementById('quiz-input-'+field),res=document.getElementById('quiz-feedback-'+feedback);
+                const value=Number(el.value);
+                const ok=el.value.trim()!==''&&Number.isFinite(value)&&Math.abs(value-expected)<=Math.max(.01,Math.abs(expected)*.001);
+                res.textContent=ok?'✓ Correto':'✗ Confira este valor';
+                res.className='text-xs block '+(ok?'text-emerald-400':'text-red-400');
+                return ok;
+            }
+            const a=check('r',q.nominalOhms,'r');
+            const b=check('tol',q.tolPercent,'tol');
+            const c=check('delta',q.deltaOhms,'delta');
+            const d1=check('rmin',q.rMin,'range');
+            const d2=check('rmax',q.rMax,'range');
+            document.getElementById('quiz-feedback-range').textContent=d1&&d2?'✓ Intervalo correto':'✗ Confira Rmín e Rmáx';
+            if(a&&b&&c&&d1&&d2)revealQuizSolution();
+        }
+
+        function revealQuizSolution() {
+            if (!quizCurrent) return;
+            const box = document.getElementById('quiz-solution-box');
+            box.classList.remove('hidden');
+            document.getElementById('quiz-solution-content').textContent = 'R = ' + formatOhms(quizCurrent.nominalOhms) + ' ±' + quizCurrent.tolPercent + '% | Rmín = ' + formatOhms(quizCurrent.rMin) + ' | Rmáx = ' + formatOhms(quizCurrent.rMax);
+        }
+
+        function renderReferenceTable() {
+            const tb = document.getElementById('table-body');
+            if (!tb) return;
+            tb.innerHTML = COLOR_DATA.map(c => '<tr><td class="p-2.5 font-bold text-white">' + c.name + '</td><td class="p-2.5 text-center">' + c.sigla + '</td><td class="p-2.5 text-center">' + (c.digit ?? '-') + '</td><td class="p-2.5 text-center">' + (c.digit ?? '-') + '</td><td class="p-2.5 text-center">' + (c.digit ?? '-') + '</td><td class="p-2.5 text-center">' + c.multText + '</td><td class="p-2.5 text-center">' + c.tolText + '</td></tr>').join('');
+        }
+
+        function sendCurrentResistorToCLab() {
+            switchMainTab('c-lab');
+        }
+
+        // ============================================================================
+        // MÓDULO 3: BANCADA DE PROGRAMAÇÃO EM C (PRESETS + TESTE DE MESA)
+        // ============================================================================
+        const PRESETS = {
+            'assoc-paralelo-3res': {
+                title: 'Exercício c) da Lousa: Calcular a resistência equivalente de 3 resistores em paralelo (R1 = 1 kΩ, R2 = 10 kΩ e R3 = 15 kΩ).',
+                entrada: ['• R1 em Ohms (1000 Ω)', '• R2 em Ohms (10000 Ω)', '• R3 em Ohms (15000 Ω)'].join(NL),
+                proc: ['• Soma dos inversos: R_eq = 1.0 / ((1.0/R1) + (1.0/R2) + (1.0/R3))', '• Ou em 2 etapas: R23 = (R2*R3)/(R2+R3) e R_eq = (R1*R23)/(R1+R23)'].join(NL),
+                saida: ['• Resistência Equivalente em Ohms (857.14 Ω)', '• Resistência Equivalente em kOhms (0.8571 kΩ)'].join(NL),
+                variables: [
+                    { name: 'R1', type: 'float', role: 'input', why: '1º resistor em Ohms (1000.0 Ω).' },
+                    { name: 'R2', type: 'float', role: 'input', why: '2º resistor em Ohms (10000.0 Ω).' },
+                    { name: 'R3', type: 'float', role: 'input', why: '3º resistor em Ohms (15000.0 Ω).' },
+                    { name: 'R_eq_ohms', type: 'float', role: 'output', why: 'Resultado com casas decimais (857.14 Ω).' },
+                    { name: 'R_eq_kohms', type: 'float', role: 'output', why: 'Resultado em kΩ (0.8571 kΩ).' }
+                ],
+                processCode: [
+                    '// Formula da Lousa para 3 resistores em paralelo:',
+                    'R_eq_ohms = 1.0f / ((1.0f / R1) + (1.0f / R2) + (1.0f / R3));',
+                    'R_eq_kohms = R_eq_ohms / 1000.0f;',
+                    'printf("R_eq = %.2f Ohms (%.4f kOhms)' + CNL + '", R_eq_ohms, R_eq_kohms);'
+                ].join(NL),
+                simConfig: {
+                    inputs: [
+                        { name: 'R1', label: 'R1 (Ω)', type: 'float', default: 1000.0 },
+                        { name: 'R2', label: 'R2 (Ω)', type: 'float', default: 10000.0 },
+                        { name: 'R3', label: 'R3 (Ω)', type: 'float', default: 15000.0 }
+                    ],
+                    columns: ['R1', 'R2', 'R3', 'R_eq_ohms', 'R_eq_kohms'],
+                    buildSteps: (v) => {
+                        const r1 = Math.max(1, v.R1), r2 = Math.max(1, v.R2), r3 = Math.max(1, v.R3);
+                        const req = 1.0 / ((1.0 / r1) + (1.0 / r2) + (1.0 / r3));
+                        const reqK = req / 1000.0;
+                        return [
+                            { stage: '1. Entradas', op: 'Ler R1, R2, R3', state: { R1: r1.toFixed(0), R2: r2.toFixed(0), R3: r3.toFixed(0), R_eq_ohms: 'Indefinido', R_eq_kohms: 'Indefinido' }, desc: '1 kΩ, 10 kΩ e 15 kΩ convertidos p/ Ω' },
+                            { stage: '2. Inverso da Soma', op: '(1/R1 + 1/R2 + 1/R3)⁻¹', state: { R1: r1.toFixed(0), R2: r2.toFixed(0), R3: r3.toFixed(0), R_eq_ohms: req.toFixed(2), R_eq_kohms: 'Indefinido' }, desc: 'Calcula R_eq = ' + req.toFixed(2) + ' Ω' },
+                            { stage: '3. Conversão kΩ', op: req.toFixed(2) + ' / 1000.0', state: { R1: r1.toFixed(0), R2: r2.toFixed(0), R3: r3.toFixed(0), R_eq_ohms: req.toFixed(2), R_eq_kohms: reqK.toFixed(4) }, desc: 'Em kΩ: ' + reqK.toFixed(4) + ' kΩ' }
+                        ];
+                    },
+                    summary: (v) => {
+                        const req = 1.0 / ((1.0 / Math.max(1, v.R1)) + (1.0 / Math.max(1, v.R2)) + (1.0 / Math.max(1, v.R3)));
+                        return { title: '✅ R_eq = ' + req.toFixed(2) + ' Ω (' + (req / 1000).toFixed(4) + ' kΩ)', detail: 'Menor que o menor resistor (1.000 Ω)!' };
+                    }
+                }
+            },
+            'assoc-paralelo-lousa': {
+                title: 'Exercício b) da Lousa: Calcular a resistência equivalente de 2 resistores em paralelo (R1 = 10 kΩ e R2 = 15 kΩ).',
+                entrada: ['• R1 em Ohms (10000 Ω)', '• R2 em Ohms (15000 Ω)'].join(NL),
+                proc: ['• Produto pela soma: R_eq = (R1 * R2) / (R1 + R2)', '• Soma dos inversos: R_eq = 1.0 / ((1.0/R1) + (1.0/R2))'].join(NL),
+                saida: ['• R_eq_ohms (6000.00 Ω)', '• R_eq_kohms (6.00 kΩ)'].join(NL),
+                variables: [
+                    { name: 'R1', type: 'float', role: 'input', why: '1º resistor em Ohms (10000.0 Ω).' },
+                    { name: 'R2', type: 'float', role: 'input', why: '2º resistor em Ohms (15000.0 Ω).' },
+                    { name: 'R_eq_ohms', type: 'float', role: 'output', why: 'Resultado em Ohms (6000.0 Ω).' },
+                    { name: 'R_eq_kohms', type: 'float', role: 'output', why: 'Resultado em kΩ (6.0 kΩ).' }
+                ],
+                processCode: [
+                    'R_eq_ohms = (R1 * R2) / (R1 + R2);',
+                    'R_eq_kohms = R_eq_ohms / 1000.0f;',
+                    'printf("R_eq = %.2f Ohms (%.2f kOhms)' + CNL + '", R_eq_ohms, R_eq_kohms);'
+                ].join(NL),
+                simConfig: {
+                    inputs: [
+                        { name: 'R1', label: 'R1 (Ω)', type: 'float', default: 10000.0 },
+                        { name: 'R2', label: 'R2 (Ω)', type: 'float', default: 15000.0 }
+                    ],
+                    columns: ['R1', 'R2', 'R_eq_ohms', 'R_eq_kohms'],
+                    buildSteps: (v) => {
+                        const r1 = Math.max(1, v.R1), r2 = Math.max(1, v.R2);
+                        const req = (r1 * r2) / (r1 + r2);
+                        return [
+                            { stage: '1. Entradas', op: 'Ler R1 e R2', state: { R1: r1.toFixed(0), R2: r2.toFixed(0), R_eq_ohms: 'Indefinido', R_eq_kohms: 'Indefinido' }, desc: '10 kΩ e 15 kΩ' },
+                            { stage: '2. Cálculo', op: '(R1*R2)/(R1+R2)', state: { R1: r1.toFixed(0), R2: r2.toFixed(0), R_eq_ohms: req.toFixed(2), R_eq_kohms: (req / 1000).toFixed(2) }, desc: 'R_eq = ' + req.toFixed(2) + ' Ω (6 kΩ)' }
+                        ];
+                    },
+                    summary: (v) => {
+                        const req = (v.R1 * v.R2) / (v.R1 + v.R2);
+                        return { title: '✅ R_eq = ' + req.toFixed(2) + ' Ω (' + (req / 1000).toFixed(2) + ' kΩ)', detail: '150 / 25 = 6 kΩ exatos!' };
+                    }
+                }
+            },
+            'exercicio-lousa-abc': {
+                title: 'Exercício 6 da Lousa (a, b, c): R=10Ω, V=220V ➔ P=4,84kW ➔ E=72,6kWh ➔ R$ 55,90.',
+                entrada: 'R = 10, V = 220, t_dia = 0.5, dias = 30, tarifa = 0.77',
+                proc: 'P_kw = (V*V/R)/1000; E_kwh = P_kw*t_dia*dias; custo = E_kwh*tarifa;',
+                saida: 'P_kw, E_kwh, custo',
+                variables: [
+                    { name: 'R', type: 'float', role: 'input', why: 'Resistência (10 Ω).' },
+                    { name: 'V', type: 'float', role: 'input', why: 'Tensão (220 V).' },
+                    { name: 'P_kw', type: 'float', role: 'output', why: 'Potência em kW (4.84 kW).' },
+                    { name: 'E_kwh', type: 'float', role: 'output', why: 'Energia no mês (72.6 kWh).' },
+                    { name: 'custo', type: 'float', role: 'output', why: 'Custo em R$ (55.90).' }
+                ],
+                processCode: 'P_kw = ((V * V) / R) / 1000.0f;\nE_kwh = P_kw * 0.5f * 30.0f;\ncusto = E_kwh * 0.77f;\nprintf("P=%.2f kW | E=%.2f kWh | C=R$ %.2f\\n", P_kw, E_kwh, custo);',
+                simConfig: {
+                    inputs: [{ name: 'R', label: 'R (Ω)', type: 'float', default: 10 }, { name: 'V', label: 'V (V)', type: 'float', default: 220 }],
+                    columns: ['R', 'V', 'P_kw', 'E_kwh', 'custo'],
+                    buildSteps: (v) => {
+                        const pKw = ((v.V * v.V) / v.R) / 1000;
+                        const eKwh = pKw * 15;
+                        const c = eKwh * 0.77;
+                        return [{ stage: 'Cálculo Completo', op: 'a, b, c', state: { R: v.R, V: v.V, P_kw: pKw.toFixed(2), E_kwh: eKwh.toFixed(2), custo: c.toFixed(2) }, desc: 'Concluído' }];
+                    },
+                    summary: () => ({ title: '✅ P = 4.84 kW | E = 72.60 kWh | C = R$ 55.90', detail: 'Idêntico à lousa!' })
+                }
+            },
+            'fio-cobre-pouillet': {
+                title: '2ª Lei de Ohm (Pouillet): Fio de cobre L = 10 m, A = 11 mm², rho = 0.0172 Ω·mm²/m.',
+                entrada: 'rho = 0.0172, L = 10.0, A = 11.0',
+                proc: 'R = rho * (L / A)',
+                saida: 'R em Ohms (0.015636 Ω)',
+                variables: [
+                    { name: 'rho', type: 'float', role: 'input', why: 'Resistividade (0.0172).' },
+                    { name: 'L', type: 'float', role: 'input', why: 'Comprimento (10 m).' },
+                    { name: 'A', type: 'float', role: 'input', why: 'Área (11 mm²).' },
+                    { name: 'R', type: 'float', role: 'output', why: 'Resistência em Ohms.' }
+                ],
+                processCode: 'R = rho * (L / A);\nprintf("R = %.5f Ohms\\n", R);',
+                simConfig: {
+                    inputs: [{ name: 'L', label: 'L (m)', type: 'float', default: 10 }, { name: 'A', label: 'A (mm²)', type: 'float', default: 11 }],
+                    columns: ['L', 'A', 'R'],
+                    buildSteps: (v) => [{ stage: 'Pouillet', op: '0.0172 * (L / A)', state: { L: v.L, A: v.A, R: (0.0172 * v.L / v.A).toFixed(5) }, desc: 'Cálculo direto' }],
+                    summary: (v) => ({ title: '✅ R = ' + (0.0172 * v.L / v.A).toFixed(5) + ' Ω', detail: '2ª Lei de Ohm' })
+                }
+            },
+            'painel-50c': {
+                title: 'Painel Elétrico > 50 °C (Média de 2 Sensores + Alerta).',
+                entrada: 'temp1, temp2',
+                proc: 'media = (temp1 + temp2) / 2.0; se media > 50.0 -> ALERTA',
+                saida: 'media e status',
+                variables: [
+                    { name: 'temp1', type: 'float', role: 'input', why: 'Sensor 1 (°C).' },
+                    { name: 'temp2', type: 'float', role: 'input', why: 'Sensor 2 (°C).' },
+                    { name: 'media', type: 'float', role: 'output', why: 'Média (°C).' }
+                ],
+                processCode: 'media = (temp1 + temp2) / 2.0f;\nif (media > 50.0f) printf("ALERTA\\n"); else printf("NORMAL\\n");',
+                simConfig: {
+                    inputs: [{ name: 'temp1', label: 'Temp 1', type: 'float', default: 40 }, { name: 'temp2', label: 'Temp 2', type: 'float', default: 70 }],
+                    columns: ['temp1', 'temp2', 'media'],
+                    buildSteps: (v) => [{ stage: 'Média', op: '(t1+t2)/2', state: { temp1: v.temp1, temp2: v.temp2, media: ((v.temp1 + v.temp2) / 2).toFixed(1) }, desc: 'Teste > 50°C' }],
+                    summary: (v) => ({ title: 'Média = ' + ((v.temp1 + v.temp2) / 2).toFixed(1) + ' °C', detail: 'Monitoramento térmico' })
+                }
+            }
+        };
+
+        let currentPresetKey = 'assoc-paralelo-3res';
+        let currentState = {...PRESETS['assoc-paralelo-3res']};
+        let simInputValues = {};
+
+        function loadPreset(key) {
+            if (!PRESETS[key]) return;
+            currentPresetKey = key;
+            currentState = {...PRESETS[key]};
+            document.getElementById('ex-title').value = currentState.title;
+            document.getElementById('eps-entrada').value = currentState.entrada;
+            document.getElementById('eps-proc').value = currentState.proc;
+            document.getElementById('eps-saida').value = currentState.saida;
+            document.getElementById('custom-process-code').value = currentState.processCode;
+
+            simInputValues = {};
+            if (currentState.simConfig && currentState.simConfig.inputs) {
+                currentState.simConfig.inputs.forEach(inp => { simInputValues[inp.name] = inp.default; });
+            }
+            renderVarTable();
+            renderTraceSimulator();
+            renderGeneratedCCode();
+        }
+
+        function saveStateFromInputs() {
+            currentState.title = document.getElementById('ex-title').value;
+            currentState.entrada = document.getElementById('eps-entrada').value;
+            currentState.proc = document.getElementById('eps-proc').value;
+            currentState.saida = document.getElementById('eps-saida').value;
+            currentState.processCode = document.getElementById('custom-process-code').value;
+            renderGeneratedCCode();
+        }
+
+        function renderVarTable() {
+            const tb = document.getElementById('var-table-body');
+            if (!tb) return;
+            tb.innerHTML = currentState.variables.map(v => {
+                const spec = v.type === 'int' ? '%d' : (v.type === 'double' ? '%lf' : '%f');
+                const cmd = v.role === 'input' ? ('scanf("' + spec + '", &' + v.name + ');') : ('printf("' + spec + '", ' + v.name + ');');
+                return '<tr><td class="py-2 px-3 font-mono font-bold text-white">' + v.name + '</td><td class="py-2 px-3 font-mono text-sky-400">' + v.type + '</td><td class="py-2 px-3 text-slate-300">' + v.why + '</td><td class="py-2 px-3 font-mono text-amber-300">' + spec + '</td><td class="py-2 px-3 font-mono text-emerald-300">' + cmd + '</td></tr>';
+            }).join('');
+        }
+
+        function renderTraceSimulator() {
+            const cfg = currentState.simConfig;
+            if (!cfg) return;
+            const inpBox = document.getElementById('sim-inputs-container');
+            inpBox.innerHTML = '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' + cfg.inputs.map(inp => {
+                const val = simInputValues[inp.name] !== undefined ? simInputValues[inp.name] : inp.default;
+                return '<div><label class="block text-[11px] font-bold text-slate-300 mb-1">' + inp.label + ':</label>' +
+                    '<input type="number" step="any" value="' + val + '" oninput="updateSimVal(\'' + inp.name + '\', this.value)" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-white"></div>';
+            }).join('') + '</div>';
+
+            updateTraceTableOnly();
+        }
+
+        function updateSimVal(name, val) {
+            simInputValues[name] = parseFloat(val) || 0;
+            updateTraceTableOnly();
+        }
+
+        function updateTraceTableOnly() {
+            const cfg = currentState.simConfig;
+            if (!cfg) return;
+            const steps = cfg.buildSteps(simInputValues);
+            document.getElementById('trace-table-head').innerHTML = '<tr><th class="py-2 px-3">Etapa</th><th class="py-2 px-3">Operação</th>' +
+                cfg.columns.map(c => '<th class="py-2 px-3">' + c + '</th>').join('') + '<th class="py-2 px-3">Explicação</th></tr>';
+            document.getElementById('trace-table-body').innerHTML = steps.map(s => '<tr><td class="py-2 px-3 font-bold text-blue-300">' + s.stage + '</td><td class="py-2 px-3 text-amber-300">' + s.op + '</td>' +
+                cfg.columns.map(c => '<td class="py-2 px-3 text-white font-bold">' + s.state[c] + '</td>').join('') +
+                '<td class="py-2 px-3 text-slate-300 font-sans">' + s.desc + '</td></tr>').join('');
+            const sum = cfg.summary(simInputValues);
+            document.getElementById('sim-summary-box').innerHTML = '<div class="text-sm font-extrabold text-emerald-300 font-mono">' + sum.title + '</div><div class="text-xs text-slate-300">' + sum.detail + '</div>';
+        }
+
+        function renderGeneratedCCode() {
+            const decls = currentState.variables.map(v => '    ' + v.type + ' ' + v.name + ';').join(NL);
+            const inputs = currentState.variables.filter(v => v.role === 'input').map(v => {
+                const spec = v.type === 'int' ? '%d' : '%f';
+                return '    printf("Digite ' + v.name + ': ");' + NL + '    scanf("' + spec + '", &' + v.name + ');';
+            }).join(NL);
+            const proc = (currentState.processCode || '').split(NL).map(l => '    ' + l).join(NL);
+            const code = ['#include <stdio.h>', '', 'int main(void) {', '    // 1. Declaracao das Gavetas de Memoria', decls, '', '    // 2. Entrada de Dados', inputs, '', '    // 3. Processamento e Saida', proc, '', '    return 0;', '}'].join(NL);
+            document.getElementById('generated-c-code').textContent = code;
+        }
+
+        function copyGeneratedCCode() {
+            copyText(document.getElementById('generated-c-code').textContent, 'Código C copiado!');
+        }
+
+        function copyText(text, msg) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => showToast(msg));
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(msg);
+            }
+        }
+
+        let toastTimer;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-msg');
+            if (!toast || !msg) return;
+            msg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3200);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAssocPreset('lousa-c');
+            updateTeacherChain();
+            updateBenchLamp();
+            updateEnergyCalculator();
+            updatePouilletSimple();
+            initResistorModule();
+            loadPreset('assoc-paralelo-3res');
+        });
+    </script>
+</body>
+</html>
