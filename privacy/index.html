@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090a09">
+<meta name="description" content="Laboratório gratuito de privacidade e OPSEC: entenda o que seu navegador expõe, avalie seu modelo de ameaça e monte um plano de proteção sem enviar os dados do diagnóstico.">
+<link rel="canonical" href="https://verticelabs.me/privacy/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://verticelabs.me/privacy/">
+<meta property="og:title" content="OPSEC LAB // Vértice Labs">
+<meta property="og:description" content="O que um site pode descobrir sobre você? Um laboratório educativo com diagnóstico local e plano de privacidade.">
+<title>OPSEC LAB // Vértice Labs</title>
+<style>
+:root{color-scheme:dark;--bg:#090a09;--panel:#111410;--panel2:#161a14;--ink:#ecebe2;--muted:#a2a79a;--line:#30382b;--lime:#d3fa43;--mono:'Cascadia Code',Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;background-image:linear-gradient(90deg,rgba(211,250,67,.023) 1px,transparent 1px),linear-gradient(rgba(211,250,67,.023) 1px,transparent 1px);background-size:28px 28px}
+a{color:var(--lime)}a:hover{text-decoration:none}button,input{font:inherit}.topline{height:5px;background:repeating-linear-gradient(115deg,var(--lime) 0 18px,var(--bg) 18px 25px)}.wrap{max-width:1120px;margin:auto;padding:0 22px}
+header{border-bottom:1px solid var(--line);background:#090a09ee}.nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:900;font-size:21px;color:var(--ink);text-decoration:none;letter-spacing:-1px}.brand span,.lime{color:var(--lime)}.navlinks{display:flex;gap:18px;font:12px var(--mono)}.navlinks a{color:var(--muted);text-decoration:none}.navlinks a:hover{color:var(--lime)}
+main{padding:55px 0 82px}.eyebrow,.kicker{font:11px/1.5 var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--lime)}h1{font:clamp(54px,11vw,116px)/.88 Impact,"Arial Narrow",sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:14px 0 24px}h2{font-size:clamp(26px,4vw,40px);line-height:1.08;letter-spacing:-.04em;margin:0 0 14px}h3{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}p{margin:0 0 12px}.lead{max-width:720px;font-size:19px;color:var(--muted)}.hero{padding-bottom:45px}.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--lime);background:var(--lime);color:#080a04;font:700 13px var(--mono);padding:13px 18px;text-decoration:none;cursor:pointer;min-height:45px}.btn:hover{background:#e3ff85}.btn.secondary{background:transparent;color:var(--lime)}.btn.secondary:hover{background:#202719}
+section.module{padding:40px 0;border-top:1px solid var(--line)}.sectionhead{max-width:850px;margin-bottom:22px}.sectionhead p{color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.panel{border:1px solid var(--line);background:var(--panel);padding:23px;min-width:0}.panel .num{color:var(--lime);font:12px var(--mono);margin-bottom:17px}.panel p{color:var(--muted);font-size:14px}.panel strong{color:var(--ink)}.tag{font:11px var(--mono);color:var(--lime);border:1px solid #4b5b37;display:inline-block;padding:4px 7px;margin-top:10px}
+.terminal{border:1px solid #4a5938;background:#0c100b}.terminalbar{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:11px 17px;font:11px var(--mono);color:var(--lime)}.terminalcontent{padding:21px}.muted{color:var(--muted)}.mono{font-family:var(--mono)}#scanresults{margin-top:23px}#scanresults[hidden]{display:none}.data{display:grid;grid-template-columns:220px minmax(0,1fr);gap:0;border-top:1px solid var(--line)}.data dt,.data dd{padding:11px 8px;margin:0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}.data dt{font:12px var(--mono);color:var(--muted)}.data dd{font:13px var(--mono);color:var(--ink)}.note{margin-top:16px;font-size:13px;color:var(--muted)}
+.checkgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.check{display:flex;align-items:flex-start;gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);cursor:pointer}.check:hover{border-color:#68854a}.check input{accent-color:var(--lime);width:19px;height:19px;flex:0 0 auto;margin-top:3px}.check span{font-size:14px}.check strong{display:block;font-size:14px}.check small{display:block;margin-top:4px;color:var(--muted);font-size:12px}.progress{display:flex;align-items:center;gap:15px;margin:18px 0 16px}.bar{height:8px;background:#2a3026;flex:1;overflow:hidden}.fill{height:100%;width:0;background:var(--lime);transition:width .18s}.score{color:var(--lime);font:13px var(--mono);white-space:nowrap}.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.warning{border-left:3px solid var(--lime);padding:15px 18px;background:#161a11;color:var(--muted);font-size:14px}.warning strong{color:var(--ink)}.sources{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}.sources a{font:12px var(--mono);border:1px solid var(--line);padding:9px 12px;text-decoration:none}.sources a:hover{border-color:var(--lime)}
+.footer{border-top:1px solid var(--line);padding:27px 0;color:var(--muted);font-size:12px}
+@media(max-width:750px){.grid,.checkgrid{grid-template-columns:1fr}.navlinks{display:none}.data{grid-template-columns:minmax(0,1fr)}.data dt{border-bottom:none;padding-bottom:0}.data dd{padding-top:3px}.terminalcontent{padding:15px}main{padding-top:40px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fill{transition:none}}
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header><nav class="wrap nav" aria-label="Navegação"><a class="brand" href="/">VÉRTICE<span>LABS®</span></a><div class="navlinks"><a href="#anatomia">O SETUP</a><a href="#diagnostico">DIAGNÓSTICO</a><a href="#plano">SEU PLANO</a><a href="/">CATÁLOGO</a></div></nav></header>
+<main class="wrap">
+<section class="hero" aria-labelledby="title">
+<div class="eyebrow">VÉRTICE LABS // PRIVACY / 001</div>
+<h1 id="title">OPSEC<br><span class="lime">LAB.</span></h1>
+<p class="lead">Um celular com GrapheneOS. Um notebook isolado. Nada de Wi-Fi de casa. O meme parece paranoia — mas qual problema cada camada realmente resolve?</p>
+<div class="hero-actions"><a class="btn" href="#diagnostico">VER O QUE SEU NAVEGADOR EXPÕE</a><a class="btn secondary" href="#plano">MONTAR PLANO DE DEFESA</a></div>
+<p class="note">Ferramenta educativa. Não realiza pentest, não verifica malware e não promete anonimato.</p>
+</section>
+<section class="module" id="anatomia" aria-labelledby="anatomia-title">
+<div class="sectionhead"><div class="kicker">01 / DESMONTANDO O MEME</div><h2 id="anatomia-title">Três camadas. Três problemas diferentes.</h2><p>Segurança do dispositivo, separação de identidades e privacidade de rede não são sinônimos.</p></div>
+<div class="grid">
+<article class="panel"><div class="num">CAMADA // 01</div><h3>Pixel + GrapheneOS</h3><p>Endurecimento do Android: isolamento de aplicativos, mitigação de exploits e controle granular de permissões. <strong>Não apaga sua identidade quando você entra em contas pessoais.</strong></p><span class="tag">SEGURANÇA DO DISPOSITIVO</span></article>
+<article class="panel"><div class="num">CAMADA // 02</div><h3>Notebook separado</h3><p>Um dispositivo dedicado reduz contaminação entre atividades. Qubes OS ou Tails podem servir a modelos de ameaça distintos. <strong>Pagar em dinheiro não neutraliza rastreamento online.</strong></p><span class="tag">COMPARTIMENTALIZAÇÃO</span></article>
+<article class="panel"><div class="num">CAMADA // 03</div><h3>Rede separada</h3><p>Evitar a rede doméstica remove um vínculo óbvio, mas a conexão utilizada ainda pode produzir registros. <strong>VPN e Tor não impedem identificação por login ou comportamento.</strong></p><span class="tag">PRIVACIDADE DE REDE</span></article>
+</div>
+</section>
+<section class="module" id="diagnostico" aria-labelledby="diagnostico-title">
+<div class="sectionhead"><div class="kicker">02 / SUPERFÍCIE DE EXPOSIÇÃO</div><h2 id="diagnostico-title">O que esta página consegue ler?</h2><p>Uma demonstração voluntária de dados que APIs comuns do navegador podem disponibilizar. Os valores dependem das proteções do navegador e podem ser reduzidos ou alterados.</p></div>
+<div class="terminal"><div class="terminalbar"><span>LOCAL BROWSER INSPECTION</span><span>SEM API EXTERNA</span></div>
+<div class="terminalcontent">
+<p class="muted">O diagnóstico é executado no seu aparelho. Nenhum resultado é enviado por este script, gravado em cookies ou armazenado em banco de dados.</p>
+<button id="scan" class="btn" type="button">LER SINAIS LOCAIS</button>
+<div id="scanresults" hidden aria-live="polite"><dl class="data" id="values"></dl><p class="note">Isto não mede se você está anônimo. IP público, VPN, Tor, malware, configuração do roteador e identidade real não são avaliados. A hospedagem recebe a requisição normal para entregar esta página.</p></div>
+</div></div>
+</section>
+<section class="module" id="plano" aria-labelledby="plano-title">
+<div class="sectionhead"><div class="kicker">03 / PLANO DE REDUÇÃO DE RISCO</div><h2 id="plano-title">Proteção útil antes de paranoia cara.</h2><p>Marque o que você já faz. O contador indica apenas itens declarados, não um nível de segurança certificado. Os dados não ficam salvos após sair da página.</p></div>
+<div class="checkgrid" id="checks">
+<label class="check"><input type="checkbox" data-label="Sistema operacional e navegador atualizados"><span><strong>Atualizações em dia</strong><small>Sistema, navegador e aplicativos com correções de segurança.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Gerenciador de senhas e senhas exclusivas"><span><strong>Senhas exclusivas</strong><small>Gerenciador de senhas; nada de reutilizar credenciais.</small></span></label>
+<label class="check"><input type="checkbox" data-label="MFA ou passkeys em contas importantes"><span><strong>MFA ou passkeys</strong><small>Proteção adicional para e-mail, contas financeiras e administrativas.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Criptografia de disco e bloqueio de tela"><span><strong>Disco e tela protegidos</strong><small>Criptografia, PIN ou senha forte e bloqueio automático.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Backup testado e protegido"><span><strong>Backup recuperável</strong><small>Cópia protegida e restauração periodicamente testada.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Permissões e extensões revisadas"><span><strong>Privilégio mínimo</strong><small>Remover extensões desnecessárias e revisar acesso a câmera, microfone e arquivos.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Contas pessoais e profissionais separadas"><span><strong>Separação de contas</strong><small>Não misturar identidades pessoais, trabalho e testes de risco.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Dispositivos e redes organizados por risco"><span><strong>Ambientes por finalidade</strong><small>Separar operações sensíveis sem presumir que uma VPN resolve tudo.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Modelo de ameaça documentado"><span><strong>Modelo de ameaça</strong><small>Definir de quem você precisa se proteger, o que proteger e quanto esforço investir.</small></span></label>
+<label class="check"><input type="checkbox" data-label="Treino de phishing e recuperação de conta"><span><strong>Preparação para incidentes</strong><small>Reconhecer golpes e saber recuperar ou revogar acessos.</small></span></label>
+</div>
+<div class="progress"><div class="bar" role="progressbar" aria-label="Itens declarados como concluídos" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progress"><div class="fill" id="fill"></div></div><div class="score" id="count">0 / 10</div></div>
+<div class="actions"><button class="btn" id="copy" type="button">COPIAR PLANO PENDENTE</button><button class="btn secondary" id="reset" type="button">LIMPAR MARCAÇÕES</button></div>
+<p class="note" id="feedback" role="status" aria-live="polite">Comece pelo básico: atualizações, senhas, MFA e backups geralmente oferecem mais proteção prática do que comprar um segundo notebook.</p>
+</section>
+<section class="module" aria-labelledby="limites-title">
+<div class="sectionhead"><div class="kicker">04 / LIMITES E FONTES</div><h2 id="limites-title">Ameaças reais exigem decisões reais.</h2></div>
+<div class="warning"><strong>Não existe configuração magicamente invisível.</strong> Um site que você visita recebe sua conexão; provedores, redes, serviços e contas geram diferentes formas de metadados. Reduzir exposição e reduzir possibilidade de identificação são objetivos relacionados, mas diferentes. Este laboratório não coleta resultados do diagnóstico nem usa pixels de anúncios.</div>
+<div class="sources"><a href="https://grapheneos.org/faq#supported-devices" target="_blank" rel="noopener noreferrer">DISPOSITIVOS GRAPHENEOS ↗</a><a href="https://grapheneos.org/features" target="_blank" rel="noopener noreferrer">RECURSOS GRAPHENEOS ↗</a><a href="https://www.qubes-os.org/intro/" target="_blank" rel="noopener noreferrer">QUBES OS ↗</a><a href="https://tails.net/about/index.en.html" target="_blank" rel="noopener noreferrer">TAILS ↗</a><a href="https://support.torproject.org/" target="_blank" rel="noopener noreferrer">TOR SUPPORT ↗</a></div>
+</section>
+</main>
+<footer class="footer"><div class="wrap">VÉRTICE LABS · OPSEC LAB / 001 · PROCESSAMENTO LOCAL NO NAVEGADOR · <a href="/">VOLTAR AO CATÁLOGO</a></div></footer>
+<script>
+(function(){
+'use strict';
+var scan=document.getElementById('scan'), results=document.getElementById('scanresults'), values=document.getElementById('values');
+function row(name,value){var dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=name;dd.textContent=String(value==null?'Não disponível':value);values.appendChild(dt);values.appendChild(dd);}
+scan.addEventListener('click',function(){
+  values.replaceChildren();
+  row('HTTPS / contexto seguro',window.isSecureContext?'Sim':'Não');
+  row('Identificação declarada do navegador',navigator.userAgent||'Omitida');
+  row('Idioma(s)',(navigator.languages||[]).join(', ')||'Não disponível');
+  var tz='Não disponível';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||tz;}catch(e){}
+  row('Fuso horário exposto',tz);
+  row('Resolução reportada',window.screen?screen.width+' × '+screen.height:'Não disponível');
+  row('Núcleos lógicos reportados',navigator.hardwareConcurrency||'Não disponível');
+  row('Memória aproximada (se disponível)',navigator.deviceMemory?navigator.deviceMemory+' GiB (estimativa)':'Não disponível');
+  row('Global Privacy Control',navigator.globalPrivacyControl===true?'Ativado':navigator.globalPrivacyControl===false?'Desativado':'Não informado');
+  row('Do Not Track',navigator.doNotTrack==='1'?'Solicitado':navigator.doNotTrack==='0'?'Não solicitado':'Não informado');
+  row('Cookies permitidos (sinal)',navigator.cookieEnabled?'Sim':'Não');
+  results.hidden=false;scan.textContent='ATUALIZAR LEITURA';
+});
+var boxes=Array.from(document.querySelectorAll('#checks input[type=checkbox]')), progress=document.getElementById('progress'),fill=document.getElementById('fill'), count=document.getElementById('count'), feedback=document.getElementById('feedback');
+function update(){var checked=boxes.filter(function(x){return x.checked;}).length;count.textContent=checked+' / '+boxes.length;fill.style.width=(checked/boxes.length*100)+'%';progress.setAttribute('aria-valuenow',String(checked));}
+boxes.forEach(function(x){x.addEventListener('change',update);});
+document.getElementById('reset').addEventListener('click',function(){boxes.forEach(function(x){x.checked=false;});update();feedback.textContent='Marcações limpas neste navegador.';});
+document.getElementById('copy').addEventListener('click',async function(){
+ var remaining=boxes.filter(function(x){return !x.checked;}).map(function(x){return '- [ ] '+x.dataset.label;});
+ var text='VÉRTICE LABS // PLANO DE PRIVACIDADE\n'+'Itens pendentes ('+remaining.length+'/'+boxes.length+'):\n'+(remaining.join('\n')||'Nenhuma pendência marcada.')+'\n\nChecklist autodeclarado, não é auditoria de segurança.\nhttps://verticelabs.me/privacy/';
+ try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);feedback.textContent='Plano copiado. Nada foi enviado ao site.';}else{throw Error('Clipboard indisponível');}}
+ catch(e){var textarea=document.createElement('textarea');textarea.value=text;textarea.style.cssText='position:fixed;left:-9999px;top:0';document.body.appendChild(textarea);textarea.select();var ok=false;try{ok=document.execCommand('copy');}catch(err){}textarea.remove();feedback.textContent=ok?'Plano copiado. Nada foi enviado ao site.':'Cópia automática não disponível neste navegador.';}
+});
+update();
+})();
+</script>
+</body>
+</html>
