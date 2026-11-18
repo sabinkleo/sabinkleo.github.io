@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>N1 Etiquetas QR · Vértice Labs</title>
+<meta name="theme-color" content="#10140e">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" defer></script>
+<style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;--bg:#10141c;--fg:#eaf0f3;--a:#ccfa55;--line:#44505c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg)}
+header{background:#10140e;border-bottom:4px solid var(--a);padding:16px max(16px,calc((100% - 1080px)/2))}
+header a{color:var(--a)}main{max-width:1080px;margin:auto;padding:20px}h1{margin:4px 0;font-size:28px}h2{font-size:17px}
+p{line-height:1.5}.muted{color:#b0bfca;font-size:13px}
+.panel{background:#1d2631;border:1px solid var(--line);border-radius:10px;padding:14px;margin:12px 0}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+label{display:grid;gap:4px;font-size:12px;color:#b9c5cc}
+input,select,button{font:inherit;color:var(--fg);border-radius:5px;padding:9px;background:#101820;border:1px solid var(--line)}
+button{background:var(--a);color:#17200f;font-weight:700;cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}
+#sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.label{background:#fff;color:#111;border:1px solid #444;border-radius:5px;padding:12px;text-align:center;break-inside:avoid;page-break-inside:avoid;min-height:240px}
+.label svg{display:block;margin:auto;max-width:160px;width:100%;height:auto;color:#000}
+.label small{font-size:10px;word-break:break-word;display:block;margin-top:7px}.label b{display:block;font-size:14px}
+.label .type{font-size:10px;text-transform:uppercase;font-weight:800;letter-spacing:1px}
+.label .payload{font-family:monospace;font-size:11px;overflow-wrap:anywhere;margin-top:5px}
+#message{min-height:20px}.warn{color:#ffda84}
+@media print{@page{size:A4;margin:9mm}header,.panel,.noprint{display:none!important}body{background:white}main{padding:0;max-width:none}#sheet{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}.label{min-height:62mm;max-height:80mm;padding:5mm;border:1px solid #222}.label svg{max-width:37mm} }
+</style>
+</head><body>
+<header><strong>VÉRTICE LABS · N1</strong> <a href="../visao/">N1 Visão</a> · <a href="../">Estoque N1</a></header>
+<main>
+<h1>Gerador de etiquetas QR</h1>
+<p class="muted">Cada etiqueta codifica só um identificador (<code>N1I:</code>) ou uma localização (<code>N1L:</code>). A biblioteca cria o QR no próprio navegador; os textos não são enviados a um servidor, mas a biblioteca depende de uma CDN na primeira carga.</p>
+<section class="panel">
+<h2>Importar itens existentes</h2>
+<div class="row">
+<label>Ambiente<select id="mode"><option value="meu">Meu estoque</option><option value="demo">Demonstração</option></select></label>
+<label>Perfil<select id="profile"><option value="almox">Almoxarifado</option><option value="ferr">Ferramentaria</option><option value="ativo">Ativos</option><option value="epi">EPI</option><option value="fifo">FIFO</option></select></label>
+<label>Rodada da demonstração<select id="round"><option>A</option><option>B</option></select></label>
+<button id="load">Carregar itens cadastrados</button>
+</div>
+<p id="loaded" class="muted"></p>
+</section>
+<section class="panel">
+<h2>Gerar etiquetas individuais</h2>
+<div class="row">
+<label>Tipo<select id="type"><option value="item">Ferramenta ou item (N1I)</option><option value="location">Localização (N1L)</option></select></label>
+<label style="flex:1">Código do item ou descrição exata do endereço<input id="value" maxlength="80" placeholder="FER-001 ou Armário Manut."></label>
+<button id="add">Gerar etiqueta</button>
+</div>
+<p class="muted">Para validar uma ferramenta, a etiqueta do item precisa corresponder a um código já cadastrado no N1. O local deve ser idêntico ao endereço cadastrado.</p>
+</section>
+<div class="row noprint"><button id="print">Imprimir etiquetas</button><button id="clear">Limpar etiquetas da tela</button><span class="muted" id="count">0 etiquetas</span></div>
+<p id="message" class="warn" role="status"></p>
+<div id="sheet" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const prefix="nucleo_estoque_v2_local";
+let rows=[],seen=new Set();
+function make(type,value,label){
+ if(!/^[\x20-\x7e\u00c0-\u024f\u0300-\u036f]{1,80}$/.test(value)){msg("Use código ou endereço legível de até 80 caracteres.");return;}
+ const payload=(type==="location"?"N1L:":"N1I:")+value.trim();
+ if(seen.has(payload))return;
+ if(typeof window.qrcode!=="function"){msg("Biblioteca QR indisponível. Verifique a conexão com a CDN e recarregue.");return;}
+ try{
+  const qr=window.qrcode(0,"M");qr.addData(payload,"Byte");qr.make();
+  rows.push({payload,type,label:label||value,svg:qr.createSvgTag(4,4)});seen.add(payload);draw();msg("");
+ }catch(e){msg("Não foi possível criar QR: "+e.message);}
+}
+function msg(s){$("message").textContent=s;}
+function draw(){
+ const box=$("sheet");box.replaceChildren();
+ for(const x of rows){
+  const el=document.createElement("article");el.className="label";
+  const h=document.createElement("div");h.className="type";h.textContent=x.type==="item"?"Item / ferramenta":"Local / posição";
+  const name=document.createElement("b");name.textContent=x.label;
+  const code=document.createElement("div");code.className="payload";code.textContent=x.payload;
+  const graphic=document.createElement("div");graphic.innerHTML=x.svg;
+  el.append(h,name,graphic,code);box.appendChild(el);
+ }
+ $("count").textContent=rows.length+" etiquetas";
+}
+function readDB(){
+ const mode=$("mode").value,pf=$("profile").value,round=$("round").value;
+ const key=prefix+"_"+mode+"_"+pf+(mode==="demo"?"_"+round:"");
+ let db=null;try{db=JSON.parse(localStorage.getItem(key)||"null");}catch(e){}
+ if(!db||!Array.isArray(db.itens)){msg("Este perfil ainda não possui dados salvos. Abra o N1, faça uma movimentação ou cadastre itens no Meu estoque, e depois recarregue.");$("loaded").textContent="Nenhum cadastro carregado.";return;}
+ let itemCount=0,locCount=0;
+ for(const item of db.itens){if(typeof item.id==="string"&&item.id){make("item",item.id,item.nome||item.id);itemCount++;}
+  if(typeof item.local==="string"&&item.local&&item.local.length<=80){const before=rows.length;make("location",item.local,item.local);if(rows.length>before)locCount++;}}
+ $("loaded").textContent=itemCount+" códigos de itens e "+locCount+" posições únicas identificadas (localmente).";
+}
+try{const v=JSON.parse(sessionStorage.getItem(prefix+"_view")||"null");if(Array.isArray(v)){if(["demo","meu"].includes(v[0]))$("mode").value=v[0];if(["almox","ferr","ativo","epi","fifo"].includes(v[1]))$("profile").value=v[1];if(["A","B"].includes(v[2]))$("round").value=v[2];}}catch(e){}
+$("load").onclick=readDB;
+$("add").onclick=()=>make($("type").value,$("value").value,$("value").value);
+$("value").onkeydown=e=>{if(e.key==="Enter")$("add").click();};
+$("print").onclick=()=>{if(!rows.length){msg("Crie pelo menos uma etiqueta.");return;}window.print();};
+$("clear").onclick=()=>{rows=[];seen.clear();draw();msg("Etiquetas removidas da tela.");};
+})();
+</script>
+</body></html>
