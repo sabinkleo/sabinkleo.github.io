@@ -14,6 +14,8 @@ runtime dependencies. The tuning module keeps its configured WhatsApp
 destination, performs all assessment locally in the browser, and does not
 claim that a WhatsApp click is a confirmed sale or qualified lead.
 
+- `/privacy/` — OPSEC Lab: an educational, client-side-only browser signal inspection and self-assessed privacy checklist. No external JS, analytics pixel, backend, cookies, or persistence on this module. Results are not transmitted by its script; regular hosting requests remain possible.
+
 ## Local verification
 
 From the repository root:
