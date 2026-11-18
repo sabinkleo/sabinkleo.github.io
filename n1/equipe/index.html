@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10140e">
+  <title>Guia da equipe N1 | Vértice Labs</title>
+  <style>
+    :root{color-scheme:light dark;--bg:#f7f8fa;--surface:#fff;--text:#14213d;--muted:#4d5969;--line:#ccd3db;--accent:#155794}
+    @media(prefers-color-scheme:dark){:root{--bg:#10141c;--surface:#19212c;--text:#e9eef4;--muted:#b3bfcb;--line:#364252;--accent:#9ecfff}}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:1rem/1.55 system-ui,sans-serif}
+    header{background:#10140e;border-top:4px solid #d3fa43;color:white}header div,main{max-width:54rem;margin:auto;padding:1rem}
+    header div{display:flex;justify-content:space-between;align-items:center;gap:1rem}header a{color:#d3fa43}header a:first-child{color:white;font-weight:800;text-decoration:none}
+    header span{color:#d3fa43}main{padding-block:clamp(1.5rem,4vw,3rem)}h1,h2,p{margin:0}h1{font-size:clamp(2rem,6vw,3.25rem);letter-spacing:-.045em;line-height:1.1}h2{font-size:1.3rem;line-height:1.25}
+    .intro{color:var(--muted);max-width:60ch;margin:.7rem 0 1.4rem}.tasks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:1rem}
+    article{display:flex;flex-direction:column;align-items:flex-start;gap:.65rem;padding:1.25rem;background:var(--surface);border:1px solid var(--line);border-radius:.65rem}
+    article p{flex:1;color:var(--muted)}a{color:var(--accent)}.start{display:inline-block;border-radius:.4rem;background:#d3fa43;color:#10140e;text-decoration:none;font-weight:700;padding:.65rem .9rem}
+    .work{margin-top:1.8rem;border-top:1px solid var(--line);padding-top:1.25rem}ol{padding-left:1.4rem;max-width:72ch}li{padding-left:.25rem;margin:.65rem 0}details{margin:1.1rem 0;border-left:3px solid var(--line);padding-left:1rem}summary{cursor:pointer;font-weight:650}details p{margin:.55rem 0;max-width:72ch}
+    :focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+  </style>
+</head>
+<body>
+  <header><div><a href="../../" aria-label="Vértice Labs, catálogo">VÉRTICE<span>LABS</span></a><a href="../">Abrir estoque N1</a></div></header>
+  <main>
+    <h1>Guia da equipe N1</h1>
+    <p class="intro">Escolham uma tarefa cada. Os treinos usam dados fictícios e podem ser feitos em celulares diferentes. Depois, troquem de função.</p>
+    <div class="tasks">
+      <article>
+        <h2>Contar o estoque</h2>
+        <p>Registre quantas peças encontrou e descubra se falta ou sobra material. Ao terminar, baixe o CSV de conciliação.</p>
+        <a class="start" href="../?treino=contagem">Treinar contagem</a>
+      </article>
+      <article>
+        <h2>Conferir a prateleira</h2>
+        <p>Leia a etiqueta da peça e a da prateleira. Experimente uma posição correta e outra trocada. Ao terminar, baixe o CSV de eventos.</p>
+        <a class="start" href="../visao/?treino=endereco">Treinar conferência de endereço</a>
+      </article>
+    </div>
+    <section class="work">
+      <h2>Na bancada, com o estoque da equipe</h2>
+      <ol>
+        <li><strong>Preparem o cadastro.</strong> Abram o estoque N1, escolham o perfil e o ambiente <strong>Meu estoque</strong>. Em <strong>Itens</strong>, cadastrem código, nome, endereço e saldo inicial de cada peça.</li>
+        <li><strong>Quem conta</strong> abre <strong>Contar e conciliar</strong>, preenche a coluna <strong>Contado</strong>, reconta as divergências e usa <strong>Exportar CSV</strong>. O botão <strong>Ajustar ao contado</strong> altera o saldo registrado. Usem essa opção só depois de fechar a recontagem.</li>
+        <li><strong>Quem confere o endereço</strong> abre <strong>Gerar e imprimir QR Codes</strong> no N1, carrega os itens e imprime as etiquetas. Fixe uma na peça e outra na prateleira. Em <strong>N1 Visão</strong>, leia primeiro a peça, depois o endereço e use <strong>Exportar eventos CSV</strong>. Também dá para digitar os códigos.</li>
+      </ol>
+      <details>
+        <summary>Como passar o trabalho para outra pessoa?</summary>
+        <p>No mesmo aparelho, usem o mesmo navegador, perfil e ambiente. Entreguem os dois CSVs com a lista dos itens que precisam de recontagem ou de conferência de endereço.</p>
+        <p>Para trocar de aparelho, em <strong>Dados e testes</strong> usem <strong>Baixar backup</strong>. No próximo aparelho, <strong>Restaurar backup</strong> substitui o estoque daquele perfil. Façam a passagem com uma pessoa editando por vez. O histórico de leituras QR vai no CSV de eventos, em separado.</p>
+      </details>
+    </section>
+  </main>
+</body>
+</html>

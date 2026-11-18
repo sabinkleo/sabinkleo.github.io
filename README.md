@@ -6,11 +6,12 @@ Static GitHub Pages site for `https://verticelabs.me/`.
 
 - `/` — extensible Vértice Labs module catalog.
 - `/n1/` — local inventory, movements and reconciliation across five stockroom profiles. The page includes a downloadable offline HTML and two demonstration rounds.
+- [Guia da equipe N1](https://verticelabs.me/n1/equipe/) — Portuguese instructions, two independent practice tasks with CSV handoffs, and a guide to working on the same stockroom dataset.
+- [N1 Visão](https://verticelabs.me/n1/visao/) — QR shelf checks and an optional [on-device photo comparison](https://verticelabs.me/n1/visao/fotos/). Photo comparison downloads TensorFlow.js and MobileNet V1 on demand and runs inference on the browser's CPU backend.
 - `/tuning/` — automotive pre-dyno intake tool.
 - `/tunning/` — compatibility redirect to `/tuning/`.
 
-The site preserves `CNAME` for `verticelabs.me` and has no build step or
-runtime dependencies. The tuning module keeps its configured WhatsApp
+The site preserves `CNAME` for `verticelabs.me` and has no build step. The inventory core is self-contained. The tuning module keeps its configured WhatsApp
 destination, performs all assessment locally in the browser, and does not
 claim that a WhatsApp click is a confirmed sale or qualified lead.
 
