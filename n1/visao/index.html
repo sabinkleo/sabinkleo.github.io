@@ -65,6 +65,7 @@ th{color:var(--mut)}.scroll{overflow-x:auto;max-height:280px;overflow-y:auto}
  <p class="muted">Os eventos ficam apenas neste navegador, separados por perfil/ambiente. Para auditoria entre dispositivos será necessário um servidor.</p>
 </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" defer></script>
 <script>
 "use strict";
 (function(){
@@ -151,10 +152,19 @@ function handleDecoded(s){
 }
 async function detectionLoop(){
  while(loopActive&&camera){
-  if(detector&&$("cam").readyState>=2){
-   try{const codes=await detector.detect($("cam"));if(codes.length&&codes[0].rawValue)handleDecoded(codes[0].rawValue);}catch(e){}
+  if($("cam").readyState>=2){
+   if(detector){
+    try{const codes=await detector.detect($("cam"));if(codes.length&&codes[0].rawValue)handleDecoded(codes[0].rawValue);}catch(e){}
+   }else if(typeof window.jsQR==="function"){
+    try{
+     const c=$("canvas"),v=$("cam"),w=Math.min(640,v.videoWidth),h=Math.round(w*v.videoHeight/v.videoWidth);
+     if(w>0&&h>0){c.width=w;c.height=h;const ctx=c.getContext("2d",{willReadFrequently:true});ctx.drawImage(v,0,0,w,h);
+      const image=ctx.getImageData(0,0,w,h),code=window.jsQR(image.data,w,h,{inversionAttempts:"dontInvert"});
+      if(code&&code.data)handleDecoded(code.data);}
+    }catch(e){}
+   }
   }
-  await new Promise(r=>setTimeout(r,280));
+  await new Promise(r=>setTimeout(r,detector?280:440));
  }
 }
 async function startCamera(){
@@ -167,10 +177,10 @@ async function startCamera(){
   $("cam").srcObject=camera;await $("cam").play();
   $("stop").disabled=false;$("capture").disabled=false;
   if("BarcodeDetector" in window){
-   const formats=await BarcodeDetector.getSupportedFormats();
-   detector=formats.includes("qr_code")?new BarcodeDetector({formats:["qr_code"]}):null;
+   try{const formats=await BarcodeDetector.getSupportedFormats();detector=formats.includes("qr_code")?new BarcodeDetector({formats:["qr_code"]}):null;}catch(e){detector=null;}
   }
-  $("cameraStatus").textContent=detector?"Câmera ativa · apontar para QR.":"Câmera ativa, mas leitura QR automática não suportada neste navegador. Use código manual.";
+  $("cameraStatus").textContent=detector?"Câmera ativa · leitor QR nativo.":
+    (typeof window.jsQR==="function"?"Câmera ativa · leitor QR compatível. Aponte para a etiqueta.":"Câmera ativa, mas leitor QR indisponível. Use entrada manual.");
   loopActive=true;detectionLoop();
  }catch(e){$("cameraStatus").textContent="Não foi possível abrir a câmera: "+e.message+" (verifique permissão e uso por outro app).";stopCamera();}
 }
