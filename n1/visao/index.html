@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>N1 Visão · Leitor QR e verificação | Vértice Labs</title>
+<meta name="description" content="Leitura QR por webcam, conferência de endereço, alertas de estoque e verificação visual opcional por Google Gemini.">
+<meta name="theme-color" content="#10140e">
+<style>
+:root{color-scheme:dark;--bg:#10141c;--card:#1a222d;--fg:#e9eef4;--mut:#a3b2bd;--border:#34424e;--green:#a9ee59;--warn:#ffd166;--red:#ff8585}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.48 system-ui,"Segoe UI",sans-serif}
+header{padding:16px max(16px,calc((100% - 1100px)/2));background:#10140e;border-bottom:3px solid var(--green)}
+.logo{font-size:19px;font-weight:800;letter-spacing:-1px}.logo span{color:var(--green)}a{color:var(--green)}h1{font-size:clamp(25px,4vw,35px);margin:12px 0 4px}h2{font-size:17px;margin:0 0 10px}
+main{max-width:1100px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:14px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:15px;min-width:0}
+.top{grid-column:1/-1}.muted{color:var(--mut);font-size:13px}.tag{display:inline-block;border-radius:30px;background:#30401f;color:var(--green);padding:2px 9px;font-size:12px}
+.tag.warn{background:#403516;color:var(--warn)}.tag.bad{background:#492525;color:var(--red)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;align-items:center}.grow{flex:1}
+input,button,select{font:inherit;border:1px solid var(--border);border-radius:6px;padding:9px;background:#0f161e;color:var(--fg);min-width:0}
+input{flex:1;min-width:145px}button{cursor:pointer;background:#2b3d24;color:var(--green);font-weight:700}
+button.primary{background:var(--green);border-color:var(--green);color:#142018}
+button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+video{width:100%;aspect-ratio:4/3;object-fit:cover;background:#080c12;border-radius:8px;border:1px solid var(--border)}
+.alert{border:1px solid var(--border);background:#141a21;border-radius:8px;padding:10px;margin:10px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.alert.warn{border-color:#9a762f;background:#382e19}.alert.bad{border-color:#a54b49;background:#402222}.alert.good{border-color:#527d31;background:#24301c}
+strong{color:#fff}label{display:block;color:var(--mut);font-size:13px;margin:6px 0}small{color:var(--mut)}.scanmeta{font-family:ui-monospace,Consolas,monospace;overflow-wrap:anywhere}
+code{background:#10161f;padding:2px 4px;border-radius:4px}
+table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;border-bottom:1px solid var(--border);padding:7px 4px;vertical-align:top;overflow-wrap:anywhere}
+th{color:var(--mut)}.scroll{overflow-x:auto;max-height:280px;overflow-y:auto}
+#snap{max-width:100%;border-radius:7px;display:none}#cam{display:block}#logtable td:first-child{white-space:nowrap}
+@media(max-width:800px){main{grid-template-columns:1fr}.top{grid-column:1}}
+</style></head><body>
+<header><a class="logo" href="../../">VÉRTICE<span>LABS</span></a> · <a href="../">Voltar ao Núcleo N1</a></header>
+<main>
+<section class="panel top">
+  <span class="tag">N1 VISÃO · MVP</span>
+  <h1>Câmera + QR + auditoria de ferramentas</h1>
+  <p class="muted">Lê QR localmente, cruza peça e endereço com o estoque N1 e registra indícios de divergência. A análise de imagem por Google Gemini é opcional. Nenhuma câmera é ativada sem seu clique.</p>
+  <div class="row"><span id="secure" class="tag warn">Verificando HTTPS…</span><span id="context" class="muted">Carregando inventário…</span></div>
+</section>
+<section class="panel">
+ <h2>1. Leitura pela webcam</h2>
+ <video id="cam" autoplay muted playsinline aria-label="Prévia da câmera"></video><canvas id="canvas" hidden></canvas>
+ <div class="row"><button class="primary" id="start">Abrir câmera</button><button id="stop" disabled>Desligar câmera</button><button id="capture" disabled>Capturar foto</button></div>
+ <p id="cameraStatus" class="muted" role="status">A câmera só é usada com autorização do navegador. Prefira Chrome/Edge com HTTPS.</p>
+ <label for="qr">Código manual ou QR detectado</label>
+ <div class="row"><input id="qr" placeholder="N1I:FER-001 ou N1L:Armário Manut." aria-label="Texto do QR"><button id="submit">Ler</button></div>
+ <p class="muted">Etiquetas: <code>N1I:FER-001</code> identifica item; <code>N1L:Armário Manut.</code> identifica endereço. Também aceita o código do item puro.</p>
+ <div id="result" class="alert" role="status">Leia primeiro uma peça, depois o QR da posição em que ela foi colocada.</div>
+ <div id="current" class="scanmeta muted">Item selecionado: nenhum</div>
+ <div id="photoBox" style="display:none;margin-top:10px"><h2>Foto capturada</h2><img id="snap" alt="Foto capturada para verificação da ferramenta"><p class="muted">A imagem permanece nesta aba até você optar por enviá-la ao verificador. Fotos não entram no histórico local.</p></div>
+</section>
+<section class="panel">
+ <h2>2. Verificação de localização</h2>
+ <p class="muted">O local esperado vem do cadastro da peça no N1. Se o QR de localização for diferente, haverá um alerta de reposição incorreta. Nenhum saldo ou endereço é alterado automaticamente.</p>
+ <div class="alert" id="compare">Selecione uma peça para comparar.</div>
+ <div class="row"><button id="export">Exportar eventos CSV</button><button id="refresh">Atualizar inventário</button></div>
+ <h2 style="margin-top:16px">3. Verificar foto com Google AI</h2>
+ <p class="muted">Requer backend privado com API Gemini e token de operador. Nunca cole a chave Gemini nesta página pública.</p>
+ <label for="endpoint">Endpoint seguro do verificador (Cloudflare Worker)</label>
+ <input id="endpoint" placeholder="https://seu-worker.workers.dev/verify" autocomplete="off" spellcheck="false" style="width:100%">
+ <label for="token">Token de operador (só na memória desta aba)</label>
+ <input id="token" type="password" placeholder="Token privado do Worker" autocomplete="off" style="width:100%">
+ <div class="row"><button id="verify" disabled>Verificar ferramenta pela foto</button></div>
+ <div id="aiResult" class="alert">A IA só estima compatibilidade visual. Nunca comprova furto, autoria ou uma transação de estoque.</div>
+ <h2 style="margin-top:16px">4. Eventos desta sessão de estoque</h2>
+ <div class="scroll"><table id="logtable"><thead><tr><th>Quando</th><th>Evento</th><th>Detalhes</th></tr></thead><tbody id="logs"><tr><td colspan="3">Sem eventos registrados.</td></tr></tbody></table></div>
+ <p class="muted">Os eventos ficam apenas neste navegador, separados por perfil/ambiente. Para auditoria entre dispositivos será necessário um servidor.</p>
+</section>
+</main>
+<script>
+"use strict";
+(function(){
+const $=id=>document.getElementById(id);
+const K="nucleo_estoque_v2_local";
+const profiles=["almox","ferr","ativo","epi","fifo"];
+const states=["demo","meu"];
+let camera=null,detector=null,loopActive=false,selected=null,lastSeen="",lastSeenAt=0,captured=null,db=null,view=null,events=[],logKey="";
+function safe(x){return String(x==null?"":x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function normalize(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().replace(/\s+/g," ").toLowerCase();}
+function csvCell(x){let s=String(x==null?"":x);if(/^[\s]*[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"';}
+function readView(){
+ try{const v=JSON.parse(sessionStorage.getItem(K+"_view")||"null");if(Array.isArray(v)&&states.includes(v[0])&&profiles.includes(v[1])&&["A","B"].includes(v[2]))return v;}catch(e){}
+ return ["demo","almox","A"];
+}
+function keyFor(v){return K+"_"+v[0]+"_"+v[1]+(v[0]==="demo"?"_"+v[2]:"");}
+function readInventory(){
+ view=readView();
+ const key=keyFor(view);let raw=null;
+ try{raw=localStorage.getItem(key);}catch(e){}
+ try{const d=JSON.parse(raw||"null");db=d&&Array.isArray(d.itens)&&Array.isArray(d.mov)?d:null;}catch(e){db=null;}
+ logKey="n1_vision_events_v1_"+view.join("_");
+ try{const a=JSON.parse(localStorage.getItem(logKey)||"[]");events=Array.isArray(a)?a.slice(-250):[];}catch(e){events=[];}
+ $("context").textContent="Perfil: "+view[1]+" · "+(view[0]==="demo"?"demonstração "+view[2]:"meu estoque")+" · "+(db?db.itens.length+" itens":"sem dados encontrados; abra o N1 primeiro");
+ drawComparison();drawLogs();
+}
+function addEvent(type,detail,code){
+ const ev={at:new Date().toISOString(),type,code:code||selected?.id||"",detail:String(detail).slice(0,250)};
+ events.push(ev);events=events.slice(-250);
+ try{localStorage.setItem(logKey,JSON.stringify(events));}catch(e){$("cameraStatus").textContent="Armazenamento indisponível. Exporte o CSV antes de sair.";}
+ drawLogs();
+}
+function drawLogs(){
+ $("logs").innerHTML=events.length?events.slice().reverse().slice(0,30).map(e=>"<tr><td>"+safe(new Date(e.at).toLocaleString("pt-BR"))+"</td><td>"+safe(e.type)+"</td><td>"+safe(e.code+" · "+e.detail)+"</td></tr>").join(""):'<tr><td colspan="3">Sem eventos registrados.</td></tr>';
+}
+function status(message,level){
+ $("result").className="alert"+(level?" "+level:"");$("result").textContent=message;
+}
+function stock(id){
+ if(!db)return null;
+ return Math.round(db.mov.filter(m=>m.id===id).reduce((x,m)=>x+(Number(m.q)||0),0)*1000)/1000;
+}
+function drawComparison(actual){
+ if(!selected){$("current").textContent="Item selecionado: nenhum";$("compare").textContent="Leia primeiro o QR de uma ferramenta.";return;}
+ const s=stock(selected.id),expected=selected.local||"(não cadastrado)";
+ $("current").textContent="Selecionado: "+selected.id+" · "+selected.nome;
+ $("compare").className="alert"+(actual&&normalize(actual)!==normalize(expected)?" bad":"");
+ $("compare").textContent="Item: "+selected.nome+"\nCódigo: "+selected.id+"\nLocal esperado: "+expected+"\nSaldo registrado: "+s+(actual?"\nLocal lido: "+actual:"");
+}
+function scan(raw){
+ const v=String(raw||"").trim().slice(0,180);if(!v)return;
+ let kind="item",value=v;
+ if(/^N1L[:|]/i.test(v)){kind="location";value=v.slice(4).trim();}
+ else if(/^N1I[:|]/i.test(v)){kind="item";value=v.slice(4).trim();}
+ else if(/^https?:\/\//i.test(v)){
+  try{const u=new URL(v);if(u.origin!==location.origin)throw Error("outro domínio");value=u.searchParams.get("item")||"";}catch(e){status("QR com endereço externo recusado. Use o formato N1I:CODIGO.","warn");return;}
+ }
+ $("qr").value=v;
+ if(kind==="item"){
+  if(!db){status("Nenhum inventário local disponível neste perfil. Abra o N1, carregue a demonstração e retorne.","warn");return;}
+  const it=db.itens.find(i=>normalize(i.id)===normalize(value));
+  if(!it){status("Item não cadastrado: "+value+". Não foi possível verificar a peça.","warn");addEvent("ITEM_DESCONHECIDO","QR não consta no inventário",value);return;}
+  selected=it;drawComparison();status("Peça selecionada: "+it.id+" · "+it.nome+". Agora leia o QR do endereço.","good");
+  const s=stock(it.id),count=db.cont&&db.cont[it.id];
+  if(typeof count==="number"&&count < s-(Number(db.tol)||0)){
+   status("ALERTA DE INVENTÁRIO: contagem "+count+" < saldo "+s+". Divergência de estoque, NÃO prova de furto.","warn");
+   addEvent("DIVERGENCIA_ESTOQUE","Contagem "+count+" versus saldo "+s,it.id);
+  }
+  return;
+ }
+ if(!selected){status("Leia a peça antes do endereço.","warn");return;}
+ drawComparison(value);
+ if(!selected.local){status("A peça não possui local esperado cadastrado. Cadastre um endereço no N1.","warn");return;}
+ if(normalize(selected.local)===normalize(value)){
+  status("LOCAL CORRETO · "+selected.id+" encontrado em "+value,"good");
+  addEvent("LOCAL_OK","Posição confirmada: "+value);
+ }else{
+  status("ALERTA: FERRAMENTA NO LOCAL ERRADO.\nPrevisto: "+selected.local+"\nLido: "+value+"\nConfirme com o responsável; não é acusação de furto.","bad");
+  addEvent("LOCAL_DIVERGENTE","Esperado: "+selected.local+" | Lido: "+value);
+ }
+}
+function handleDecoded(s){
+ const now=Date.now();if(s===lastSeen&&now-lastSeenAt<3500)return;lastSeen=s;lastSeenAt=now;scan(s);
+}
+async function detectionLoop(){
+ while(loopActive&&camera){
+  if(detector&&$("cam").readyState>=2){
+   try{const codes=await detector.detect($("cam"));if(codes.length&&codes[0].rawValue)handleDecoded(codes[0].rawValue);}catch(e){}
+  }
+  await new Promise(r=>setTimeout(r,280));
+ }
+}
+async function startCamera(){
+ if(!isSecureContext||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  $("cameraStatus").textContent="HTTPS obrigatório para webcam. Ative Enforce HTTPS no GitHub Pages. Entrada manual disponível.";return;
+ }
+ try{
+  await stopCamera();
+  camera=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:"environment"},width:{ideal:1280},height:{ideal:720}}});
+  $("cam").srcObject=camera;await $("cam").play();
+  $("stop").disabled=false;$("capture").disabled=false;
+  if("BarcodeDetector" in window){
+   const formats=await BarcodeDetector.getSupportedFormats();
+   detector=formats.includes("qr_code")?new BarcodeDetector({formats:["qr_code"]}):null;
+  }
+  $("cameraStatus").textContent=detector?"Câmera ativa · apontar para QR.":"Câmera ativa, mas leitura QR automática não suportada neste navegador. Use código manual.";
+  loopActive=true;detectionLoop();
+ }catch(e){$("cameraStatus").textContent="Não foi possível abrir a câmera: "+e.message+" (verifique permissão e uso por outro app).";stopCamera();}
+}
+async function stopCamera(){
+ loopActive=false;
+ if(camera)camera.getTracks().forEach(t=>t.stop());camera=null;detector=null;
+ $("cam").srcObject=null;$("stop").disabled=true;$("capture").disabled=true;
+}
+function takePhoto(){
+ if(!camera){status("Abra a câmera primeiro.","warn");return;}
+ const v=$("cam"),canvas=$("canvas"),scale=Math.min(1,960/v.videoWidth);
+ if(!Number.isFinite(scale)||scale<=0)return;
+ canvas.width=Math.max(1,Math.floor(v.videoWidth*scale));canvas.height=Math.max(1,Math.floor(v.videoHeight*scale));
+ canvas.getContext("2d").drawImage(v,0,0,canvas.width,canvas.height);
+ captured=canvas.toDataURL("image/jpeg",.72);
+ $("snap").src=captured;$("snap").style.display="block";$("photoBox").style.display="block";$("verify").disabled=false;
+ $("aiResult").textContent="Imagem capturada localmente. Envie somente se tiver autorização para transmissão ao serviço de IA.";
+}
+async function verify(){
+ if(!captured){$("aiResult").textContent="Capture uma foto primeiro.";return;}
+ if(!selected){$("aiResult").textContent="Leia o QR da ferramenta antes de verificar sua foto.";return;}
+ const endpoint=$("endpoint").value.trim(),token=$("token").value;
+ if(!/^https:\/\/[^\s]+\/verify\/?$/.test(endpoint)||!token){$("aiResult").textContent="Informe URL HTTPS do Worker terminando em /verify e token de operador.";return;}
+ if(!confirm("Enviar uma foto da ferramenta à API Google Gemini para análise visual? Evite pessoas/rostos no enquadramento."))return;
+ $("verify").disabled=true;$("aiResult").textContent="Verificando foto…";
+ try{
+  const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({image:captured.split(",")[1],code:selected.id,name:selected.nome})});
+  const data=await res.json().catch(()=>({error:"Resposta do servidor inválida"}));
+  if(!res.ok)throw Error(data.error||("HTTP "+res.status));
+  const s=["COMPATIVEL","INCOMPATIVEL","INCONCLUSIVO"].includes(data.status)?data.status:"INCONCLUSIVO";
+  $("aiResult").className="alert"+(s==="INCOMPATIVEL"?" bad":s==="COMPATIVEL"?" good":" warn");
+  $("aiResult").textContent=s+"\n"+String(data.descricao||"").slice(0,300)+"\n"+(Array.isArray(data.evidencias)?data.evidencias.slice(0,4).join(" · "):"")+"\nResultado probabilístico, sujeito a erro humano e da IA.";
+  addEvent("IA_"+s,String(data.descricao||"").slice(0,200));
+ }catch(e){$("aiResult").className="alert bad";$("aiResult").textContent="Verificação indisponível: "+e.message;}
+ finally{$("verify").disabled=false;}
+}
+function exportEvents(){
+ const rows=[["data_iso","evento","codigo","detalhes"],...events.map(e=>[e.at,e.type,e.code,e.detail])];
+ const csv="\ufeff"+rows.map(r=>r.map(csvCell).join(";")).join("\r\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download="n1-visao-eventos.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("secure").textContent=isSecureContext?"HTTPS/contexto seguro: câmera habilitável":"Contexto inseguro: câmera bloqueada";
+$("secure").className="tag "+(isSecureContext?"":"bad");
+$("start").addEventListener("click",startCamera);
+$("stop").addEventListener("click",stopCamera);
+$("capture").addEventListener("click",takePhoto);
+$("submit").addEventListener("click",()=>scan($("qr").value));
+$("qr").addEventListener("keydown",e=>{if(e.key==="Enter")scan($("qr").value);});
+$("verify").addEventListener("click",verify);
+$("refresh").addEventListener("click",readInventory);
+$("export").addEventListener("click",exportEvents);
+window.addEventListener("pagehide",()=>{stopCamera();captured=null;});
+window.addEventListener("storage",e=>{if(e.key&&e.key.startsWith(K))readInventory();});
+readInventory();
+})();
+</script></body></html>
