@@ -62,7 +62,7 @@ details{margin:8px 0}textarea{width:100%;font-family:Consolas,monospace}
     <option value="demo">Demonstração</option><option value="meu">Meu estoque</option>
   </select></label></div>
 </header><div class="context-line"><span id="scope"></span> <span role="status" id="store-note"></span></div>
-<div class="context-line"><a href="./etiquetas/" style="display:inline-block;background:#10202c;color:#d3fa43;border:1px solid #d3fa43;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 8px 10px 0">Gerar e imprimir QR Codes</a></div>
+<div class="context-line"><a href="./etiquetas/" onclick="return prepararEtiquetas(event)" style="display:inline-block;background:#10202c;color:#d3fa43;border:1px solid #d3fa43;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 8px 10px 0">Gerar e imprimir QR Codes</a></div>
 <div class="context-line"><a href="./visao/" style="display:inline-block;background:#d3fa43;color:#10140e;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 0">Abrir N1 Visão · Webcam, QR e auditoria</a></div>
 <nav>
   <button data-t="itens" onclick="go('itens')">Itens</button>
@@ -197,6 +197,7 @@ function render(){
 ({itens:rItens,mov:rMov,cont:rCont,dados:rDados})[tab]();$('#h').innerHTML='';
 }
 function msg(t){const m=$('#msg');if(m)m.textContent=t}
+function prepararEtiquetas(ev){try{sv();return true}catch(e){ev.preventDefault();alert('Não foi possível salvar a versão atual do inventário. Recarregue a página e tente novamente.');return false;}}
 function setPerfil(p){trocar(mode,p,round)}
 function rItens(){
   const P=PERF[db.perfil];
