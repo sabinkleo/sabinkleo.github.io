@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10140e">
+  <title>Comparar fotos no aparelho | N1 Visão</title>
+  <style>
+    :root{color-scheme:dark;--bg:#10141c;--surface:#1a222d;--fg:#e9eef4;--muted:#b4c1ca;--line:#3a4855;--accent:#b2ef68}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:1rem/1.55 system-ui,sans-serif}
+    header{background:#10140e;border-top:4px solid var(--accent)}header div,main{max-width:52rem;margin:auto;padding:1rem}
+    header div{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem}a{color:var(--accent)}header a:first-child{color:white;text-decoration:none;font-weight:750}
+    main{padding-block:clamp(1.3rem,4vw,2.7rem)}h1{font-size:clamp(1.9rem,5vw,2.8rem);letter-spacing:-.04em;line-height:1.15;margin:0}p{max-width:66ch}
+    .pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.85rem}.photo{padding:1rem;border:1px solid var(--line);border-radius:.6rem;background:var(--surface)}
+    label{display:block;font-weight:700;margin-bottom:.6rem}input{font:inherit;width:100%}img{display:block;width:100%;height:11rem;object-fit:contain;margin-top:.8rem}
+    button{font:inherit;font-weight:700;cursor:pointer;color:#162116;background:var(--accent);border:0;border-radius:.4rem;padding:.65rem 1rem}button:disabled{opacity:.5;cursor:default}
+    :focus-visible{outline:3px solid var(--accent);outline-offset:3px}.note{color:var(--muted);font-size:.93rem}#result{font-weight:650}
+    [hidden]{display:none}
+  </style>
+</head>
+<body>
+  <header><div><a href="../">N1 Visão</a><a href="../../equipe/">Guia da equipe</a></div></header>
+  <main>
+    <h1>Comparar fotos no aparelho</h1>
+    <p>Escolha uma foto conhecida da peça e uma foto do item em mãos. Enquadre a peça inteira nas duas, com fundo simples e ângulos parecidos.</p>
+    <form id="compare-form">
+      <div class="pair">
+        <div class="photo"><label for="reference-file">Foto de referência</label><input id="reference-file" type="file" accept="image/*"><img id="reference-image" alt="Prévia da peça de referência" hidden></div>
+        <div class="photo"><label for="sample-file">Foto da peça em mãos</label><input id="sample-file" type="file" accept="image/*"><img id="sample-image" alt="Prévia da peça em mãos" hidden></div>
+      </div>
+      <details style="margin-top:.85rem"><summary>Testar com ilustrações de exemplo</summary>
+        <p>Escolha um par para entender a escala antes de comparar peças da bancada.</p>
+        <button type="button" id="same">Duas imagens iguais</button> <button type="button" id="different">Duas imagens diferentes</button>
+      </details>
+      <p class="note">As fotos ficam nesta aba. A primeira comparação precisa de internet para carregar o modelo MobileNet. A análise roda no aparelho, sem conta ou chave de API.</p>
+      <button id="compare" disabled>Comparar fotos</button>
+      <p id="result" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+  <script type="module">
+    const sdk='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js';
+    const model='https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
+    const button=document.getElementById('compare');
+    const result=document.getElementById('result');
+    const slots=['reference','sample'].map(name=>({
+      input:document.getElementById(name+'-file'),
+      image:document.getElementById(name+'-image'),
+      url:null,
+      ready:false
+    }));
+    let revision=0, busy=false, enginePromise;
+
+    function updateButton(){button.disabled=busy||slots.some(slot=>!slot.ready)}
+    async function showPreview(slot,file){
+      revision++;
+      slot.ready=false;
+      slot.image.hidden=true;
+      slot.image.removeAttribute('src');
+      if(slot.url)URL.revokeObjectURL(slot.url);
+      slot.url=null;
+      result.textContent='';
+      updateButton();
+      if(!file)return;
+      const url=URL.createObjectURL(file);
+      slot.url=url;
+      slot.image.src=url;
+      try{
+        await slot.image.decode();
+        if(slot.url!==url)return;
+        slot.ready=true;
+        slot.image.hidden=false;
+      }catch{
+        if(slot.url===url)result.textContent='O navegador não abriu essa imagem. Escolha uma foto em JPEG ou PNG.';
+      }
+      updateButton();
+    }
+    for(const slot of slots)slot.input.addEventListener('change',()=>showPreview(slot,slot.input.files[0]));
+    function drawing(gear){
+      const tool='<path d="M62 205L174 92" stroke="#62727f" stroke-width="24" stroke-linecap="round"/><path d="M141 76a41 41 0 0 1 55-37l-25 24 8 19 18 5 24-24a41 41 0 1 1-80 13" fill="#546572"/><circle cx="60" cy="207" r="6" fill="#eee"/>';
+      const wheel='<circle cx="130" cy="128" r="90" fill="#b64132"/><circle cx="130" cy="128" r="64" fill="#e0b94c"/><circle cx="130" cy="128" r="34" fill="#434956"/><circle cx="130" cy="128" r="13" fill="#eee"/>';
+      return new Blob(['<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#eee"/>'+(gear?wheel:tool)+'</svg>'],{type:'image/svg+xml'});
+    }
+    function showExample(different){
+      for(const slot of slots)slot.input.value='';
+      showPreview(slots[0],drawing(false));
+      showPreview(slots[1],drawing(different));
+    }
+    document.getElementById('same').onclick=()=>showExample(false);
+    document.getElementById('different').onclick=()=>showExample(true);
+
+    async function loadEngine(){
+      if(!window.tf)await new Promise((resolve,reject)=>{
+        const script=document.createElement('script');
+        script.src=sdk;
+        script.onload=resolve;
+        script.onerror=()=>{script.remove();reject(Error('Falha ao carregar TensorFlow.js'))};
+        document.head.appendChild(script);
+      });
+      const tf=window.tf;
+      await tf.setBackend('cpu');
+      await tf.ready();
+      const base=await tf.loadLayersModel(model);
+      const features=tf.model({inputs:base.inputs,outputs:base.getLayer('conv_pw_13_relu').output});
+      return {tf,features};
+    }
+    function modelInput(image){
+      const canvas=document.createElement('canvas');
+      canvas.width=canvas.height=224;
+      const ctx=canvas.getContext('2d');
+      const scale=Math.min(224/image.naturalWidth,224/image.naturalHeight);
+      const w=image.naturalWidth*scale,h=image.naturalHeight*scale;
+      ctx.fillStyle='#808080';ctx.fillRect(0,0,224,224);
+      ctx.drawImage(image,(224-w)/2,(224-h)/2,w,h);
+      return canvas;
+    }
+    document.getElementById('compare-form').addEventListener('submit',async event=>{
+      event.preventDefault();
+      if(button.disabled)return;
+      const started=revision;
+      busy=true;
+      updateButton();
+      result.textContent='Preparando o modelo local…';
+      try{
+        enginePromise??=loadEngine().catch(error=>{enginePromise=undefined;throw error});
+        const {tf,features}=await enginePromise;
+        if(started!==revision)return;
+        result.textContent='Comparando as duas imagens neste aparelho…';
+        await tf.nextFrame();
+        if(started!==revision)return;
+        const score=tf.tidy(()=>{
+          const [a,b]=slots.map(slot=>{
+            const pixels=tf.browser.fromPixels(modelInput(slot.image)).toFloat().div(127.5).sub(1);
+            return features.predict(pixels.expandDims(0)).mean([1,2]).flatten();
+          });
+          return a.dot(b).div(a.norm().mul(b.norm())).dataSync()[0];
+        });
+        if(!Number.isFinite(score))throw Error('Resultado indisponível');
+        const value=Math.max(-1,Math.min(1,score)).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+        result.textContent='Semelhança visual de '+value+' na escala de −1 a 1. Quanto mais perto de 1, mais parecidas as fotos. Para confirmar qual peça é, confira o QR ou o código gravado.';
+      }catch{
+        if(started===revision)result.textContent='O modelo local ficou indisponível. Confira a conexão e tente novamente. Você também pode comparar as fotos acima e ler o código da peça no N1 Visão.';
+      }finally{
+        busy=false;
+        updateButton();
+      }
+    });
+  </script>
+</body>
+</html>

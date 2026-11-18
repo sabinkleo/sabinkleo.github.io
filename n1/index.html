@@ -45,8 +45,13 @@ tr.alerta td:first-child{border-left:4px solid var(--wn)}
 details{margin:8px 0}textarea{width:100%;font-family:Consolas,monospace}
 .sitebar{background:#10140e;border-top:4px solid #d3fa43;color:#ecebe2}.sitebar>div{max-width:1020px;margin:auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}.sitebar a{color:#d3fa43;font-size:13px}.sitebar .brand{font-size:18px;font-weight:800;letter-spacing:-.8px;text-decoration:none;color:#ecebe2}.brand span{color:#d3fa43}.context{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.context label{font-size:13px}.context select{max-width:100%}.context-line{max-width:1020px;margin:auto;padding:0 16px 9px;font-size:13px;color:var(--mu)}#store-note{color:var(--er);font-weight:650}h1{font-size:clamp(21px,4vw,33px);letter-spacing:-.035em}#v{min-height:42vh}.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.tw th{white-space:normal}textarea:focus,button:focus-visible,a:focus-visible{outline-offset:2px}
 @media(max-width:650px){header{align-items:flex-start}.context{display:grid;width:100%;grid-template-columns:minmax(0,1fr) auto}.context label{display:grid;gap:3px}.context select{width:100%}nav{gap:0}nav button{padding:9px 6px;font-size:13px}.sitebar>div{padding:8px 14px}.row select{max-width:100%}.tw{max-width:100%}}
+.sitebar .links{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px}.sitebar #guia{font-size:.95rem;font-weight:700}
+.treino-contagem header,.treino-contagem .context-line,.treino-contagem nav,.treino-contagem #offline{display:none}
+.count-practice{max-width:38rem;margin:1.2rem auto;padding:clamp(1rem,3vw,1.75rem);background:var(--sf);border:1px solid var(--bd);border-radius:10px;font-size:1rem}
+.count-practice h1{line-height:1.15}.count-practice p{margin:.8rem 0}.count-practice label{display:block;font-weight:650}
+.count-practice .row{gap:.6rem}.count-practice .row input{flex:0 1 8rem}.count-practice button{min-height:44px}
 </style></head><body>
-<div class="sitebar"><div><a class="brand" href="https://verticelabs.me/" aria-label="Vértice Labs, catálogo">VÉRTICE<span>LABS</span></a><a href="./index.html" download="Vertice_N1_Estoque.html" id="offline">Baixar HTML offline</a></div></div>
+<div class="sitebar"><div><a class="brand" href="https://verticelabs.me/" aria-label="Vértice Labs, catálogo">VÉRTICE<span>LABS</span></a><div class="links"><a href="./equipe/" id="guia">Guia da equipe</a><a href="./index.html" download="Vertice_N1_Estoque.html" id="offline">Baixar HTML offline</a></div></div></div>
 <header>
   <div>
     <h1 id="htitle">Núcleo N1 — Estoque, Rastreio e Conciliação</h1>
@@ -62,8 +67,8 @@ details{margin:8px 0}textarea{width:100%;font-family:Consolas,monospace}
     <option value="demo">Demonstração</option><option value="meu">Meu estoque</option>
   </select></label></div>
 </header><div class="context-line"><span id="scope"></span> <span role="status" id="store-note"></span></div>
-<div class="context-line"><a href="./etiquetas/" onclick="return prepararEtiquetas(event)" style="display:inline-block;background:#10202c;color:#d3fa43;border:1px solid #d3fa43;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 8px 10px 0">Gerar e imprimir QR Codes</a></div>
-<div class="context-line"><a href="./visao/" style="display:inline-block;background:#d3fa43;color:#10140e;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 0">Abrir N1 Visão · Webcam, QR e auditoria</a></div>
+<div class="context-line"><a href="./etiquetas/" onclick="return prepararInventario(event)" style="display:inline-block;background:#10202c;color:#d3fa43;border:1px solid #d3fa43;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 8px 10px 0">Gerar e imprimir QR Codes</a></div>
+<div class="context-line"><a href="./visao/" onclick="return prepararInventario(event)" style="display:inline-block;background:#d3fa43;color:#10140e;font-weight:800;border-radius:5px;padding:9px 12px;text-decoration:none;margin:10px 0">Abrir N1 Visão · Webcam, QR e auditoria</a></div>
 <nav>
   <button data-t="itens" onclick="go('itens')">Itens</button>
   <button data-t="mov" onclick="go('mov')">Movimentar</button>
@@ -197,7 +202,7 @@ function render(){
 ({itens:rItens,mov:rMov,cont:rCont,dados:rDados})[tab]();$('#h').innerHTML='';
 }
 function msg(t){const m=$('#msg');if(m)m.textContent=t}
-function prepararEtiquetas(ev){try{sv();return true}catch(e){ev.preventDefault();alert('Não foi possível salvar a versão atual do inventário. Recarregue a página e tente novamente.');return false;}}
+function prepararInventario(ev){try{sv();if(memoryOnly)throw Error();return true}catch(e){ev.preventDefault();alert('O inventário não ficou disponível para a próxima página. Confira o aviso de armazenamento e tente novamente.');return false;}}
 function setPerfil(p){trocar(mode,p,round)}
 function rItens(){
   const P=PERF[db.perfil];
@@ -258,8 +263,8 @@ function rDados(){$('#v').innerHTML=`<h2>Dados e testes</h2>
   <button class="d" onclick="if(confirm('Apagar os dados deste perfil no ambiente selecionado?')){db=empty(db.perfil);sv();go('itens')}">Limpar perfil</button></div>
   <div id="res" role="status">Os dados ficam salvos localmente neste navegador (offline-first).</div>`}
 function abrirDemo(){if(mode!=='demo')return trocar('demo',currentProfile,round);if(confirm('Reiniciar os dados fictícios desta demonstração?')){db=demo(currentProfile,round);sv();go('cont')}}
-function exportar(){const q=s=>{let text=String(s);if(/^\s*[=+@-]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
-  dl('conciliacao_n1.csv','\ufeff'+['codigo;nome;local;extra;sistema;contado;diferenca;situacao'].concat(concilia(db).map(x=>[q(x.id),q(x.nome),q(x.local||''),q(x.extra||''),x.s,x.c??'',x.df??'',x.st].join(';'))).join('\r\n'),'text/csv')}
+function exportar(arquivo='conciliacao_n1.csv'){const q=s=>{let text=String(s);if(/^\s*[=+@-]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
+  dl(arquivo,'\ufeff'+['codigo;nome;local;extra;sistema;contado;diferenca;situacao'].concat(concilia(db).map(x=>[q(x.id),q(x.nome),q(x.local||''),q(x.extra||''),x.s,x.c??'',x.df??'',x.st].join(';'))).join('\r\n'),'text/csv')}
 function restaurar(f){
   if(!f)return;
   const reader=new FileReader();
@@ -270,9 +275,39 @@ function restaurar(f){
   }catch(e){const place=$('#res')||$('#store-note');place.textContent='Restauração não concluída. '+e.message}};
   reader.onerror=()=>{$('#store-note').textContent='Não foi possível ler o arquivo.'};reader.readAsText(f);
 }
-let choice=['demo',knownProfile(SAGA_CFG.perfil)?SAGA_CFG.perfil:'almox','A'];
-try{const saved=JSON.parse(sessionStorage.getItem(K+'_view'));if(Array.isArray(saved)&&['demo','meu'].includes(saved[0])&&knownProfile(saved[1])&&['A','B'].includes(saved[2]))choice=saved}catch{}
-if(location.protocol==='file:')$('#offline').hidden=true;
-window.addEventListener('storage',event=>{if(event.key===currentKey){ld();render();$('#store-note').textContent='Dados atualizados em outra aba.'}});
-trocar(...choice);
+function iniciarTreinoContagem(){
+  document.body.classList.add('treino-contagem');
+  document.title='Treino de contagem | Núcleo N1';
+  db=demo('almox','A');
+  const item=db.itens[0];
+  db.itens=[item];
+  db.mov=db.mov.filter(m=>m.id===item.id);
+  db.cont=Object.create(null);
+  $('#v').innerHTML=`<section class="count-practice"><h1>Treino de contagem</h1>
+    <p>Na prateleira <strong>${esc(item.local)}</strong>, você contou <strong>16 unidades</strong> do item <strong>${esc(item.id)} · ${esc(item.nome)}</strong>. O sistema registra ${saldo(db,item.id)}.</p>
+    <form id="count-form"><label for="count-value">Contado na prateleira</label>
+    <div class="row"><input id="count-value" type="number" inputmode="numeric" min="0" step="1" required><button>Conferir contagem</button></div></form>
+    <p id="count-feedback" role="status"></p><button hidden id="count-export">Baixar CSV do treino</button></section>`;
+  $('#count-form').onsubmit=event=>{
+    event.preventDefault();
+    db.cont[item.id]=$('#count-value').valueAsNumber;
+    const row=concilia(db)[0];
+    const done=row.c===16 && row.df===-2;
+    $('#count-export').hidden=!done;
+    $('#count-feedback').textContent=done
+      ?'Contagem conferida. Faltam 2 unidades. Baixe o CSV para entregar a quem fará a recontagem.'
+      :'Confira a quantidade física da prateleira e tente de novo. O campo Contado recebe o que você encontrou.';
+  };
+  $('#count-value').oninput=()=>{$('#count-feedback').textContent='';$('#count-export').hidden=true};
+  $('#count-export').onclick=()=>exportar('treino-contagem-n1.csv');
+}
+if(location.protocol==='file:'){$('#offline').hidden=true;$('#guia').href='https://verticelabs.me/n1/equipe/'}
+if(new URLSearchParams(location.search).get('treino')==='contagem'){
+  iniciarTreinoContagem();
+}else{
+  let choice=['demo',knownProfile(SAGA_CFG.perfil)?SAGA_CFG.perfil:'almox','A'];
+  try{const saved=JSON.parse(sessionStorage.getItem(K+'_view'));if(Array.isArray(saved)&&['demo','meu'].includes(saved[0])&&knownProfile(saved[1])&&['A','B'].includes(saved[2]))choice=saved}catch{}
+  window.addEventListener('storage',event=>{if(event.key===currentKey){ld();render();$('#store-note').textContent='Dados atualizados em outra aba.'}});
+  trocar(...choice);
+}
 </script></body></html>

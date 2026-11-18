@@ -26,33 +26,43 @@ table{width:100%;border-collapse:collapse;font-size:12px}th,td{text-align:left;b
 th{color:var(--mut)}.scroll{overflow-x:auto;max-height:280px;overflow-y:auto}
 #snap{max-width:100%;border-radius:7px;display:none}#cam{display:block}#logtable td:first-child{white-space:nowrap}
 @media(max-width:800px){main{grid-template-columns:1fr}.top{grid-column:1}}
+.treino-endereco .normal-only{display:none}.practice-steps{padding-left:1.3rem}.practice-steps li{margin:.4rem 0}
+.photo-options{margin:1rem 0}.photo-options summary{cursor:pointer;font-weight:650}.photo-options a{font-weight:650}
+body.treino-endereco .top{border-top:3px solid var(--green)}[hidden]{display:none!important}
 </style></head><body>
-<header><a class="logo" href="../../">VÉRTICE<span>LABS</span></a> · <a href="../">Voltar ao Núcleo N1</a> · <a href="../etiquetas/">Gerar QR Codes</a></header>
+<header><a class="logo" href="../../">VÉRTICE<span>LABS</span></a> · <a href="../equipe/">Guia da equipe</a> · <a href="../">Voltar ao Núcleo N1</a> <span class="normal-only">· <a href="../etiquetas/">Gerar QR Codes</a></span></header>
 <main>
 <section class="panel top">
-  <span class="tag">N1 VISÃO · MVP</span>
-  <h1>Câmera + QR + auditoria de ferramentas</h1>
-  <p class="muted">Lê QR localmente, cruza peça e endereço com o estoque N1 e registra indícios de divergência. A análise de imagem por Google Gemini é opcional. Nenhuma câmera é ativada sem seu clique.</p>
-  <div class="row"><span id="secure" class="tag warn">Verificando HTTPS…</span><span id="context" class="muted">Carregando inventário…</span></div>
+  <h1 id="page-title">Conferir peça e prateleira</h1>
+  <p class="normal-only">Leia a etiqueta da peça e depois a da prateleira. O N1 compara o endereço com o cadastro e registra o resultado neste aparelho.</p>
+  <div class="row normal-only"><span id="secure" class="tag warn">Verificando HTTPS…</span><span id="context" class="muted">Carregando inventário…</span></div>
+  <div id="practice" hidden>
+    <p>Use os botões de exemplo como se estivesse lendo as etiquetas na bancada. Você também pode digitar o código e tocar em <strong>Ler</strong>.</p>
+    <ol class="practice-steps"><li>Leia a peça <strong>SKU-001</strong>.</li><li>Confira a prateleira <strong>A1</strong>, onde ela deveria estar.</li><li>Experimente a prateleira <strong>A2</strong> e confira o alerta. Depois baixe o CSV de eventos.</li></ol>
+    <div class="row"><button type="button" data-etiqueta="N1I:SKU-001">Ler peça SKU-001</button><button type="button" data-etiqueta="N1L:Prat. A1">Ler prateleira A1</button><button type="button" data-etiqueta="N1L:Prat. A2">Ler prateleira A2</button></div>
+    <p id="practice-result" role="status"></p>
+  </div>
 </section>
 <section class="panel">
- <h2>1. Leitura pela webcam</h2>
+ <div class="normal-only"><h2>Leitura pela câmera</h2>
  <video id="cam" autoplay muted playsinline aria-label="Prévia da câmera"></video><canvas id="canvas" hidden></canvas>
  <div class="row"><button class="primary" id="start">Abrir câmera</button><button id="stop" disabled>Desligar câmera</button><button id="capture" disabled>Capturar foto</button></div>
- <p id="cameraStatus" class="muted" role="status">A câmera só é usada com autorização do navegador. Prefira Chrome/Edge com HTTPS.</p>
+ <p id="cameraStatus" class="muted" role="status">Se a câmera estiver ocupada ou sem permissão, digite o texto da etiqueta abaixo.</p></div>
  <label for="qr">Código manual ou QR detectado</label>
  <div class="row"><input id="qr" placeholder="N1I:FER-001 ou N1L:Armário Manut." aria-label="Texto do QR"><button id="submit">Ler</button></div>
- <p class="muted">Etiquetas: <code>N1I:FER-001</code> identifica item; <code>N1L:Armário Manut.</code> identifica endereço. Também aceita o código do item puro.</p>
+ <p class="muted">O prefixo <code>N1I:</code> identifica a peça. O prefixo <code>N1L:</code> identifica a prateleira. Para a peça, também vale digitar só o código do cadastro.</p>
  <div id="result" class="alert" role="status">Leia primeiro uma peça, depois o QR da posição em que ela foi colocada.</div>
  <div id="current" class="scanmeta muted">Item selecionado: nenhum</div>
  <div id="photoBox" style="display:none;margin-top:10px"><h2>Foto capturada</h2><img id="snap" alt="Foto capturada para verificação da ferramenta"><p class="muted">A imagem permanece nesta aba até você optar por enviá-la ao verificador. Fotos não entram no histórico local.</p></div>
 </section>
 <section class="panel">
- <h2>2. Verificação de localização</h2>
+ <h2>Resultado da conferência</h2>
  <p class="muted">O local esperado vem do cadastro da peça no N1. Se o QR de localização for diferente, haverá um alerta de reposição incorreta. Nenhum saldo ou endereço é alterado automaticamente.</p>
  <div class="alert" id="compare">Selecione uma peça para comparar.</div>
- <div class="row"><button id="export">Exportar eventos CSV</button><button id="refresh">Atualizar inventário</button></div>
- <h2 style="margin-top:16px">3. Verificar foto com Google AI</h2>
+ <div class="row"><button id="export">Exportar eventos CSV</button><button id="refresh" class="normal-only">Atualizar inventário</button></div>
+ <div class="normal-only photo-options"><h2>Conferência por foto</h2>
+ <p><a href="./fotos/">Comparar duas fotos neste aparelho</a>. Separe uma foto de referência e uma da peça que está em mãos.</p>
+ <details><summary>Usar verificador externo com Gemini</summary>
  <p class="muted">Requer backend privado com API Gemini e token de operador. Nunca cole a chave Gemini nesta página pública.</p>
  <label for="endpoint">Endpoint seguro do verificador (Cloudflare Worker)</label>
  <input id="endpoint" placeholder="https://seu-worker.workers.dev/verify" autocomplete="off" spellcheck="false" style="width:100%">
@@ -60,9 +70,10 @@ th{color:var(--mut)}.scroll{overflow-x:auto;max-height:280px;overflow-y:auto}
  <input id="token" type="password" placeholder="Token privado do Worker" autocomplete="off" style="width:100%">
  <div class="row"><button id="verify" disabled>Verificar ferramenta pela foto</button></div>
  <div id="aiResult" class="alert">A IA só estima compatibilidade visual. Nunca comprova furto, autoria ou uma transação de estoque.</div>
- <h2 style="margin-top:16px">4. Eventos desta sessão de estoque</h2>
+ </details></div>
+ <h2 style="margin-top:16px">Eventos da conferência</h2>
  <div class="scroll"><table id="logtable"><thead><tr><th>Quando</th><th>Evento</th><th>Detalhes</th></tr></thead><tbody id="logs"><tr><td colspan="3">Sem eventos registrados.</td></tr></tbody></table></div>
- <p class="muted">Os eventos ficam apenas neste navegador, separados por perfil/ambiente. Para auditoria entre dispositivos será necessário um servidor.</p>
+ <p class="muted normal-only">Os eventos ficam neste navegador, separados por perfil e ambiente. Exporte o CSV para entregar o histórico a um colega.</p>
 </section>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js" defer></script>
@@ -71,6 +82,8 @@ th{color:var(--mut)}.scroll{overflow-x:auto;max-height:280px;overflow-y:auto}
 (function(){
 const $=id=>document.getElementById(id);
 const K="nucleo_estoque_v2_local";
+const treino=new URLSearchParams(location.search).get("treino")==="endereco";
+const prateleirasConferidas=new Set();
 const profiles=["almox","ferr","ativo","epi","fifo"];
 const states=["demo","meu"];
 let camera=null,detector=null,loopActive=false,selected=null,lastSeen="",lastSeenAt=0,captured=null,db=null,view=null,events=[],logKey="";
@@ -83,10 +96,15 @@ function readView(){
 }
 function keyFor(v){return K+"_"+v[0]+"_"+v[1]+(v[0]==="demo"?"_"+v[2]:"");}
 function readInventory(){
+ if(treino){
+  db={itens:[{id:"SKU-001",nome:"Parafuso M6 Inox",local:"Prat. A1"}],mov:[{id:"SKU-001",q:18}],cont:{},tol:0};
+  drawComparison();drawLogs();return;
+ }
  view=readView();
  const key=keyFor(view);let raw=null;
  try{raw=localStorage.getItem(key);}catch(e){}
  try{const d=JSON.parse(raw||"null");db=d&&Array.isArray(d.itens)&&Array.isArray(d.mov)?d:null;}catch(e){db=null;}
+ if(selected)selected=db?.itens.find(i=>i.id===selected.id)||null;
  logKey="n1_vision_events_v1_"+view.join("_");
  try{const a=JSON.parse(localStorage.getItem(logKey)||"[]");events=Array.isArray(a)?a.slice(-250):[];}catch(e){events=[];}
  $("context").textContent="Perfil: "+view[1]+" · "+(view[0]==="demo"?"demonstração "+view[2]:"meu estoque")+" · "+(db?db.itens.length+" itens":"sem dados encontrados; abra o N1 primeiro");
@@ -95,10 +113,16 @@ function readInventory(){
 function addEvent(type,detail,code){
  const ev={at:new Date().toISOString(),type,code:code||selected?.id||"",detail:String(detail).slice(0,250)};
  events.push(ev);events=events.slice(-250);
- try{localStorage.setItem(logKey,JSON.stringify(events));}catch(e){$("cameraStatus").textContent="Armazenamento indisponível. Exporte o CSV antes de sair.";}
+ if(!treino)try{localStorage.setItem(logKey,JSON.stringify(events));}catch(e){$("cameraStatus").textContent="Armazenamento indisponível. Exporte o CSV antes de sair.";}
  drawLogs();
 }
 function drawLogs(){
+ if(treino){
+  const right=prateleirasConferidas.has("prat. a1");
+  const wrong=prateleirasConferidas.has("prat. a2");
+  $("export").disabled=!(right&&wrong);
+  $("practice-result").textContent=right&&wrong?"Treino concluído. Você reconheceu a prateleira correta e a troca. Exporte o CSV de eventos para passar a conferência ao colega.":right?"Prateleira correta conferida. Experimente agora a A2.":wrong?"Troca registrada. Confira também a prateleira A1.":"";
+ }
  $("logs").innerHTML=events.length?events.slice().reverse().slice(0,30).map(e=>"<tr><td>"+safe(new Date(e.at).toLocaleString("pt-BR"))+"</td><td>"+safe(e.type)+"</td><td>"+safe(e.code+" · "+e.detail)+"</td></tr>").join(""):'<tr><td colspan="3">Sem eventos registrados.</td></tr>';
 }
 function status(message,level){
@@ -127,7 +151,7 @@ function scan(raw){
  if(kind==="item"){
   if(!db){status("Nenhum inventário local disponível neste perfil. Abra o N1, carregue a demonstração e retorne.","warn");return;}
   const it=db.itens.find(i=>normalize(i.id)===normalize(value));
-  if(!it){status("Item não cadastrado: "+value+". Não foi possível verificar a peça.","warn");addEvent("ITEM_DESCONHECIDO","QR não consta no inventário",value);return;}
+  if(!it){selected=null;drawComparison();status("Peça sem cadastro. Confira o código e leia a etiqueta da peça novamente.","warn");addEvent("ITEM_DESCONHECIDO","QR não consta no inventário",value);return;}
   selected=it;drawComparison();status("Peça selecionada: "+it.id+" · "+it.nome+". Agora leia o QR do endereço.","good");
   const s=stock(it.id),count=db.cont&&db.cont[it.id];
   if(typeof count==="number"&&count < s-(Number(db.tol)||0)){
@@ -139,6 +163,7 @@ function scan(raw){
  if(!selected){status("Leia a peça antes do endereço.","warn");return;}
  drawComparison(value);
  if(!selected.local){status("A peça não possui local esperado cadastrado. Cadastre um endereço no N1.","warn");return;}
+ if(treino&&selected.id==="SKU-001")prateleirasConferidas.add(normalize(value));
  if(normalize(selected.local)===normalize(value)){
   status("LOCAL CORRETO · "+selected.id+" encontrado em "+value,"good");
   addEvent("LOCAL_OK","Posição confirmada: "+value);
@@ -221,7 +246,14 @@ function exportEvents(){
  const rows=[["data_iso","evento","codigo","detalhes"],...events.map(e=>[e.at,e.type,e.code,e.detail])];
  const csv="\ufeff"+rows.map(r=>r.map(csvCell).join(";")).join("\r\n");
  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
- const a=document.createElement("a");a.href=url;a.download="n1-visao-eventos.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+ const a=document.createElement("a");a.href=url;a.download=treino?"treino-endereco-n1.csv":"n1-visao-eventos.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+if(treino){
+ document.body.classList.add("treino-endereco");
+ document.title="Treino de endereço | Núcleo N1";
+ $("page-title").textContent="Treino de conferência de endereço";
+ $("practice").hidden=false;
+ document.querySelectorAll("[data-etiqueta]").forEach(b=>b.addEventListener("click",()=>scan(b.dataset.etiqueta)));
 }
 $("secure").textContent=isSecureContext?"HTTPS/contexto seguro: câmera habilitável":"Contexto inseguro: câmera bloqueada";
 $("secure").className="tag "+(isSecureContext?"":"bad");
