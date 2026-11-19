@@ -1,0 +1,33 @@
+name: Site QA (no deployment)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python tools/site_smoke.py
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund --no-package-lock
+      - run: npx playwright install --with-deps chromium
+      - name: Start local static server and run Chromium smoke checks
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/vertice-http.log 2>&1 &
+          sleep 3
+          npm run test:browser
