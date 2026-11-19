@@ -21,10 +21,12 @@ async function rodar(modo) {
   const arquivoEstado = raiz+'state/paper_state.json';
   const anterior = modo === 'paper' && existsSync(arquivoEstado) ? lerJson(arquivoEstado) : null;
   const arquivoBacktest = raiz+'results/backtest.json';
-  const bt = modo === 'paper' ? lerJson(arquivoBacktest) : null;
+  // A calibração é lida só na estreia. Refazer a pesquisa local não muda uma carteira em andamento.
+  const bt = modo === 'paper' && !anterior ? lerJson(arquivoBacktest) : null;
+  const regraPaper = anterior?.estrategia ?? bt?.estrategia;
   if (bt && bt.contrato !== contrato) throw Error('Configuração diferente da usada no backtest.');
   if (anterior?.ultima_abertura === aberturaAtual) {
-    atualizarPaper(anterior,{}, {},aberturaAtual,cfg,bt.estrategia,contrato);
+    atualizarPaper(anterior,{}, {},aberturaAtual,cfg,regraPaper,contrato);
     publicarPaper(anterior,cfg);
     console.log('Abertura já processada em '+iso(aberturaAtual));
     return;
@@ -43,7 +45,7 @@ async function rodar(modo) {
   }
   const aberturas = {};
   for (const p of cfg.pares) aberturas[p] = await mercado.abertura(p,aberturaAtual);
-  const estado = atualizarPaper(anterior,dados,aberturas,aberturaAtual,cfg,bt.estrategia,contrato);
+  const estado = atualizarPaper(anterior,dados,aberturas,aberturaAtual,cfg,regraPaper,contrato);
   gravarJson(arquivoEstado,estado);
   publicarPaper(estado,cfg);
   console.log('Carteiras salvas em '+iso(aberturaAtual)+'. Fonte: '+Object.values(estado.ultimas_fontes).join(', '));
