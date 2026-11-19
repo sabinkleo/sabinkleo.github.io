@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a09">
+  <meta name="description" content="Candles de Bitcoin, Ethereum e Solana na Bybit e uma linha do tempo de IA e cripto com fatos datados, filtros e fontes.">
+  <!-- Vazio usa a Bybit. Uma origem HTTPS aqui ativa o Worker em todas as consultas. -->
+  <meta name="bybit-proxy" content="">
+  <link rel="canonical" href="https://verticelabs.me/radar-ia-cripto/">
+  <link rel="stylesheet" href="./estilo.css">
+  <title>Radar IA + Cripto | Vértice Labs</title>
+  <script type="module" src="./js/app.js"></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o painel</a>
+  <header class="topo">
+    <nav class="moldura" aria-label="Navegação principal">
+      <a class="marca" href="/" aria-label="Vértice Labs, página inicial">VÉRTICE<span>LABS</span></a>
+      <a class="catalogo" href="/">Catálogo de módulos</a>
+    </nav>
+  </header>
+  <main id="conteudo" class="moldura">
+    <div class="cabecalho">
+      <div><p class="origem">Vértice Labs <span>/</span> Pesquisa de mercado</p><h1>Radar IA <em>+ Cripto</em></h1></div>
+      <div class="estado" role="status" aria-live="polite" aria-atomic="true">
+        <b id="estado-titulo" data-estado="carregando">Carregando mercado</b>
+        <span id="estado-texto">Consultando candles e cotação.</span>
+      </div>
+    </div>
+    <nav class="atalhos" aria-label="Seções do radar">
+      <a href="#painel-tecnico">Painel técnico</a><a href="#linha-do-tempo">Linha do tempo</a>
+    </nav>
+    <noscript>Ative o JavaScript para calcular os indicadores. Os eventos e suas fontes também estão no <a href="./events.json">arquivo de eventos</a>.</noscript>
+    <section id="painel-tecnico" aria-labelledby="painel-titulo">
+    <div class="secao-topo"><h2 id="painel-titulo">Painel técnico</h2><span class="codigo">Bybit · Mercado à vista</span></div>
+    <!-- Os controles são nativos para funcionar com toque, teclado e leitores de tela. -->
+    <section class="faixa" aria-label="Seleção de mercado">
+      <div class="campo"><label for="par">Par</label>
+        <select id="par"><option value="BTCUSDT">Bitcoin · BTC/USDT</option><option value="ETHUSDT">Ethereum · ETH/USDT</option><option value="SOLUSDT">Solana · SOL/USDT</option></select>
+      </div>
+      <fieldset><legend>Período do candle</legend><div class="segmentos">
+        <label><input type="radio" name="periodo" value="15"><span>15m</span></label>
+        <label><input type="radio" name="periodo" value="60" checked><span>1h</span></label>
+        <label><input type="radio" name="periodo" value="240"><span>4h</span></label>
+        <label><input type="radio" name="periodo" value="D"><span>1d</span></label>
+      </div></fieldset>
+      <span class="ciclo">Atualização a cada 60 s</span>
+    </section>
+    <div id="mercado" aria-busy="true">
+      <dl class="cotacoes">
+        <div><dt>Último preço <small>USDT</small></dt><dd id="preco">—</dd></div>
+        <div><dt>Variação <small>24 h</small></dt><dd id="variacao">—</dd></div>
+        <div><dt>Volume <small id="volume-unidade">24 h · BTC</small></dt><dd id="volume">—</dd></div>
+        <div><dt>Giro financeiro <small>24 h · USDT</small></dt><dd id="giro">—</dd></div>
+      </dl>
+      <div class="grade">
+        <section class="painel painel-grafico" aria-labelledby="grafico-titulo">
+          <div class="painel-topo"><h2 id="grafico-titulo">Gráfico de candles</h2><span id="grafico-par" class="codigo">BTC/USDT · 1 h</span></div>
+          <div class="legenda"><span class="chave-ema20">EMA 20</span><span class="chave-ema50">EMA 50</span><span id="legenda-eventos" hidden>◆ Evento de alto impacto</span><span>USDT · UTC</span></div>
+          <div class="area-grafico" id="area-grafico">
+            <svg id="grafico" role="img" aria-label="Gráfico de candles fechados e médias móveis" aria-describedby="grafico-dica inspecao" tabindex="0"></svg>
+            <div class="vazio" id="grafico-vazio">Carregando candles…</div>
+            <div class="dica-evento" id="evento-tooltip" role="tooltip" hidden></div>
+          </div>
+          <p class="inspecao" id="inspecao">Os preços de abertura, máxima, mínima e fechamento aparecem aqui.</p>
+          <p id="grafico-dica" class="nota">Somente candles fechados. Toque no gráfico ou use as setas do teclado para inspecionar.</p>
+          <div id="janela-evento" class="janela-evento" hidden><span id="janela-texto"></span> <button type="button" id="grafico-recente">Voltar aos candles recentes</button></div>
+        </section>
+        <section class="painel leitura" aria-labelledby="leitura-titulo">
+          <div class="painel-topo"><h2 id="leitura-titulo">Leitura técnica</h2></div>
+          <div class="itens" id="leitura"><p class="aguardo">Aguardando o histórico do período.</p></div>
+        </section>
+      </div>
+      <div class="grade inferior">
+        <section class="painel" aria-labelledby="indicadores-titulo">
+          <div class="painel-topo"><h2 id="indicadores-titulo">Indicadores</h2><span class="meta">Último candle fechado</span></div>
+          <dl class="indicadores" id="indicadores"><div><dt>Histórico</dt><dd>—</dd></div></dl>
+        </section>
+        <section class="painel niveis" aria-labelledby="niveis-titulo">
+          <div class="painel-topo"><h2 id="niveis-titulo">Níveis aproximados</h2></div>
+          <dl><div><dt>Suporte</dt><dd id="suporte">—</dd></div><div><dt>Resistência</dt><dd id="resistencia">—</dd></div></dl>
+          <p class="nota">Mínima e máxima dos últimos 20 candles fechados, em USDT.</p>
+        </section>
+      </div>
+      <p class="rodape-dados" id="tempos">Os horários da cotação e do fechamento são exibidos em UTC.</p>
+    </div>
+    </section>
+    <!-- A pesquisa tem uma data de corte explícita e carrega mesmo com a bolsa indisponível. -->
+    <section class="cronologia" id="linha-do-tempo" aria-labelledby="eventos-titulo">
+      <div class="secao-topo"><h2 id="eventos-titulo">Linha do tempo</h2><span class="meta">01/06/2026 a <time id="corte-eventos" datetime="2026-11-19">19/11/2026</time></span></div>
+      <div class="faixa filtros" aria-label="Filtros dos eventos">
+        <div class="campo"><label for="categoria">Categoria</label><select id="categoria">
+          <option value="">Todas as categorias</option><option value="ia">IA</option><option value="cripto">Cripto</option>
+          <option value="regulacao">Regulação</option><option value="mercado">Mercado</option>
+        </select></div>
+        <div class="campo"><label for="impacto">Impacto</label><select id="impacto">
+          <option value="">Todos os impactos</option><option value="alto">Alto</option><option value="medio">Médio</option><option value="baixo">Baixo</option>
+        </select></div>
+        <span id="eventos-estado" role="status" class="ciclo">Carregando eventos…</span>
+      </div>
+      <p class="nota criterio">O impacto é uma avaliação editorial de alcance. Os marcadores no gráfico diário de BTC indicam a data dos eventos. <a href="https://github.com/sabinkleo/sabinkleo.github.io/blob/main/radar-ia-cripto/README.md#fontes-e-critérios">Critérios e fontes complementares</a></p>
+      <button type="button" id="eventos-repetir" hidden>Recarregar eventos</button>
+      <ol class="eventos" id="eventos-lista" aria-label="Eventos do mais recente ao mais antigo"></ol>
+    </section>
+  </main>
+  <!-- O espaço reservado no fim da página mantém o aviso visível sem cobrir os dados. -->
+  <footer class="aviso"><div class="moldura">Conteúdo educacional e informativo. Não é recomendação de investimento.</div></footer>
+</body>
+</html>

@@ -1,0 +1,200 @@
+[
+  {
+    "date": "2026-11-19",
+    "category": "ia",
+    "title": "Unsloth passa a usar a NPU de PCs Ryzen AI compatíveis",
+    "summary": "A AMD anunciou suporte às NPUs XDNA 2 no Unsloth Desktop. Segundo a empresa, mais de 100 aplicativos e fluxos de trabalho compatíveis podem usar essa aceleração para executar modelos localmente.",
+    "impact": "medio",
+    "source_name": "AMD",
+    "source_url": "https://newsroom.amd.com/news/amd-unsloth-bring-npu-support-agentic-ai-applications/"
+  },
+  {
+    "date": "2026-11-18",
+    "category": "mercado",
+    "title": "Anthropic fixa em US$ 83 o preço por ação de sua oferta pública inicial",
+    "summary": "A oferta-base reuniu 980 milhões de ações classe A, incluindo papéis vendidos pela companhia e por acionistas. O valor de US$ 83 corresponde ao preço da oferta.",
+    "impact": "alto",
+    "source_name": "Anthropic",
+    "source_url": "https://www.anthropic.com/news/anthropic-prices-initial-public-offering"
+  },
+  {
+    "date": "2026-11-18",
+    "category": "ia",
+    "title": "Google inicia a distribuição do Gemini 4 Neon",
+    "summary": "O anúncio abrangeu a API Gemini no AI Studio e o aplicativo Gemini para assinantes Pro e Ultra. O Google também incluiu o modelo no Antigravity para esses planos.",
+    "impact": "alto",
+    "source_name": "Google",
+    "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/"
+  },
+  {
+    "date": "2026-11-17",
+    "category": "ia",
+    "title": "NVIDIA divulga US$ 107,6 bilhões de receita em data centers no trimestre",
+    "summary": "O segmento cresceu 110% em relação ao mesmo trimestre do ano anterior, segundo a companhia. O balanço se refere ao terceiro trimestre fiscal de 2027, encerrado em 25 de outubro de 2026.",
+    "impact": "alto",
+    "source_name": "NVIDIA Relações com Investidores",
+    "source_url": "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/"
+  },
+  {
+    "date": "2026-11-16",
+    "category": "regulacao",
+    "title": "SEC divulga mudança de regra proposta para dois ETFs da Invesco Galaxy",
+    "summary": "O aviso registra o pedido da Cboe BZX para enquadrar os ETFs de bitcoin e ether nos critérios genéricos de listagem. Ambos já eram negociados na bolsa.",
+    "impact": "baixo",
+    "source_name": "SEC",
+    "source_url": "https://www.sec.gov/files/rules/sro/cboebzx/2026/34-106904.pdf"
+  },
+  {
+    "date": "2026-11-09",
+    "category": "ia",
+    "title": "Anthropic apresenta Claude Fable 5.2 e Mythos 5.2",
+    "summary": "A empresa anunciou atualizações das duas famílias de modelos voltadas a trabalho técnico, incluindo programação e pesquisa científica.",
+    "impact": "medio",
+    "source_name": "Anthropic",
+    "source_url": "https://www.anthropic.com/claude-fable-and-mythos-5-2"
+  },
+  {
+    "date": "2026-10-29",
+    "category": "cripto",
+    "title": "Carteiras da Binance sofrem saques não autorizados",
+    "summary": "A Binance situou o incidente em 29 de outubro, por volta das 20h05 UTC, e estimou a perda inicial em US$ 6,3 bilhões em criptoativos. A estimativa foi divulgada no dia seguinte.",
+    "impact": "alto",
+    "source_name": "Binance",
+    "source_url": "https://www.binance.com/en/support/announcement/detail/d3306d9dca5243548c813b605e1d1751"
+  },
+  {
+    "date": "2026-10-20",
+    "category": "regulacao",
+    "title": "Suíça aprova seu primeiro ETF de varejo com investimento direto em bitcoin",
+    "summary": "A FINMA autorizou um fundo negociado em bolsa para investidores de varejo. A aprovação incluiu uma exceção às regras suíças de diversificação de risco.",
+    "impact": "alto",
+    "source_name": "FINMA",
+    "source_url": "https://www.finma.ch/en/news/2026/10/20261020-mm-finma-bitcoin-etf/"
+  },
+  {
+    "date": "2026-10-13",
+    "category": "ia",
+    "title": "Google disponibiliza o Gemini 4 Argon para desenvolvedores",
+    "summary": "O Google apresentou o modelo para tarefas de várias etapas, entre elas migração de código e trabalho com informação empresarial.",
+    "impact": "medio",
+    "source_name": "Google",
+    "source_url": "https://blog.google/innovation-and-ai/technology/developers-tools/build-with-gemini-4-argon/"
+  },
+  {
+    "date": "2026-09-30",
+    "category": "cripto",
+    "title": "Stripe incorpora a stablecoin Open USD a seus produtos",
+    "summary": "A Stripe passou a oferecer suporte ao OUSD em serviços de tesouraria, emissão de cartões e pagamentos. Empresas passaram a poder receber, manter e enviar a moeda por esses produtos.",
+    "impact": "medio",
+    "source_name": "Stripe",
+    "source_url": "https://stripe.com/blog/ousd-now-live-on-stripe"
+  },
+  {
+    "date": "2026-09-21",
+    "category": "cripto",
+    "title": "B3 inicia a negociação do futuro de bitcoin cotado em dólar",
+    "summary": "O contrato estreou na bolsa brasileira com o código BTC. Ele passou a oferecer exposição ao preço futuro do bitcoin em dólares pela infraestrutura da B3.",
+    "impact": "medio",
+    "source_name": "B3",
+    "source_url": "https://borainvestir.b3.com.br/tipos-de-investimentos/renda-variavel/derivativos/b3-lanca-futuro-de-bitcoin-em-dolares-e-amplia-alternativas-em-derivativos-e-criptoativos/"
+  },
+  {
+    "date": "2026-09-16",
+    "category": "mercado",
+    "title": "Fed eleva em 0,25 ponto percentual a taxa de juros dos EUA",
+    "summary": "O comitê levou a faixa-alvo dos juros de curto prazo a 3,75%–4,00% ao ano. O comunicado citou a inflação ainda elevada.",
+    "impact": "alto",
+    "source_name": "Federal Reserve",
+    "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm"
+  },
+  {
+    "date": "2026-09-08",
+    "category": "ia",
+    "title": "Firmus e OpenAI anunciam contrato de infraestrutura na Malásia",
+    "summary": "O acordo de vários anos prevê que a OpenAI contrate capacidade dedicada de processamento em dois centros de IA da Firmus no país.",
+    "impact": "medio",
+    "source_name": "Firmus",
+    "source_url": "https://firmus.co/newsroom/firmus-surpasses-900-mw-contracted-capacity-adds-openai-as-anchor-customer-and-expands-into-malaysia"
+  },
+  {
+    "date": "2026-08-26",
+    "category": "ia",
+    "title": "AWS e NVIDIA anunciam plano para instalar mais 2 milhões de GPUs",
+    "summary": "As empresas projetaram instalar as GPUs adicionais na infraestrutura global da AWS em 2027 e 2028. A ampliação planejada inclui as famílias Blackwell Ultra, Rubin e Rubin Ultra.",
+    "impact": "alto",
+    "source_name": "NVIDIA",
+    "source_url": "https://nvidianews.nvidia.com/news/aws-and-nvidia-to-deliver-2-million-additional-gpus-and-next-generation-infrastructure-for-agentic-and-physical-ai"
+  },
+  {
+    "date": "2026-08-05",
+    "category": "cripto",
+    "title": "Circle anuncia o grupo inicial de validadores da rede Arc",
+    "summary": "A Circle identificou instituições participantes, incluindo Mastercard e Visa. Na data do anúncio, a rede principal ainda funcionava em caráter privado.",
+    "impact": "medio",
+    "source_name": "Circle",
+    "source_url": "https://www.circle.com/pressroom/circle-announces-founding-validator-cohort-and-major-integrations-for-arc-ahead-of-september-16-mainnet-launch"
+  },
+  {
+    "date": "2026-08-02",
+    "category": "regulacao",
+    "title": "Passam a valer novas obrigações europeias de transparência em IA",
+    "summary": "As regras passaram a exigir, em certos usos, que as pessoas sejam informadas quando interagem com IA ou encontram conteúdo gerado ou alterado por ela.",
+    "impact": "alto",
+    "source_name": "Comissão Europeia",
+    "source_url": "https://digital-strategy.ec.europa.eu/en/news/commission-starts-enforcing-ai-act-rules-and-new-transparency-requirements-2-august"
+  },
+  {
+    "date": "2026-07-24",
+    "category": "ia",
+    "title": "Anthropic lança o Claude Opus 5",
+    "summary": "O modelo passou a ser o padrão no plano Claude Max e também foi disponibilizado no Claude Pro. A empresa destacou seu uso em programação e tarefas de conhecimento.",
+    "impact": "medio",
+    "source_name": "Anthropic",
+    "source_url": "https://www.anthropic.com/news/claude-opus-5"
+  },
+  {
+    "date": "2026-07-01",
+    "category": "regulacao",
+    "title": "Encerra-se o prazo máximo de transição do MiCA na União Europeia",
+    "summary": "A ESMA orientou que prestadores de serviços de criptoativos sem a autorização exigida encerrassem suas atividades abrangidas pelo regime até essa data. Alguns países já haviam adotado prazos menores.",
+    "impact": "alto",
+    "source_name": "ESMA",
+    "source_url": "https://www.esma.europa.eu/sites/default/files/2026-04/ESMA75-113276571-1679_Statement_on_the_end_of_transitional_periods_under_MiCA.pdf"
+  },
+  {
+    "date": "2026-06-09",
+    "category": "ia",
+    "title": "Anthropic anuncia Claude Fable 5 e Claude Mythos 5",
+    "summary": "A empresa apresentou o Fable 5 para uso geral e o Mythos 5 com acesso inicialmente restrito a um grupo de organizações parceiras.",
+    "impact": "alto",
+    "source_name": "Anthropic",
+    "source_url": "https://www.anthropic.com/news/claude-fable-5-mythos-5"
+  },
+  {
+    "date": "2026-06-09",
+    "category": "cripto",
+    "title": "CME anuncia o lançamento de futuros sobre um índice de criptoativos",
+    "summary": "O índice de liquidação reunia oito ativos na data do anúncio, entre eles bitcoin, ether e solana. O contrato tem liquidação financeira.",
+    "impact": "medio",
+    "source_name": "CME Group",
+    "source_url": "https://www.cmegroup.com/media-room/press-releases/2026/6/09/cme_group_announceslaunchofnasdaqcmecryptoindexfutures.html"
+  },
+  {
+    "date": "2026-06-05",
+    "category": "mercado",
+    "title": "Bitcoin é negociado abaixo de US$ 60 mil durante o dia",
+    "summary": "O bitcoin cruzou o patamar de US$ 60 mil durante a sessão, segundo a cobertura de mercado da CoinDesk e do The Wall Street Journal. O valor descreve uma negociação intradiária.",
+    "impact": "alto",
+    "source_name": "CoinDesk",
+    "source_url": "https://www.coindesk.com/markets/2026/06/05/bitcoin-loses-usd60-000-falls-to-weakest-price-since-october-2024"
+  },
+  {
+    "date": "2026-06-01",
+    "category": "mercado",
+    "title": "Strategy comunica à SEC a venda de 32 bitcoins",
+    "summary": "A companhia informou ter vendido 32 BTC por cerca de US$ 2,5 milhões entre 26 e 31 de maio. O dia 1º de junho é a data da divulgação pública.",
+    "impact": "medio",
+    "source_name": "Strategy em documento à SEC",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1050446/000119312526249768/mstr-20260530.htm"
+  }
+]
