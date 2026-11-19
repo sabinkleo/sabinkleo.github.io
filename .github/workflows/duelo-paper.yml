@@ -1,9 +1,17 @@
 name: Duelo spot simulado
 on:
   schedule:
-    # O atraso dá tempo para a Bybit fechar o candle da hora anterior (horário UTC).
-    - cron: '8 * * * *'
+    # Duas verificações por hora, fora do minuto 0 para evitar pico do scheduler.
+    # Cada abertura é processada uma única vez; a segunda execução é idempotente.
+    - cron: '17 * * * *'
+    # Segunda oportunidade na mesma hora se a primeira execução atrasar ou não disparar.
+    - cron: '47 * * * *'
   workflow_dispatch:
+  # Ao alterar o agendador, executar uma vez após o merge para validar imediatamente.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/duelo-paper.yml'
 
 # O token temporário do próprio GitHub grava somente os arquivos públicos da simulação.
 permissions:
