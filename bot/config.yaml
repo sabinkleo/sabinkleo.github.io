@@ -1,0 +1,19 @@
+# Cada participante começa com o mesmo capital total, repartido igualmente entre os pares.
+pares: [BTCUSDT, ETHUSDT, SOLUSDT]
+intervalo_minutos: 60
+inicio_utc: 2026-06-01T00:00:00Z
+fim_utc: null  # Usa o último candle fechado na execução do backtest.
+saldo_inicial_usdt: 1000
+fracao_treino: 0.60
+# Hipóteses do simulador. Conferir a taxa taker spot na tabela vigente da Bybit.
+taxa_por_execucao: 0.001
+slippage_por_execucao: 0.0005
+dias_por_ano: 365
+mercado:
+  # Somente GET de candles de mercado público.
+  v5: https://api.bybit.com/v5/market/kline
+  # O gráfico spot oficial pode atender quando a v5 está indisponível na região do executor.
+  grafico_spot: https://www.bybit.com/spot/api/quote/v2/klines
+  limite_pagina: 1000
+  timeout_ms: 20000
+  tentativas: 3

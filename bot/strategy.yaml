@@ -1,0 +1,11 @@
+# Exige o cruzamento no fechamento. Enquanto não houver outra regra, mantém o alvo anterior.
+ema_rapida: 20
+ema_lenta: 50
+rsi_periodo: 14
+entrada:
+  cruzamento: acima
+  rsi_minimo: 50
+saida:
+  cruzamento: abaixo
+# O treino escolhe o maior retorno líquido. Empates preservam o primeiro candidato.
+candidatos_rsi_minimo: [50, 55, 60]
