@@ -1,0 +1,5 @@
+# Worker opcional para o navegador consultar a Bybit com CORS.
+name = "vertice-cripto-bybit"
+main = "worker.mjs"
+compatibility_date = "2026-06-01"
+workers_dev = true
