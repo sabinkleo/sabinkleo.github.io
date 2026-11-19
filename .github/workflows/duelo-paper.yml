@@ -1,0 +1,40 @@
+name: Duelo spot simulado
+on:
+  schedule:
+    # O atraso dá tempo para a Bybit fechar o candle da hora anterior (horário UTC).
+    - cron: '8 * * * *'
+  workflow_dispatch:
+
+# O token temporário do próprio GitHub grava somente os arquivos públicos da simulação.
+permissions:
+  contents: write
+concurrency:
+  group: duelo-paper-producao
+  cancel-in-progress: false
+
+jobs:
+  simular:
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+      - run: npm --prefix bot test
+      - name: Atualizar os dois livros
+        run: npm --prefix bot run paper
+      - name: Versionar a atualização completa
+        # Uma falha antes do push preserva o estado remoto da última execução bem-sucedida.
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- bot/data bot/state bot/results/paper.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Atualiza carteiras simuladas da Bybit"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
