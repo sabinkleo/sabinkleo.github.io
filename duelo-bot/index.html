@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090a09">
+  <meta name="description" content="Compare um bot spot simulado com comprar e manter os mesmos ativos, usando candles públicos da Bybit.">
+  <title>Duelo: Bot vs Hold | Vértice Labs</title>
+  <link rel="canonical" href="https://verticelabs.me/duelo-bot/">
+  <link rel="stylesheet" href="./estilo.css">
+  <script type="module" src="./painel.js"></script>
+</head>
+<body>
+  <!-- O cabeçalho e a faixa repetem a identidade do catálogo do laboratório. -->
+  <header><nav class="wrap"><a class="brand" href="/">VÉRTICE<span>LABS®</span></a><a href="/">← Catálogo</a></nav></header>
+  <main class="wrap">
+    <h1>Duelo<span>:</span> Bot <i>vs</i> Hold</h1>
+    <p class="intro">Uma carteira segue os sinais do bot. A outra compra os mesmos ativos e mantém a posição. As duas começam com o mesmo saldo.</p>
+    <div class="modos" role="group" aria-label="Modo de comparação">
+      <button id="backtest" aria-pressed="true">Backtest (passado)</button>
+      <button id="paper" aria-pressed="false">Simulação ao vivo (sem dinheiro real)</button>
+    </div>
+    <div id="amostras" class="amostras" role="group" aria-label="Amostra do backtest">
+      <button id="treino" aria-pressed="false">Treino</button><button id="teste" aria-pressed="true">Teste reservado</button>
+    </div>
+    <p id="estado" role="status">Carregando resultados…</p><button id="repetir" hidden>Tentar novamente</button>
+    <div id="relatorio" hidden>
+      <div class="titulo"><h2 id="titulo"></h2><span id="periodo"></span></div>
+      <div class="quadro">
+        <div class="placar">
+          <div><span class="rotulo"><b class="marca bot"></b> Bot simulado</span><strong id="ret-bot"></strong><span id="saldo-bot"></span></div>
+          <div><span class="rotulo"><b class="marca hold"></b> Buy-and-hold</span><strong id="ret-hold"></strong><span id="saldo-hold"></span></div>
+        </div>
+        <div class="grafico"><h3>Patrimônio <small>USDT</small></h3>
+          <canvas id="curvas" tabindex="0" role="img" aria-label="Curvas de patrimônio. Use as setas do teclado para consultar os valores por horário."></canvas>
+          <output id="leitura" aria-live="off"></output>
+        </div>
+        <p id="veredito"></p>
+      </div>
+      <p class="contexto" id="contexto"></p>
+      <div class="detalhes">
+        <section><h3>Métricas</h3><table><thead><tr><th>Indicador</th><th>Bot</th><th>Hold</th></tr></thead><tbody id="metricas"></tbody></table></section>
+        <section><h3>Últimas operações do bot</h3><div id="operacoes"></div></section>
+      </div>
+      <div class="downloads"><a id="baixar">Dados em JSON ↗</a><a id="csv">Curva em CSV ↗</a><a href="https://github.com/sabinkleo/sabinkleo.github.io/tree/main/bot">Regras e metodologia ↗</a></div>
+    </div>
+    <noscript>Ative o JavaScript para consultar os resultados.</noscript>
+  </main>
+  <footer>Conteúdo educacional e experimental. Simulação sem dinheiro real. Não é recomendação de investimento.</footer>
+</body></html>

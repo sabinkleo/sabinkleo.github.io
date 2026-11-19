@@ -1,0 +1,12 @@
+{
+  "name": "verticelabs-duelo",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=24.5.0"},
+  "scripts": {
+    "backtest": "node --use-env-proxy cli.mjs backtest",
+    "paper": "node --use-env-proxy cli.mjs paper",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {"proper-lockfile": "4.1.2", "yaml": "2.9.1"}
+}
