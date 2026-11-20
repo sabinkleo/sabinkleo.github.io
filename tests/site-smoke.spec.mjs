@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 const origin = process.env.SITE_TEST_ORIGIN || 'http://127.0.0.1:8765';
 const routes = [
   '/',
+  '/klein/',
   '/n1/',
   '/n1/equipe/',
   '/n1/etiquetas/',
@@ -428,4 +429,28 @@ test('Homepage prioritizes Drops and Observatório while preserving featured bus
   await expect(groups.first().locator('a[href="/drops/"]')).toHaveCount(1);
   await expect(groups.first().locator('a[href="/observatorio/"]')).toHaveCount(1);
   await expect(groups.nth(1).locator('h2')).toHaveText('Negócios e operação');
+});
+
+test('Leo Klein portfolio keeps its own styles, honest proof and responsive layout', async ({ page }) => {
+  for (const width of [320, 375, 390, 768, 1440]) {
+    await page.setViewportSize({ width, height: 860 });
+    await page.goto(origin + '/klein/');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
+    await expect(page.getByRole('link', { name: /Solicitar proposta/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Ver projetos publicados/i })).toBeVisible();
+    await expect(page.locator('.kl-terminal-badge')).toHaveText('DADOS FICTÍCIOS');
+    await expect(page.locator('link[href="/assets/klein.css"]')).toHaveCount(1);
+    await expect(page.locator('script[src*="measurement.js"]')).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    const nav = page.getByRole('navigation', { name: 'Menu da Vértice' });
+    await expect(nav).toBeInViewport();
+    await expect(nav.getByRole('link', { name: 'Ferramentas' })).toBeVisible();
+  }
+
+  await page.goto(origin + '/');
+  const founder = page.locator('.vl-home .vt-founder');
+  await expect(founder.getByRole('link', { name: /Ver portfólio e serviços/i })).toHaveAttribute('href', '/klein/');
+  await founder.getByRole('link', { name: /Ver portfólio e serviços/i }).click();
+  await expect(page).toHaveURL(origin + '/klein/');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Criativos para vender');
 });
