@@ -34,7 +34,7 @@ function renderCard(x){
  '<div class="signal-top"><div class="signal-head"><div class="category">'+esc(categories[x.category]||x.category)+'</div><div class="score" title="Score editorial hipotético">'+calcScore(x)+'<small>/100</small></div></div>'+
  '<h3>'+esc(x.title)+'</h3><div class="maker">'+esc(x.maker)+' · '+esc(x.model)+'</div>'+
  '<p class="teaser">'+esc(x.why)+'</p></div>'+
- '<div class="signal-bottom"><div class="signal-labels">'+statusText(x)+'<span class="pill">'+esc(phases[x.phase]||x.phase)+'</span><span class="pill">'+esc(x.tag||x.priority)+'</span></div>'+
+ '<div class="signal-bottom"><div class="signal-labels">'+statusText(x)+'<span class="pill">'+esc(phases[x.phase]||x.phase)+'</span><span class="pill">RESULTADO NÃO VALIDADO</span><span class="pill">'+esc(x.tag||x.priority)+'</span></div>'+
  '<div class="signal-buttons"><button type="button" class="action secondary" data-action="detail" aria-expanded="'+expanded+'" aria-controls="details-'+esc(x.id)+'">'+(expanded?'FECHAR':'ABRIR PLANO')+'</button>'+
  '<button type="button" class="action muted" data-action="save" aria-pressed="'+selected+'" aria-label="'+(selected?'Remover da shortlist':'Adicionar à shortlist')+'">'+(selected?'★ SALVO':'☆ SALVAR')+'</button></div></div>'+
  '<div class="details" id="details-'+esc(x.id)+'"'+(expanded?'':' hidden')+'><dl><dt>O que a fonte diz</dt><dd>'+esc(x.claim)+'</dd>'+
