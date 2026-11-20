@@ -8,27 +8,58 @@
   if (!allowed.includes(path)) return;
 
   var STORAGE_KEY = 'vertice_measurement_consent_v2';
+  var choices = ['none', 'analytics', 'ads', 'both'];
   var choice = readChoice();
-  var loaded = false;
-  // Ignore arbitrary URL values. The numeric Tag Assistant flag is safe for Preview.
-  var safeUrl = !location.hash && (!location.search || /^\?gtm_debug=\d+$/.test(location.search));
+  var script;
   var adPage = path === '/' || path === '/solucoes/';
-  var safeReferrer = !document.referrer || /^https?:\/\/[^/?#]+\/$/.test(document.referrer);
 
-  function readChoice() {
+  // Only registered tags can leave the browser. A slug regex also accepts names and phone numbers.
+  var campaignValues = {
+    utm_source: ['linkedin', 'indicacao', 'whatsapp', 'google', 'instagram', 'facebook'],
+    utm_medium: ['organic_social', 'referral', 'outreach', 'cpc', 'paid_social'],
+    utm_campaign: ['revenue-os-piloto-cwb']
+  };
+
+  function cleanLocation() {
+    var incoming = new URL(location.href);
+    var clean = new URL(path, location.origin);
+    Object.keys(campaignValues).forEach(function (key) {
+      var values = incoming.searchParams.getAll(key);
+      if (values.length === 1 && campaignValues[key].includes(values[0])) {
+        clean.searchParams.set(key, values[0]);
+      }
+    });
+    return clean.href;
+  }
+
+  function cleanReferrer() {
+    if (!document.referrer) return '';
+    var from = new URL(document.referrer);
+    if (from.origin === location.origin && allowed.includes(from.pathname)) return from.origin + '/';
+    var knownOrigins = ['https://www.google.com', 'https://www.google.com.br', 'https://www.linkedin.com',
+      'https://l.facebook.com', 'https://www.facebook.com', 'https://l.instagram.com', 'https://www.instagram.com'];
+    return knownOrigins.includes(from.origin) ? from.origin + '/' : '';
+  }
+
+  function savedChoice() {
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
-      if (['none', 'analytics', 'ads', 'both'].includes(stored)) return stored;
-    } catch (_) { /* Sem armazenamento, pedir a escolha na próxima visita. */ }
+      if (choices.includes(stored)) return stored;
+    } catch (_) { /* Storage can be unavailable. */ }
     return null;
   }
 
+  function readChoice() {
+    var entry = history.state?.[STORAGE_KEY];
+    return choices.includes(entry) ? entry : savedChoice();
+  }
+
   function analyticsEnabled() {
-    return safeUrl && (choice === 'analytics' || choice === 'both');
+    return choice === 'analytics' || choice === 'both';
   }
 
   function adsEnabled() {
-    return safeUrl && safeReferrer && adPage && (choice === 'ads' || choice === 'both');
+    return adPage && (choice === 'ads' || choice === 'both');
   }
 
   window.dataLayer = window.dataLayer || [];
@@ -45,35 +76,61 @@
   gtag('set', 'ads_data_redaction', true);
 
   function loadGtm() {
-    if (loaded) return;
-    loaded = true;
     window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
-    var script = document.createElement('script');
+    script = document.createElement('script');
     script.async = true;
+    script.referrerPolicy = 'no-referrer';
     script.src = 'https://www.googletagmanager.com/gtm.js?id=' + encodeURIComponent(GTM_ID);
     document.head.appendChild(script);
   }
 
   function track(eventName, fields) {
-    if (!analyticsEnabled()) return;
+    if (!script || !analyticsEnabled()) return;
     window.dataLayer.push(Object.assign({ event: eventName, route: path }, fields));
   }
 
   function startMeasurement() {
-    if (loaded || (!analyticsEnabled() && !adsEnabled())) return;
+    if (script || (!analyticsEnabled() && !adsEnabled())) return;
+    var pageLocation = cleanLocation();
+    var pageReferrer = cleanReferrer();
+    // The container and vendor scripts can also read the raw browser fields. A
+    // fresh document without a referrer is required for detailed/unknown URLs.
+    if (document.referrer && document.referrer !== pageReferrer) {
+      if (savedChoice() !== choice) return;
+      var navigation = document.createElement('a');
+      navigation.href = pageLocation;
+      navigation.rel = 'noreferrer';
+      navigation.click();
+      return;
+    }
+    try {
+      if (location.href !== pageLocation) history.replaceState(history.state, '', pageLocation);
+    } catch (_) { return; } // Keep the container blocked if the raw URL is still present.
+
+    gtag('set', { page_location: pageLocation, page_referrer: pageReferrer });
     gtag('consent', 'update', flags(analyticsEnabled(), adsEnabled()));
     loadGtm();
-    track('vl_page_view', { page_location: location.origin + path });
+    track('vl_page_view', { page_location: pageLocation, page_referrer: pageReferrer });
     if (adsEnabled()) window.dataLayer.push({ event: 'vl_ads_page_view', route: path });
   }
 
+  function persistChoice(next) {
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+      if (!history.state?.[STORAGE_KEY]) return;
+    } catch (_) { /* Use this history entry if local storage fails. */ }
+    var state = Object.assign({}, history.state);
+    if (savedChoice() === next) delete state[STORAGE_KEY];
+    else state[STORAGE_KEY] = next;
+    history.replaceState(state, '');
+  }
+
   function applyConsent(next, persist) {
+    if (persist) persistChoice(next);
     if (choice === next) return;
     choice = next;
-    if (persist) {
-      try { localStorage.setItem(STORAGE_KEY, next); } catch (_) { /* Choice applies to this document. */ }
-    }
-    if (loaded) {
+    if (script) {
+      script.remove();
       gtag('consent', 'update', flags(false, false));
       location.reload();
       return;
@@ -82,8 +139,8 @@
   }
 
   function syncChoice() {
-    var stored = readChoice();
-    applyConsent(stored, false);
+    applyConsent(readChoice(), false);
+    if (consentUi) consentUi();
   }
   window.addEventListener('storage', function (event) {
     if (event.key === STORAGE_KEY || event.key === null) syncChoice();
@@ -120,93 +177,87 @@
     }
   }, true);
 
-  function style(element, declarations) {
-    Object.assign(element.style, declarations);
-    return element;
-  }
-  function button(label, handler) {
-    var el = document.createElement('button');
-    el.type = 'button';
-    el.textContent = label;
-    style(el, {
-      font: '600 13px system-ui,sans-serif',
-      padding: '10px 14px', cursor: 'pointer',
-      borderRadius: '5px', border: '1px solid #d3fa43',
-      color: '#d3fa43',
-      background: '#131713',
-      minHeight: '42px'
-    });
-    el.addEventListener('click', handler);
-    return el;
-  }
-  function makePanel() {
-    var panel = document.createElement('section');
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Preferências de privacidade');
-    style(panel, {
-      position: 'fixed', zIndex: '2147483000',
-      bottom: '12px', left: '12px', right: '12px', maxWidth: '660px',
-      margin: '0 auto', background: '#121812', color: '#f1f2e9',
-      border: '1px solid #6a8a39', borderRadius: '9px',
-      boxShadow: '0 10px 42px #000a',
-      padding: '16px 18px', maxHeight: 'calc(100dvh - 24px)', overflow: 'auto', font: '14px/1.55 system-ui,sans-serif'
-    });
-    var heading = document.createElement('strong');
-    heading.textContent = 'Privacidade e métricas da Vértice';
-    var description = document.createElement('p');
-    description.textContent = 'Escolha se deseja permitir estatísticas de uso (Google Analytics) e medição de publicidade (Meta). As ferramentas funcionam com ambas desligadas.';
-    description.style.margin = '7px 0';
-    var details = document.createElement('a');
-    details.href = '/politica-de-privacidade/';
-    details.textContent = 'Saiba quais dados são medidos';
-    details.style.color = '#d3fa43';
-    var actions = document.createElement('div');
-    style(actions, { display: 'flex', flexWrap: 'wrap', gap: '9px', marginTop: '12px' });
-    function option(label, checked) {
-      var wrapper = document.createElement('label');
-      wrapper.style.display = 'block';
-      var input = document.createElement('input');
-      input.type = 'checkbox';
-      input.checked = checked;
-      wrapper.append(input, ' ' + label);
-      panel.appendChild(wrapper);
-      return input;
-    }
-
-    function finish(next) {
-      applyConsent(next, true);
-      panel.remove();
-      settings.hidden = false;
-      settings.focus();
-    }
-    panel.appendChild(heading);
-    panel.appendChild(description);
-    panel.appendChild(details);
-    var analytics = option('Estatísticas de uso', choice === 'analytics' || choice === 'both');
-    var ads = option('Medição de publicidade', choice === 'ads' || choice === 'both');
-    actions.appendChild(button('Rejeitar opcionais', function () { finish('none'); }));
-    actions.appendChild(button('Salvar escolhas', function () {
-      finish(analytics.checked ? (ads.checked ? 'both' : 'analytics') : (ads.checked ? 'ads' : 'none'));
-    }));
-    actions.appendChild(button('Aceitar opcionais', function () { finish('both'); }));
-    panel.appendChild(actions);
-    return panel;
-  }
-
-  var settings = button('Privacidade', function () {
-    settings.hidden = true;
-    document.body.appendChild(makePanel());
-  });
-  settings.setAttribute('aria-label', 'Revisar consentimento de métricas e anúncios');
-  style(settings, {
-    position: 'fixed', zIndex: '2147482999',
-    bottom: '10px', left: '10px', opacity: '0.94'
-  });
-  settings.hidden = !choice;
+  var consentUi;
 
   function initialize() {
-    document.body.appendChild(settings);
-    if (!choice) document.body.appendChild(makePanel());
+    var controls = document.createElement('div');
+    controls.className = 'vl-consent';
+    controls.innerHTML = `
+      <section class="vl-consent-card" aria-labelledby="vl-cookie-title" hidden>
+        <h2 id="vl-cookie-title">Sua privacidade importa</h2>
+        <p>Usamos cookies opcionais para analisar o uso das ferramentas e medir campanhas. Você pode aceitar, recusar ou personalizar suas escolhas.</p>
+        <div class="vl-consent-actions">
+          <button type="button" data-choice="both">Aceitar todos</button>
+          <button type="button" data-choice="none">Recusar opcionais</button>
+          <button type="button" data-open>Personalizar</button>
+        </div>
+        <a href="/politica-de-privacidade/">Política de privacidade</a>
+      </section>
+      <button class="vl-consent-settings" type="button" data-open hidden>Preferências de cookies</button>
+      <dialog class="vl-consent-card" aria-labelledby="vl-cookie-settings">
+        <div class="vl-consent-heading">
+          <h2 id="vl-cookie-settings" tabindex="-1">Preferências de cookies</h2>
+          <button type="button" data-close aria-label="Fechar preferências">×</button>
+        </div>
+        <div class="vl-consent-option">
+          <span><strong>Essenciais</strong><small>Guardam sua escolha de privacidade.</small></span>
+          <span>Sempre ativos</span>
+        </div>
+        <label class="vl-consent-option">
+          <span><strong>Analytics</strong><small>Mede o uso das páginas e ferramentas.</small></span>
+          <input type="checkbox" name="analytics" aria-label="Analytics">
+        </label>
+        <label class="vl-consent-option">
+          <span><strong>Publicidade</strong><small>Mede campanhas na página inicial e em Soluções.</small></span>
+          <input type="checkbox" name="ads" aria-label="Publicidade">
+        </label>
+        <div class="vl-consent-actions">
+          <button type="button" data-choice="both">Aceitar todos</button>
+          <button type="button" data-choice="none">Recusar opcionais</button>
+          <button type="button" data-choice="save">Salvar escolhas</button>
+        </div>
+      </dialog>`;
+    var banner = controls.querySelector('section');
+    var settings = controls.querySelector('.vl-consent-settings');
+    var dialog = controls.querySelector('dialog');
+    var analytics = dialog.querySelector('[name="analytics"]');
+    var ads = dialog.querySelector('[name="ads"]');
+    var opener;
+
+    consentUi = function () {
+      banner.hidden = choice !== null;
+      settings.hidden = choice === null;
+      analytics.checked = analyticsEnabled();
+      ads.checked = choice === 'ads' || choice === 'both';
+    };
+    consentUi();
+    document.body.appendChild(controls);
+
+    controls.querySelectorAll('[data-open]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        opener = button;
+        consentUi();
+        dialog.showModal();
+        dialog.querySelector('h2').focus();
+      });
+    });
+    dialog.querySelector('[data-close]').addEventListener('click', function () { dialog.close(); });
+    dialog.addEventListener('close', function () {
+      if (opener && opener.getClientRects().length) opener.focus();
+      else if (!settings.hidden) settings.focus();
+    });
+    controls.querySelectorAll('[data-choice]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        var next = button.dataset.choice;
+        if (next === 'save') {
+          next = analytics.checked ? (ads.checked ? 'both' : 'analytics') : (ads.checked ? 'ads' : 'none');
+        }
+        applyConsent(next, true);
+        consentUi();
+        if (dialog.open) dialog.close();
+        settings.focus({ preventScroll: true });
+      });
+    });
     startMeasurement();
   }
 
