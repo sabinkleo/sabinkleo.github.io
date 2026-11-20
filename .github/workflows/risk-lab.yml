@@ -23,6 +23,8 @@ jobs:
         run: npm --prefix bot test
       - name: Testes do laboratorio de risco
         run: node --test bot/tests/risk-lab.test.mjs
+      - name: Comparacao de performance e benchmark (sem alterar paper)
+        run: node bot/lab/comparar.mjs
       - name: Simulacao offline com candles versionados
         shell: bash
         run: |
