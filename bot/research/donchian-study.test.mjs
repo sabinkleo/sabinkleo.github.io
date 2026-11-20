@@ -71,3 +71,12 @@ test('nao aceita calendarios desalinhados ou janelas invalidas',()=>{
   assert.throws(()=>simulate({A:up,B:up.map((x,i)=>i===70?{...x,t:x.t+1}:x)},'hold',60,100,.001,.0005),/Calendario/);
   assert.throws(()=>simulate(series,'hold',10,100,.001,.0005),/Janela/);
 });
+
+test('atraso de execucao e parametrizado e nao cria fills no passado',()=>{
+  const imediato=simulate(series,'donchian60',60,140,.001,.0005,1000,1);
+  const atrasado=simulate(series,'donchian60',60,140,.001,.0005,1000,2);
+  assert.equal(imediato.curva[1].capital,1000);
+  assert.equal(atrasado.curva[1].capital,1000);
+  assert.notDeepEqual(imediato.curva,atrasado.curva);
+  assert.throws(()=>simulate(series,'hold',60,140,.001,.0005,1000,0),/Atraso/);
+});
