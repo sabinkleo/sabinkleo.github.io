@@ -61,7 +61,7 @@
 .vl-klein .kl-price small { display:block; color:var(--vl-muted); font: 400 11px/1.6 var(--vt-mono); }
 .vl-klein .kl-disclaimer { color: var(--vl-muted); font-size:12px; margin:16px 0 0; }
 .vl-klein .kl-terminal { border:1px solid #364134; background:#080b08; }
-.vl-klein .kl-terminal-bar { display:flex; align-items:center; gap: 15px; min-height:47px; padding: 10px 18px; border-bottom:1px solid #364134; color:#aab3a2; background:#111711; font: 500 11px/1.5 var(--vt-mono); }
+.vl-klein .kl-terminal-bar { display:flex; flex-wrap:wrap; align-items:center; gap: 15px; min-height:47px; padding: 10px 18px; border-bottom:1px solid #364134; color:#aab3a2; background:#111711; font: 500 11px/1.5 var(--vt-mono); }
 .vl-klein .kl-terminal-dots { display:flex; gap:5px; }
 .vl-klein .kl-terminal-dots i { display:block; width:9px; height:9px; border-radius:50%; background:#4d564c; }
 .vl-klein .kl-terminal-badge { margin-left:auto; color: var(--vl-accent); white-space:nowrap; font-size:10px; }
