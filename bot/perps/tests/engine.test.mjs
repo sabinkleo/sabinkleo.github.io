@@ -77,3 +77,26 @@ test('Donchian 60 dias usa so 60 dias concluidos para abrir a primeira posicao',
   assert.ok(signals.slice(0,61*24).every(x=>x===0));
   assert.ok(signals.slice(61*24).some(x=>x===1));
 });
+
+test('stop e executado antes de liquidacao se for a primeira barreira tocada',()=>{
+  const b=make(1900,i=>100+i*.01).map(x=>({...x}));
+  const index=1900-30*24+2;
+  b[index]={...b[index],o:b[index].o,h:b[index].o*1.01,
+    l:b[index].o*.80,c:b[index].o*.97};
+  const x=simulate(b,{...cfg,periodDays:30,direction:'long',leverage:10,
+    scaleIn:false,stopPct:3,takePct:60,trailingPct:3});
+  assert.ok(x.events.some(e=>e.kind==='stop'));
+  // Entrada na abertura. Wick de -20% cruzaria o nivel de liquidacao,
+  // mas o stop de 3% deveria ser atingido primeiro.
+  assert.ok(x.events.filter(e=>e.t===b[index].t).some(e=>e.kind==='stop'));
+});
+test('gap que ultrapassa margem liquidavel registra liquidacao',()=>{
+  const b=make(1900,i=>100+i*.01).map(x=>({...x}));
+  const index=1900-30*24+2;
+  b[index]={...b[index],o:b[index].o*.50,
+    h:b[index].o*.52,l:b[index].o*.49,c:b[index].o*.50};
+  const x=simulate(b,{...cfg,periodDays:30,direction:'long',leverage:10,
+    scaleIn:false,stopPct:20,takePct:60,trailingPct:20});
+  assert.ok(x.events.some(e=>e.kind==='liquidação'));
+  assert.ok(x.summary.liquidations>=1);
+});
