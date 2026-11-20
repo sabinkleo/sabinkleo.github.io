@@ -1,21 +1,13 @@
 name: Duelo spot simulado
 on:
   schedule:
-    # Duas verificações por hora, fora do minuto 0 para evitar pico do scheduler.
-    # Cada abertura é processada uma única vez; a segunda execução é idempotente.
-    - cron: '7,22,37,52 * * * *'
-    # GitHub Actions pode atrasar ou pular eventos agendados.
-    # A execucao idempotente recupera cada hora perdida a partir do ultimo estado.
-  workflow_dispatch:
-  # Ao alterar o agendador, executar uma vez após o merge para validar imediatamente.
+    - cron: '17 * * * *'
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/duelo-paper.yml'
+    paths: ['.github/workflows/duelo-paper.yml']
+  workflow_dispatch:
 
-# O token temporário do próprio GitHub grava somente os arquivos públicos da simulação.
-permissions:
-  contents: write
+permissions: {}
 concurrency:
   group: duelo-paper-producao
   cancel-in-progress: false
@@ -23,6 +15,8 @@ concurrency:
 jobs:
   simular:
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -32,17 +26,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: npm
+          cache-dependency-path: bot/package-lock.json
       - run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
-      - run: npm --prefix bot test
       - name: Atualizar os dois livros
-        run: npm --prefix bot run paper
-      - name: Versionar a atualização completa
-        # Uma falha antes do push preserva o estado remoto da última execução bem-sucedida.
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- bot/data bot/state bot/results/paper.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Atualiza carteiras simuladas da Bybit"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+        run: bash bot/measure-paper-run.sh bash bot/paper-runtime.sh
