@@ -4,11 +4,11 @@ import { configuracao, gravar, gravarJson, lerJson, raiz } from './lib/arquivos.
 import { coletor } from './lib/mercado.mjs';
 import { backtest, iso } from './lib/motor.mjs';
 import { assinatura, atualizarPaper, painelPaper } from './lib/paper.mjs';
+import { csvPaper, verificarEstado } from './lib/paper-checkpoint.mjs';
 
 function publicarPaper(estado,cfg) {
   // O JSON de estado é a fonte de verdade. Uma repetição também reconstitui os dois arquivos derivados.
-  const linhas = estado.trades.map(x => [iso(x.t),x.lado,x.par,x.acao,x.quantidade,x.preco,x.taxa].join(','));
-  gravar(raiz+'state/trades.csv',['abertura_utc,carteira,par,acao,quantidade,preco_usdt,taxa_usdt',...linhas].join('\n')+'\n');
+  gravar(raiz+'state/trades.csv',csvPaper(estado));
   gravarJson(raiz+'results/paper.json',painelPaper(estado,cfg));
 }
 async function rodar(modo) {
@@ -20,6 +20,10 @@ async function rodar(modo) {
     ? Math.min(aberturaAtual,Math.floor(Date.parse(cfg.fim_utc)/cfg.passo)*cfg.passo) : aberturaAtual;
   const arquivoEstado = raiz+'state/paper_state.json';
   const anterior = modo === 'paper' && existsSync(arquivoEstado) ? lerJson(arquivoEstado) : null;
+  if (modo === 'paper' && !anterior && process.env.DUELO_REQUIRE_STATE === '1') {
+    throw Error('Estado paper obrigatório. Restaure o último checkpoint antes de executar.');
+  }
+  if (modo === 'paper' && existsSync(arquivoEstado)) verificarEstado(anterior,cfg,contrato);
   const arquivoBacktest = raiz+'results/backtest.json';
   // A calibração é lida só na estreia. Refazer a pesquisa local não muda uma carteira em andamento.
   const bt = modo === 'paper' && !anterior ? lerJson(arquivoBacktest) : null;
