@@ -175,3 +175,39 @@ html:has(.vl-consent section:not([hidden])) {
 .vl-consent:has(dialog[open]) > :not(dialog) {
   visibility: hidden;
 }
+
+footer .vl-consent {
+  position: static;
+  justify-items: start;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+footer .vl-consent button.vl-consent-settings {
+  min-height: 44px;
+  padding: 0 4px;
+  color: #a1aaa8;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vl-consent {
+  --vl-lime: #91d6bd;
+}
+
+@media (max-width: 480px) {
+  .vl-consent section .vl-consent-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .vl-consent section .vl-consent-actions button {
+    flex: 1;
+    padding: 0 4px;
+    font-size: 12px;
+  }
+}

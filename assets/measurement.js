@@ -225,13 +225,14 @@
     var opener;
 
     consentUi = function () {
+      var container = choice ? document.querySelector('footer') || document.body : document.body;
+      if (controls.parentNode !== container) container.appendChild(controls);
       banner.hidden = choice !== null;
       settings.hidden = choice === null;
       analytics.checked = analyticsEnabled();
       ads.checked = choice === 'ads' || choice === 'both';
     };
     consentUi();
-    document.body.appendChild(controls);
 
     controls.querySelectorAll('[data-open]').forEach(function (button) {
       button.addEventListener('click', function () {

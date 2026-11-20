@@ -297,7 +297,7 @@ for (const width of [320, 375, 390, 768, 1440]) {
     await catalog.focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(origin + '/');
-    const diagnostic = page.getByRole('link', { name: 'Abrir diagnóstico gratuito' });
+    const diagnostic = page.getByRole('link', { name: 'Abrir Raio-X de Vendas' });
     await expect(diagnostic).toBeInViewport();
     await diagnostic.click();
     await expect(page).toHaveURL(origin + '/raio-x-vendas/');

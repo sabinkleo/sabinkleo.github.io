@@ -32,61 +32,90 @@
       <h1 id="page-title">Ferramentas para o trabalho técnico.</h1>
       <p>Diagnostique vendas, organize estoque, prepare um acerto ou explore dados de mercado.</p>
     </section>
-    <section class="catalog" id="ferramentas" aria-labelledby="catalog-title">
-      <h2 id="catalog-title">Escolha uma ferramenta</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>Raio-X de Vendas</h3>
-          <p>Calcule oportunidades não atendidas, identifique gargalos de rastreamento e receba um plano de ação comercial.</p>
-          <a href="/raio-x-vendas/">Abrir diagnóstico gratuito <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Núcleo N1 · Estoque</h3>
-          <p>Registre entradas, saídas e transferências. Compare a contagem física com o saldo e consulte o histórico das diferenças.</p>
-          <a href="/n1/">Abrir ferramenta de estoque <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Triagem pré-dyno</h3>
-          <p>Triagem pré-dyno para organizar setup, escopo e prontidão antes do contato técnico.</p>
-          <a href="/tuning/">Abrir Pré-Dyno <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Bancada de Mecatrônica</h3>
-          <p>Calculadoras de eletricidade, resistores por cores, simulador de código C e exercícios interativos. Projeto estudantil independente.</p>
-          <a href="/estudos/mecatronica/">Abrir bancada de estudos <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Privacidade / OPSEC LAB</h3>
-          <p>Entenda o setup GrapheneOS, veja os sinais expostos pelo navegador e monte um plano prático de proteção. Sem API nem envio de resultados.</p>
-          <a href="/privacy/">Abrir laboratório de privacidade <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Radar IA + Cripto</h3>
-          <p>Leia os candles da Bybit e consulte uma linha do tempo de IA, cripto e regulação com fontes verificáveis.</p>
-          <a href="/radar-ia-cripto/">Abrir Radar IA + Cripto <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Duelo: Bot vs Hold</h3>
-          <p>Compare uma estratégia de EMA e RSI com comprar e manter os mesmos ativos. Consulte o backtest e as carteiras simuladas hora a hora.</p>
-          <a href="/duelo-bot/">Abrir duelo <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Perps Lab / Long & Short</h3>
-          <p>Explore alavancagem, stops, funding, liquidação e entradas parciais com 12 meses de candles públicos. Nenhuma ordem real.</p>
-          <a href="/perps/">Abrir laboratório de perpétuos <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Vértice Drops / Créditos & Ferramentas</h3>
-          <p>Créditos para devs, ferramentas gratuitas e promoções com fonte, condições e validade. Sem cupons inventados e sem vender dados de ninguém.</p>
-          <a href="/drops/">Abrir Vértice Drops <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card">
-          <h3>Vértice Intelligence / Observatório</h3>
-          <p>O que mudou, quem é afetado e o que fazer agora. Matérias com fontes, histórico editorial e feed RSS.</p>
-          <a href="/observatorio/">Abrir Observatório <span aria-hidden="true">↗</span></a>
-        </article>
-      </div>
-    </section>
+    <div class="catalog" id="ferramentas">
+      <section class="tool-group featured" aria-labelledby="grupo-0">
+        <h2 id="grupo-0">Negócios e operação</h2>
+        <div class="cards">
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18 M6 16v-4h2v4z M11 16V8h2v8z M16 16V4h2v12z"/></svg><span>Diagnóstico</span></div>
+            <svg class="tool-diagram" viewBox="0 0 92 80" aria-hidden="true"><path d="M4 14h84l-12 12H16z M18 34h56L62 46H30z M32 54h28L48 66h-4z"/></svg>
+            <h3>Raio-X de Vendas</h3>
+            <p>Estime a margem em jogo quando leads ficam sem resposta.</p>
+            <a href="/raio-x-vendas/" aria-label="Abrir Raio-X de Vendas">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-5 9 5v10l-9 5-9-5z M3 7l9 5 9-5 M12 12v10 M7 5l10 5"/></svg><span>Estoque</span></div>
+            <svg class="tool-diagram" viewBox="0 0 92 80" aria-hidden="true"><path d="M5 12v57m82-57v57 M5 39h82 M5 64h82 M13 21h24v18H13z M50 17h27v22H50z M13 47h17v17H13z M38 44h17v20H38z M63 48h16v16H63z"/></svg>
+            <h3>Núcleo N1</h3>
+            <p>Registre movimentos e compare a contagem física com o saldo.</p>
+            <a href="/n1/" aria-label="Abrir Núcleo N1">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+      <section class="tool-group" aria-labelledby="grupo-1">
+        <h2 id="grupo-1">Engenharia e estudos</h2>
+        <div class="cards">
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17a9 9 0 1 1 18 0 M12 15l4-6 M8 20h8"/></svg><span>Automotivo</span></div>
+            <h3>Triagem pré-dyno</h3>
+            <p>Prepare o setup e avalie a prontidão antes do dinamômetro.</p>
+            <a href="/tuning/" aria-label="Abrir Triagem pré-dyno">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h4l2-4 3 8 3-8 2 4h6"/></svg><span>Estudos</span></div>
+            <h3>Bancada de Mecatrônica</h3>
+            <p>Calcule resistências, simule código C e pratique eletricidade.</p>
+            <a href="/estudos/mecatronica/" aria-label="Abrir Bancada de Mecatrônica">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8 3v6c0 5-4 9-8 11-4-2-8-6-8-11V5z M8 12l3 3 5-6"/></svg><span>Privacidade</span></div>
+            <h3>OPSEC Lab</h3>
+            <p>Confira sinais expostos pelo navegador e prepare seu plano de proteção.</p>
+            <a href="/privacy/" aria-label="Abrir OPSEC Lab">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+      <section class="tool-group" aria-labelledby="grupo-2">
+        <h2 id="grupo-2">Mercados</h2>
+        <div class="cards">
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16a8 8 0 1 1 16 0 M8 14a4 4 0 1 1 8 0 M12 12v9 M8 21h8"/></svg><span>Radar</span></div>
+            <h3>Radar IA + Cripto</h3>
+            <p>Consulte candles da Bybit e eventos de tecnologia e regulação.</p>
+            <a href="/radar-ia-cripto/" aria-label="Abrir Radar IA + Cripto">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19l6-8 4 3 8-10 M3 16l5 1 6-5 7 1"/></svg><span>Simulação</span></div>
+            <h3>Duelo: Bot vs Hold</h3>
+            <p>Compare uma estratégia automatizada com comprar e manter os mesmos ativos.</p>
+            <a href="/duelo-bot/" aria-label="Abrir Duelo: Bot vs Hold">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v4m0 8v6 M4 7h4v8H4z M17 2v9m0 7v4 M15 11h4v7h-4z"/></svg><span>Derivativos</span></div>
+            <h3>Perps Lab</h3>
+            <p>Simule alavancagem, stops e liquidações com candles históricos.</p>
+            <a href="/perps/" aria-label="Abrir Perps Lab">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+      <section class="tool-group" aria-labelledby="grupo-3">
+        <h2 id="grupo-3">Recursos e pesquisa</h2>
+        <div class="cards">
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18v4H3z M5 13v7h14v-7 M12 9v11 M12 9C3 9 6 0 10 5z M12 9c9 0 6-9 2-4z"/></svg><span>Benefícios</span></div>
+            <h3>Vértice Drops</h3>
+            <p>Confira créditos, ferramentas gratuitas e condições de cada oferta.</p>
+            <a href="/drops/" aria-label="Abrir Vértice Drops">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+          <article class="card">
+            <div class="tool-meta"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h14v16H5a2 2 0 0 1-2-2z M17 8h4v10a2 2 0 0 1-4 0 M6 8h8 M6 12h8 M6 16h5"/></svg><span>Editorial</span></div>
+            <h3>Observatório</h3>
+            <p>Leia análises com fontes, datas e ações práticas para empresas.</p>
+            <a href="/observatorio/" aria-label="Abrir Observatório">Abrir <span aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </section>
+    </div>
     <section class="offer" aria-labelledby="offer-title">
       <h2 id="offer-title">Seu WhatsApp recebe oportunidades. Você acompanha o resultado?</h2>
       <p>A Vértice organiza origem dos contatos, etapas de atendimento, retornos e relatórios usando as ferramentas que sua empresa já possui. Conheça o escopo antes de investir.</p>

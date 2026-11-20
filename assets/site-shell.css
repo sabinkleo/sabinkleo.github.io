@@ -163,9 +163,85 @@
   flex-direction: column;
 }
 
-.vl-home .card:first-child {
-  background: #232e1b;
-  border-color: #697f40;
+/* Catalog surfaces use one accent; tool-specific interfaces keep their own palette. */
+.vl-site:has(.vl-home) {
+  --vl-accent: #83d8bc;
+  --vl-paper: #e7eded;
+  --vl-muted: #aab8b7;
+  --vl-edge: #344143;
+  --vl-surface: #151e20;
+  background: radial-gradient(#273235 0.8px, transparent 0.9px) 0 0 / 24px 24px, #0e1416;
+}
+
+.vl-home h1 {
+  font-weight: 620;
+  letter-spacing: -.03em;
+}
+
+.vl-site:has(.vl-home) .vl-nav {
+  background: #101719;
+}
+
+.vl-site:has(.vl-home) .vl-nav a[aria-current] {
+  background: #1c2a29;
+  border-color: #394e49;
+}
+
+.vl-home .tool-group + .tool-group {
+  margin-top: clamp(24px, 4vw, 44px);
+}
+
+.vl-home .featured .cards {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.vl-home .featured .card {
+  background: linear-gradient(115deg, #19312e, #152024 75%);
+  border-top-color: #577b71;
+}
+
+.vl-home .tool-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+  color: #b5c6c3;
+  font: 500 11px/1.35 ui-monospace, Consolas, monospace;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.vl-home .tool-meta svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.vl-home .card p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.vl-home .card:is(:hover, :focus-within) {
+  border-color: #648e80;
+  box-shadow: 0 5px 18px #0003;
+}
+
+.vl-home .card > a {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .vl-home .featured .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .vl-home .card h3 {
@@ -301,5 +377,29 @@
 @media print {
   .vl-site .vl-nav {
     display: none;
+  }
+}
+
+.vl-home .tool-diagram {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  .vl-home .featured .card {
+    position: relative;
+    min-height: 185px;
+    padding-right: 125px;
+  }
+
+  .vl-home .tool-diagram {
+    display: block;
+    position: absolute;
+    top: 26px;
+    right: 22px;
+    width: 80px;
+    fill: #263c3b;
+    stroke: #68938b;
+    stroke-width: 1.5;
+    stroke-linejoin: round;
   }
 }
