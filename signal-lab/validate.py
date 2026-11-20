@@ -1,34 +1,24 @@
 #!/usr/bin/env python3
-"""Validate Signal Lab's public editorial dataset and single-page app structure.
-
-Usage: python signal-lab/validate.py
-No API keys, network calls or third-party dependencies.
-"""
+"""Verify the PUBLIC Drops catalog has no internal strategy feed. Stdlib-only."""
 from __future__ import annotations
 
 import json
-import math
 import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlparse
 
-HERE = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parent.parent
+DROP = ROOT / "drops"
+CHECKED = {"all", "dev", "education", "cloud", "ai"}
 FIELDS = {
-    "id", "title", "maker", "category", "phase", "evidence",
-    "model", "claim", "verified", "mechanism", "test", "risks",
-    "why", "source", "url", "potential", "speed", "cash",
-    "repeat", "proof", "score", "priority", "tag", "creative", "validation",
+    "id", "name", "provider", "category", "type", "headline", "description",
+    "eligibility", "conditions", "starts_at", "expires_at", "verified_at",
+    "cta", "url", "source_url", "coupon_code", "featured",
 }
-CATEGORIES = {"compliance", "distribution", "automation", "acquisition", "infra", "research"}
-PHASES = {"agir", "testar", "validar", "observar", "descartar"}
-EVIDENCE = {"oficial", "interno", "parcial", "anuncio"}
-FACTORS = ["potential", "speed", "cash", "repeat", "proof"]
-WEIGHTS = [0.30, 0.25, 0.20, 0.15, 0.10]
 
-
-class IDs(HTMLParser):
+class Parser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         self.ids: list[str] = []
@@ -40,85 +30,68 @@ class IDs(HTMLParser):
         if tag == "script" and d.get("src"):
             self.scripts.append(d["src"])
 
-
-def validate() -> int:
+def test() -> int:
     errors: list[str] = []
-    try:
-        payload = json.loads((HERE / "signals.json").read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        print("ERROR: cannot read signals.json:", exc, file=sys.stderr)
-        return 1
-
-    if payload.get("schema_version") != 1:
-        errors.append("schema_version must be 1")
-    if not re.fullmatch(r"\d{4}-\d\d-\d\d", str(payload.get("updated_at", ""))):
-        errors.append("updated_at must be YYYY-MM-DD")
-    items = payload.get("signals")
-    if not isinstance(items, list) or not items:
-        errors.append("signals must be a non-empty list")
-        items = []
-    seen: set[str] = set()
-    for i, item in enumerate(items):
-        p = f"signals[{i}]"
-        if not isinstance(item, dict):
-            errors.append(f"{p}: not an object")
-            continue
-        for missing in FIELDS - item.keys():
-            errors.append(f"{p}: missing {missing}")
-        identifier = item.get("id", "")
-        if not isinstance(identifier, str) or not re.fullmatch(r"[a-z][a-z0-9-]{2,39}", identifier):
-            errors.append(f"{p}: invalid id")
-        elif identifier in seen:
-            errors.append(f"{p}: duplicate id {identifier}")
-        seen.add(identifier)
-        if item.get("category") not in CATEGORIES:
-            errors.append(f"{p}: bad category")
-        if item.get("phase") not in PHASES:
-            errors.append(f"{p}: bad phase")
-        if item.get("evidence") not in EVIDENCE:
-            errors.append(f"{p}: bad evidence")
-        source = item.get("url")
-        if not isinstance(source, str) or urlsplit(source).scheme != "https" or not urlsplit(source).netloc:
-            errors.append(f"{p}: source URL must be HTTPS")
-        if item.get("verified") is not None and not re.fullmatch(r"\d{4}-\d\d-\d\d", str(item["verified"])):
-            errors.append(f"{p}: invalid verified date")
-        for field in ["title", "maker", "model", "claim", "mechanism", "test", "risks", "why", "source"]:
-            if not isinstance(item.get(field), str) or not item[field].strip():
-                errors.append(f"{p}: empty text {field}")
-        creative = item.get("creative")
-        if not isinstance(creative, dict) or set(creative) != {"hook", "demo", "result", "cta"}:
-            errors.append(f"{p}: expected creative hook/demo/result/cta")
-        elif any(not isinstance(v, str) or not v.strip() for v in creative.values()):
-            errors.append(f"{p}: empty creative field")
-        if item.get("validation") != "hipotese_sem_venda_confirmada":
-            errors.append(f"{p}: must distinguish commercial validation from source verification")
-        values = [item.get(f) for f in FACTORS]
-        if all(type(v) is int and 1 <= v <= 5 for v in values):
-            expected = math.floor(20 * sum(w * v for w, v in zip(WEIGHTS, values)) + 0.5)
-            if item.get("score") != expected:
-                errors.append(f"{p}: score should be {expected}, not {item.get('score')}")
-        else:
-            errors.append(f"{p}: factors must be integers 1..5")
-
-    p = IDs()
-    p.feed((HERE / "index.html").read_text(encoding="utf-8"))
-    if len(set(p.ids)) != len(p.ids):
-        errors.append("duplicate HTML ids")
-    for required in ["cards", "search", "filters", "sort", "phase", "savedOnly", "suggest", "perHour", "export"]:
-        if required not in p.ids:
-            errors.append(f"HTML missing #{required}")
+    if (ROOT / "signal-lab" / "signals.json").exists():
+        errors.append("Private research manifest is still publicly served!")
+    if (ROOT / "signal-lab" / "app.js").exists():
+        errors.append("Old Signal Lab app is still publicly served!")
+    page = (ROOT / "signal-lab" / "index.html").read_text(encoding="utf-8")
+    if 'url=/drops/' not in page or 'noindex' not in page:
+        errors.append("Old Signal Lab route must redirect to Drops and noindex")
+    home = (ROOT / "index.html").read_text(encoding="utf-8")
+    if 'href="/drops/"' not in home:
+        errors.append("Homepage must link to public Drops")
+    p = Parser()
+    p.feed((DROP / "index.html").read_text(encoding="utf-8"))
+    if len(p.ids) != len(set(p.ids)):
+        errors.append("Duplicate HTML IDs")
     if p.scripts != ["./app.js"]:
-        errors.append("Expected exactly one local JS script, no ad pixels or third-party scripts")
-    if not (HERE / "app.js").is_file():
-        errors.append("Missing app.js")
-
+        errors.append("Drops page may only load the local app.js")
+    for need in ("count", "checked", "notice", "offers", "empty"):
+        if need not in p.ids:
+            errors.append(f"Missing #{need}")
+    try:
+        data = json.loads((DROP / "offers.json").read_text(encoding="utf-8"))
+        assert data.get("schema_version") == 1
+        assert isinstance(data.get("offers"), list)
+        ids: set[str] = set()
+        for i, o in enumerate(data["offers"]):
+            if not isinstance(o, dict) or (FIELDS - set(o)):
+                errors.append(f"Offer {i} has missing fields")
+                continue
+            if not re.fullmatch(r"[a-z][a-z0-9-]{3,60}", o["id"]):
+                errors.append(f"Offer {i} malformed ID")
+            if o["id"] in ids:
+                errors.append(f"Offer {i} duplicate ID")
+            ids.add(o["id"])
+            if o["category"] not in CHECKED - {"all"}:
+                errors.append(f"Offer {i} invalid category")
+            if o["type"] not in {"promo", "free", "credits"}:
+                errors.append(f"Offer {i} invalid type")
+            if o["coupon_code"] is not None:
+                errors.append(f"Offer {i} has unverified coupon code")
+            for key in ("url", "source_url"):
+                parsed = urlparse(str(o[key]))
+                if parsed.scheme != "https" or not parsed.netloc:
+                    errors.append(f"Offer {i} needs official HTTPS {key}")
+            for datekey in ("starts_at", "expires_at", "verified_at"):
+                val = o.get(datekey)
+                if val is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(val)):
+                    errors.append(f"Offer {i} invalid date {datekey}")
+            if o["starts_at"] and o["expires_at"] and o["expires_at"] < o["starts_at"]:
+                errors.append(f"Offer {i} ends before it begins")
+            for field in ("name", "provider", "headline", "description", "eligibility", "conditions", "cta"):
+                if not isinstance(o.get(field), str) or not o[field].strip():
+                    errors.append(f"Offer {i} empty {field}")
+    except (OSError, ValueError, AssertionError, TypeError) as exc:
+        errors.append(f"Invalid public offer manifest: {exc}")
     for error in errors:
         print("ERROR:", error, file=sys.stderr)
     if errors:
         return 1
-    print(f"PASS: {len(items)} signals, unique IDs, dates, HTTPS sources, editorial score formula, HTML and local JS linkage.")
+    print(f"PASS: verified-only public offers, URL validation, redirects and no public competitor manifest ({len(ids)} benefits).")
     return 0
 
-
 if __name__ == "__main__":
-    raise SystemExit(validate())
+    raise SystemExit(test())
