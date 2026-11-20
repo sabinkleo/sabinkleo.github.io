@@ -1,3 +1,4 @@
+import { carregarPaper } from './paper-read.js';
 import { grafico } from './grafico.js';
 const el=id=>document.getElementById(id);
 const numero=(v,casas=2)=>v==null?'—':v.toLocaleString('pt-BR',{minimumFractionDigits:casas,maximumFractionDigits:casas});
@@ -18,6 +19,7 @@ const linhas=[
 ];
 let modo='backtest12m', fase='teste', pedido=0, historicos={};
 const local='../bot/', raw='https://raw.githubusercontent.com/sabinkleo/sabinkleo.github.io/main/bot/';
+const runtime=raw.replace('/main/bot/','/duelo-runtime/bot/');
 const producao=['verticelabs.me','www.verticelabs.me','sabinkleo.github.io'].includes(location.hostname);
 function linha(valores,celula='td'){
   const tr=document.createElement('tr');
@@ -33,7 +35,7 @@ function operacoes(lista) {
   area.append(tabela);
 }
 
-// O paper usa o JSON versionado em main: commits do token do Actions podem não republicar o Pages.
+// O Pages publica os backtests. O paper pode ser atualizado independentemente.
 async function json(url) {
   const r=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(15000)});
   if(!r.ok) throw Error('HTTP '+r.status);
@@ -50,8 +52,7 @@ async function mostrar() {
     const arquivo=modo==='backtest12m'?'backtest-12m':modo;
     let url=local+'results/'+arquivo+'.json', raizDados=local, aviso='', j;
     if(papel && producao) {
-      try {j=await json(raw+'results/paper.json');url=raw+'results/paper.json';raizDados=raw;}
-      catch {j=await json(url);aviso='A consulta ao GitHub falhou. Exibindo a cópia do site.';}
+      ({resultado:j,url,raizDados,aviso}=await carregarPaper(json,runtime,raw,local));
     } else if(papel) j=await json(url);
     else j=historicos[modo] ??= await json(url);
     if(id!==pedido) return;
