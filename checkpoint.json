@@ -1,0 +1,27 @@
+{
+  "origem": "6f5109c263bf2c4c8cc91ff10df46af0c3bd26f1",
+  "hashes": {
+    "state/paper_state.json": "25191d8ad06074361907a3ce4e301aa1f55bd1f5c1bd6cd82c3d5af2c4ce9af2",
+    "state/trades.csv": "00087ba2f0c9f0c63f61ae0a1949f6ba0649ab65892c6f4549ff95f8b902f660",
+    "results/paper.json": "890f78cc68c95c752068e57fdbff5bbedf84874aa36512ded20972a201ddf6e0"
+  },
+  "contrato": "167b0cc0b7e9fbff41ec0a5e55bfb59909f725f227acb3139d3767ba49e54d3c",
+  "abertura": 1795154400000,
+  "estrategia": {
+    "ema_rapida": 20,
+    "ema_lenta": 50,
+    "rsi_periodo": 14,
+    "entrada": {
+      "cruzamento": "acima",
+      "rsi_minimo": 50
+    },
+    "saida": {
+      "cruzamento": "abaixo"
+    },
+    "candidatos_rsi_minimo": [
+      50,
+      55,
+      60
+    ]
+  }
+}
