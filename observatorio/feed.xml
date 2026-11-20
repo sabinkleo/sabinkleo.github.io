@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vértice Intelligence</title>
+    <link>https://verticelabs.me/observatorio/</link>
+    <description>O que mudou. Quem é afetado. O que fazer agora.</description>
+    <language>pt-BR</language>
+    <atom:link href="https://verticelabs.me/observatorio/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Como conferir o frete que sua loja informa ao Google</title>
+      <link>https://verticelabs.me/observatorio/frete-search-console/</link>
+      <guid>https://verticelabs.me/observatorio/frete-search-console/</guid>
+      <description>Guia baseado no anúncio de 12 de novembro de 2025. Compare o prazo da página e do checkout, confira o Search Console da loja e valide com a expedição.</description>
+      <category>Busca e comércio</category>
+      <pubDate>Thu, 19 Nov 2026 22:49:22 +0000</pubDate>
+    </item>
+  </channel>
+</rss>

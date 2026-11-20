@@ -1,0 +1,123 @@
+name: Observatório editorial
+on:
+  pull_request:
+    paths:
+      - 'editorial/**'
+      - 'observatorio/**'
+      - '.github/workflows/observatorio.yml'
+      - '_config.yml'
+      - 'robots.txt'
+  schedule:
+    - cron: '37 12 * * *'  # 09:37 America/Sao_Paulo, after the 08:00 radar
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: observatorio-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install free runtime dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends ffmpeg espeak-ng fonts-dejavu-core
+          python -m pip install -r editorial/requirements.txt
+          npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+      - name: Regression tests
+        run: |
+          node --test tests/*.test.mjs bot/perps/tests/*.test.mjs
+          npm --prefix bot test
+          python -m unittest discover -s editorial -t . -p 'test_*.py' -v
+      - name: Restore public feed queue
+        if: github.event_name != 'pull_request'
+        uses: actions/cache/restore@v4
+        with:
+          path: build/feed-state/intake.json
+          key: obs-intake-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: obs-intake-v1-
+      - name: Collect new candidates
+        id: intake
+        continue-on-error: true
+        if: github.event_name != 'pull_request'
+        run: python -m editorial.intake collect --state build/feed-state/intake.json
+      - name: Save candidate queue
+        if: github.event_name != 'pull_request' && hashFiles('build/feed-state/intake.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: build/feed-state/intake.json
+          key: obs-intake-v1-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Verify sources and produce review artifacts
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ "$EVENT" == pull_request ]]; then
+            python -m editorial.pipeline --output build/review --force-media
+            python -m editorial.pr_guard "$BASE_SHA" build/review
+          else
+            python -m editorial.pipeline --output build/review
+          fi
+          cat build/review/report.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Retain review files and public intake state
+        uses: actions/upload-artifact@v4
+        with:
+          name: vertice-review-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            build/review
+            build/feed-state/intake.json
+      - name: Flag incomplete intake after preserving review files
+        if: steps.intake.outcome == 'failure'
+        run: |
+          echo 'Feed intake incomplete. Successful source results are kept in the review artifact.' >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+      - name: Failure record
+        if: failure()
+        run: echo "Editorial QA failed. Review the first failing step and rerun after correction." >> "$GITHUB_STEP_SUMMARY"
+
+  propose:
+    needs: validate
+    if: github.event_name != 'pull_request' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: vertice-review-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/review-artifact
+      - name: Propose validated changes for manual merge
+        env:
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from editorial.pipeline import sync_site
+          sites = list(Path("build/review-artifact").rglob("site/observatorio"))
+          if len(sites) != 1:
+              raise SystemExit("Incomplete review artifact")
+          sync_site(sites[0], Path("observatorio"))
+          PY
+          bash editorial/content_pr.sh

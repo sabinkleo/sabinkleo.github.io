@@ -1,0 +1,648 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "slug": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "verified_at": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "sector": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "country": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "event_type": {
+      "enum": [
+        "announcement",
+        "release",
+        "effective",
+        "forecast",
+        "educational"
+      ]
+    },
+    "brazil_status": {
+      "enum": [
+        "confirmed",
+        "unconfirmed",
+        "not_applicable"
+      ]
+    },
+    "brazil_note": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "brazil_source": {
+      "type": "string",
+      "format": "uri"
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "minItems": 1,
+      "maxItems": 12
+    },
+    "evidence_level": {
+      "enum": [
+        "high",
+        "moderate"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "what_changed": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "who_is_affected": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "how_to_adapt": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/text"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "limitations": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "business_opportunity": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "opportunity_status": {
+      "enum": [
+        "hypothesis",
+        "evidenced"
+      ]
+    },
+    "demand_source": {
+      "type": "string",
+      "format": "uri"
+    },
+    "related_tool": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "content_status": {
+      "enum": [
+        "candidate",
+        "verified",
+        "draft",
+        "approved",
+        "published",
+        "updated"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "standard",
+        "health",
+        "law",
+        "tax",
+        "other_high"
+      ]
+    },
+    "social_package": {
+      "$ref": "#/$defs/social"
+    },
+    "review": {
+      "$ref": "#/$defs/review"
+    },
+    "rubric": {
+      "type": "object",
+      "properties": {
+        "relevance": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "adaptation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "urgency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "evidence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "novelty": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        }
+      },
+      "required": [
+        "relevance",
+        "adaptation",
+        "urgency",
+        "evidence",
+        "novelty"
+      ],
+      "additionalProperties": false
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": [
+              "candidate",
+              "verified",
+              "draft",
+              "approved",
+              "published",
+              "updated"
+            ]
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "status",
+          "at",
+          "note"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 500
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "slug",
+    "title",
+    "event_date",
+    "category",
+    "country",
+    "sector",
+    "sources",
+    "content_status",
+    "history"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Vértice Intelligence • registro editorial v1",
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000,
+      "pattern": "\\S"
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 1800
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "kind": {
+          "enum": [
+            "primary",
+            "independent"
+          ]
+        },
+        "anchor": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "url",
+        "title",
+        "publisher",
+        "date",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "by": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "claim": {
+          "type": "boolean"
+        },
+        "privacy": {
+          "type": "boolean"
+        },
+        "rights": {
+          "type": "boolean"
+        },
+        "human": {
+          "type": "boolean"
+        },
+        "specialist": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "specialty": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "reviewed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "br_scope": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "by",
+        "claim",
+        "privacy",
+        "rights"
+      ],
+      "additionalProperties": false
+    },
+    "social": {
+      "type": "object",
+      "properties": {
+        "reel": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000,
+                "pattern": "\\S"
+              },
+              "voice": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 3000,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "title",
+              "voice"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 5,
+          "maxItems": 5
+        },
+        "carousel": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slide"
+          },
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "stories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slide"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "captions": {
+          "type": "object",
+          "properties": {
+            "instagram": {
+              "$ref": "#/$defs/text"
+            },
+            "linkedin": {
+              "$ref": "#/$defs/text"
+            },
+            "shorts": {
+              "$ref": "#/$defs/text"
+            },
+            "whatsapp": {
+              "$ref": "#/$defs/text"
+            }
+          },
+          "required": [
+            "instagram",
+            "linkedin",
+            "shorts",
+            "whatsapp"
+          ],
+          "additionalProperties": false
+        },
+        "rss": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 3000,
+              "pattern": "\\S"
+            },
+            "summary": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 3000,
+              "pattern": "\\S"
+            }
+          },
+          "required": [
+            "title",
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "comparison": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "left_label",
+            "left_value",
+            "right_label",
+            "right_value",
+            "note"
+          ],
+          "properties": {
+            "left_label": {
+              "$ref": "#/$defs/text"
+            },
+            "left_value": {
+              "$ref": "#/$defs/text"
+            },
+            "right_label": {
+              "$ref": "#/$defs/text"
+            },
+            "right_value": {
+              "$ref": "#/$defs/text"
+            },
+            "note": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      },
+      "required": [
+        "reel",
+        "carousel",
+        "stories",
+        "captions",
+        "rss"
+      ],
+      "additionalProperties": false
+    },
+    "slide": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "body": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 3000,
+          "pattern": "\\S"
+        }
+      },
+      "required": [
+        "title",
+        "body",
+        "alt"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "content_status": {
+            "enum": [
+              "verified",
+              "draft",
+              "approved",
+              "published",
+              "updated"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "verified_at",
+          "event_type",
+          "evidence_level"
+        ],
+        "properties": {
+          "verified_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sources": {
+            "items": {
+              "required": [
+                "anchor"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "content_status": {
+            "enum": [
+              "approved",
+              "published",
+              "updated"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "schema_version",
+          "id",
+          "slug",
+          "title",
+          "event_date",
+          "published_at",
+          "verified_at",
+          "updated_at",
+          "category",
+          "sector",
+          "country",
+          "event_type",
+          "brazil_status",
+          "brazil_note",
+          "sources",
+          "evidence_level",
+          "summary",
+          "what_changed",
+          "who_is_affected",
+          "how_to_adapt",
+          "limitations",
+          "business_opportunity",
+          "opportunity_status",
+          "related_tool",
+          "content_status",
+          "risk",
+          "social_package",
+          "review",
+          "rubric",
+          "history"
+        ],
+        "properties": {
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "review": {
+            "properties": {
+              "claim": {
+                "const": true
+              },
+              "privacy": {
+                "const": true
+              },
+              "rights": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

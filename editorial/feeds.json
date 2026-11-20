@@ -1,0 +1,32 @@
+[
+  {
+    "id": "google-search",
+    "url": "https://developers.google.com/search/blog/feed.xml",
+    "format": "xml",
+    "publisher": "Google Search Central",
+    "host": "developers.google.com",
+    "country": "US",
+    "category": "Busca",
+    "sector": "Comércio digital"
+  },
+  {
+    "id": "github-changelog",
+    "url": "https://github.blog/changelog/feed/",
+    "format": "xml",
+    "publisher": "GitHub",
+    "host": "github.blog",
+    "country": "US",
+    "category": "Tecnologia",
+    "sector": "Tecnologia"
+  },
+  {
+    "id": "ibge-noticias",
+    "url": "https://servicodados.ibge.gov.br/api/v3/noticias?qtd=8&tipo=noticia",
+    "format": "ibge",
+    "publisher": "Agência de Notícias IBGE",
+    "host": "agenciadenoticias.ibge.gov.br",
+    "country": "BR",
+    "category": "Dados públicos",
+    "sector": "Multissetorial"
+  }
+]

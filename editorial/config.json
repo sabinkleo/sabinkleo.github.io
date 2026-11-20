@@ -1,0 +1,20 @@
+{
+  "weights": {"relevance": 30, "adaptation": 25, "urgency": 20, "evidence": 15, "novelty": 10},
+  "min_priority": 65,
+  "news_window_days": 7,
+  "source_hosts": {
+    "developers.google.com": "Google",
+    "support.google.com": "Google",
+    "blog.google": "Google",
+    "github.blog": "GitHub",
+    "docs.github.com": "GitHub",
+    "agenciadenoticias.ibge.gov.br": "IBGE",
+    "www.ibge.gov.br": "IBGE",
+    "agenciasebrae.com.br": "Sebrae",
+    "www.gov.br": "Governo Federal",
+    "www.bcb.gov.br": "Banco Central do Brasil",
+    "openai.com": "OpenAI",
+    "verticelabs.me": "Vértice Labs"
+  },
+  "related_tools": ["/raio-x-vendas/", "/n1/", "/tuning/", "/solucoes/"]
+}
