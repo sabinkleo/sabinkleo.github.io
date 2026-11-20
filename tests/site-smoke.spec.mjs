@@ -29,6 +29,25 @@ for (const route of routes) {
   });
 }
 
+test('Home places Recursos e pesquisa first without losing commercial tools', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(origin + '/');
+    const groups = page.locator('.vl-home .tool-group');
+    await expect(groups).toHaveCount(4);
+    await expect(groups.locator('h2')).toHaveText([
+      'Recursos e pesquisa', 'Negócios e operação', 'Engenharia e estudos', 'Mercados'
+    ]);
+    await expect(groups.first().getByRole('link', { name: 'Abrir Vértice Drops' })).toBeVisible();
+    await expect(groups.first().getByRole('link', { name: 'Abrir Observatório' })).toBeVisible();
+    await expect(groups.nth(1).getByRole('link', { name: 'Abrir Raio-X de Vendas' })).toBeVisible();
+    await expect(groups.nth(1).getByRole('link', { name: 'Abrir Núcleo N1' })).toBeVisible();
+    await expect(page.locator('.vl-home .card')).toHaveCount(10);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  }
+});
+
 test('Terminal visual layer is scoped, responsive and keeps the commercial links reachable', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
   for (const width of [375, 1440]) {
@@ -335,6 +354,7 @@ for (const width of [320, 375, 390, 768, 1440]) {
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(origin + '/');
     const diagnostic = page.getByRole('link', { name: 'Abrir Raio-X de Vendas' });
+    await diagnostic.scrollIntoViewIfNeeded();
     await expect(diagnostic).toBeInViewport();
     await diagnostic.click();
     await expect(page).toHaveURL(origin + '/raio-x-vendas/');
