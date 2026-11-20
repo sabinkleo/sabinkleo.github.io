@@ -39,5 +39,8 @@ jobs:
             exit 0
           fi
           git commit -m 'Dados historicos: 12 meses spot Bybit validados'
+          # O coletor pode alterar o cache na pasta bot/data no runner.
+          # Descartar somente essas mudancas efemeras antes do rebase.
+          git restore -- bot/data
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
