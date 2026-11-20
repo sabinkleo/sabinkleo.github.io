@@ -86,11 +86,12 @@ export function targets(days,kind) {
     throw Error('Politica desconhecida');
   });
 }
-export function simulate(series,kind,start,end,fee,slippage,capital=1000) {
+export function simulate(series,kind,start,end,fee,slippage,capital=1000,executionDelayDays=1) {
   const pairs=Object.keys(series);
   if(!pairs.length||pairs.some(p=>series[p].length!==series[pairs[0]].length) ||
      !Number.isInteger(start)||!Number.isInteger(end)||start<60||end>series[pairs[0]].length||end<=start)
     throw Error('Janela ou pares invalidos');
+  if(!Number.isInteger(executionDelayDays)||executionDelayDays<1||executionDelayDays>3) throw Error('Atraso invalido');
   if(![fee,slippage].every(x=>Number.isFinite(x)&&x>=0&&x<0.1)||capital<=0)
     throw Error('Custos ou capital invalidos');
   const base=series[pairs[0]];
@@ -103,10 +104,10 @@ export function simulate(series,kind,start,end,fee,slippage,capital=1000) {
   let allocation=0;
   for(let i=start;i<end;i++){
     for(const p of pairs) {
-      const q=series[p][i], s=states[p], o=q.o, desired=aims[p][i-1];
+      const q=series[p][i], s=states[p], o=q.o, desired=aims[p][i-executionDelayDays];
       const worth=s.cash+s.qty*o;
       const current=worth>0?s.qty*o/worth:0;
-      const prev= i>start?aims[p][i-2]:-1;
+      const prev= i>start?aims[p][i-executionDelayDays-1]:-1;
       const signalChanged=Math.abs(desired-prev)>1e-8;
       // Manter posicoes sem rebalanceamento desnecessario; para vol-target,
       // somente modificar por sinal ou diferenca de pelo menos 20 p.p.
@@ -180,13 +181,25 @@ export function runDataset() {
     corretagem:'0.1% taker + 0.05% slippage por lado; cenario de custos em dobro',
     sinal:'Somente fechamento anterior; execucao na proxima abertura',
     aviso:'2026 foi visto na discussao; comparacao exploratoria, NAO validacao cega ou lucro futuro'
-  },periodos:{},resultados:[]};
+  },periodos:{},resultados:[],robustez:[]};
   for(const [phase,a,b] of phases) {
     results.periodos[phase]={inicio:series.BTCUSDT[a].t,fim:series.BTCUSDT[b-1].t+DAY,dias:b-a};
     for(const costs of fees) for(const strategy of variants){
       const r=simulate(series,strategy,a,b,costs.fee,costs.slippage);
       const {curva,...stats}=r;
       results.resultados.push({fase:phase,custos:costs.id,estrategia:strategy,...stats});
+    }
+  }
+  // Diagnostico obrigatorio de concentracao e atraso de execucao.
+  // Nao seleciona a melhor moeda: reporta TODAS as combinacoes.
+  for(const [phase,a,b] of phases) {
+    for(const subset of [['BTCUSDT'],['ETHUSDT'],['SOLUSDT'],
+      ['BTCUSDT','ETHUSDT'],['BTCUSDT','SOLUSDT'],['ETHUSDT','SOLUSDT']]) {
+      const one=Object.fromEntries(subset.map(k=>[k,series[k]]));
+      for(const lag of [1,2]) {
+        const {curva,...stats}=simulate(one,'donchian60',a,b,.001,.0005,1000,lag);
+        results.robustez.push({fase:phase,pares:subset.join(','),atraso_dias:lag,...stats});
+      }
     }
   }
   return results;
