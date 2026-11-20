@@ -21,6 +21,10 @@ mkdir "$sandbox/bin"
 printf '#!/usr/bin/env bash\nexit 143\n' > "$sandbox/bin/npm"
 chmod +x "$sandbox/bin/npm"
 
+# A missing runtime requires explicit staged seeding in this disposable fixture.
+if bash bot/paper-runtime.sh; then exit 1; fi
+[[ -z "$(tip)" ]]
+
 # Cancellation immediately after the migration must leave its authoritative checkpoint.
 if SEED_RUNTIME=true PATH="$sandbox/bin:$PATH" bash bot/paper-runtime.sh; then exit 1; fi
 seed=$(tip)

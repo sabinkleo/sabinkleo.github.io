@@ -22,7 +22,7 @@ if [[ -n "$parent" ]]; then
   node bot/paper-runtime.mjs restore "$GIT_WORK_TREE"
 else
   if [[ "${SEED_RUNTIME:-false}" != true ]]; then
-    echo 'Runtime ausente. Inicialização exige execução manual com seed_runtime.' >&2
+    echo 'Runtime ausente. Restaure o último checkpoint validado antes de executar.' >&2
     exit 1
   fi
   git read-tree --empty
