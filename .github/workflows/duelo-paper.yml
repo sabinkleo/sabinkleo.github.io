@@ -1,20 +1,18 @@
 name: Duelo spot simulado
 on:
   schedule:
-    # Uma consulta por hora, fora do pico do minuto 0.
-    # A simulação é idempotente e recupera aberturas perdidas na execução seguinte.
-    # O scheduler do GitHub pode atrasar/pular; workflow_dispatch permite recuperação manual.
     - cron: '17 * * * *'
-  workflow_dispatch:
-  # Ao alterar o agendador, executar uma vez após o merge para validar imediatamente.
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/duelo-paper.yml'
+    paths: ['.github/workflows/duelo-paper.yml']
+  workflow_dispatch:
+    inputs:
+      seed_runtime:
+        description: 'Criar duelo-runtime a partir do estado íntegro em main (somente na migração)'
+        type: boolean
+        default: false
 
-# O token temporário do próprio GitHub grava somente os arquivos públicos da simulação.
-permissions:
-  contents: write
+permissions: {}
 concurrency:
   group: duelo-paper-producao
   cancel-in-progress: false
@@ -22,6 +20,8 @@ concurrency:
 jobs:
   simular:
     if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
@@ -34,20 +34,16 @@ jobs:
           cache: npm
           cache-dependency-path: bot/package-lock.json
       - run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
-      # Os testes completos rodam no CI de PR/push; não repetir 24 vezes por dia.
-      # Workflow manual e atualização do agendador ainda validam antes de processar.
-      - name: Testes do motor (manual ou atualização do workflow)
-        if: github.event_name != 'schedule'
-        run: npm --prefix bot test
       - name: Atualizar os dois livros
-        run: npm --prefix bot run paper
-      - name: Versionar a atualização completa
-        # Uma falha antes do push preserva o estado remoto da última execução bem-sucedida.
+        env:
+          SEED_RUNTIME: ${{ inputs.seed_runtime }}
+          BEFORE: ${{ github.event.before }}
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -- bot/data bot/state bot/results/paper.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Atualiza carteiras simuladas da Bybit"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          if [[ "$GITHUB_EVENT_NAME" == push && "$BEFORE" =~ ^[a-f0-9]{40}$ ]]; then
+            git fetch --depth=1 --no-tags origin "$BEFORE"
+            # Só a transição do workflow anterior autoriza a primeira cópia automática.
+            if [[ "$(git rev-parse "$BEFORE:.github/workflows/duelo-paper.yml")" == 3b07455b875d30d913bb454e27ca44e94a70fb0c ]]; then
+              export SEED_RUNTIME=true
+            fi
+          fi
+          bash bot/paper-runtime.sh
