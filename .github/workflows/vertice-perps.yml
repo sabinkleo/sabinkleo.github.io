@@ -1,0 +1,40 @@
+name: Vértice Perps — testes, dados e simulação
+on:
+  pull_request:
+    paths:
+      - 'bot/perps/**'
+      - 'bot/history/**'
+      - 'perps/**'
+      - '.github/workflows/vertice-perps.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  perps-paper-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Testar motor de perps sem ordens
+        run: node --test bot/perps/tests/*.test.mjs
+      - name: Validar candles e reproduzir tres mercados
+        run: |
+          for pair in BTCUSDT ETHUSDT SOLUSDT; do
+            node bot/perps/cli.mjs "$pair"
+          done
+      - name: Testar parser frontend e sintaxe JS
+        run: |
+          node --check perps/app.js
+          node --check bot/perps/engine.mjs
+          npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+          npm --prefix bot test
+      - name: Conferir ausencia de credenciais ou ordens reais
+        shell: bash
+        run: |
+          if grep -E -r 'apiKey|apiSecret|privateKey|/v5/order/create|/v5/position/set-leverage' bot/perps perps; then
+            echo 'Encontrada referencia perigosa em modulo somente simulado'; exit 1
+          fi
+          echo 'Nenhuma rota de ordem ou chave no simulador.'

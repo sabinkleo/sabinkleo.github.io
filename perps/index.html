@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#070b0c">
+<meta name="description" content="Laboratório de trading quantitativo: simulação de futuros perpétuos, long/short, funding, stop e liquidação, sem dinheiro real.">
+<title>Perps Lab | Vértice Labs</title>
+<link rel="canonical" href="https://verticelabs.me/perps/">
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.js"></script>
+</head><body>
+<header><div class="wrap"><a class="brand" href="/">VÉRTICE<span>LABS</span></a>
+<nav class="links" aria-label="Navegação"><a href="/duelo-bot/">Bot vs Hold</a><a href="/radar-ia-cripto/">Radar cripto</a><a href="/">← Catálogo</a></nav></div></header>
+<main class="wrap">
+<section class="hero"><div><div class="eyebrow">Laboratório quantitativo · versão simulada</div>
+<h1>Perps Lab<span>.</span></h1>
+<p class="lede">Long, short, alavancagem, funding, entradas escalonadas, stop e liquidação. Mude os parâmetros e recalcule o desempenho nos candles históricos. Sem conta, sem API key, sem ordens reais.</p></div>
+<div class="verdict">SIMULADOR · NENHUM DINHEIRO REAL</div></section>
+<div class="layout">
+<aside class="panel" aria-labelledby="controles"><h2 id="controles">Console de estratégia</h2>
+<div class="field"><label for="pair">Mercado (proxy spot)</label><select id="pair">
+<option value="BTCUSDT">Bitcoin · BTC/USDT</option><option value="ETHUSDT">Ethereum · ETH/USDT</option><option value="SOLUSDT">Solana · SOL/USDT</option></select></div>
+<div class="field"><label for="strategy">Sinal de entrada</label><select id="strategy">
+<option value="donchian">Donchian 60d · tendência lenta</option>
+<option value="ema">EMA 20/50 · tendência rápida</option></select></div>
+<div class="two"><div class="field"><label for="direction">Posições</label><select id="direction">
+<option value="both">Long e short</option><option value="long">Só long</option><option value="short">Só short</option></select></div>
+<div class="field"><label for="periodDays">Janela</label><select id="periodDays">
+<option value="365">Todo o histórico</option><option value="180">180 dias</option><option value="90">90 dias</option><option value="30">30 dias</option></select></div></div>
+<div class="field"><div class="slider-head"><label for="leverage">Alavancagem</label><output id="leverage-out">2×</output></div><input type="range" id="leverage" min="1" max="10" step="1" value="2"></div>
+<div class="field"><div class="slider-head"><label for="riskPct">Risco máximo projetado por trade</label><output id="riskPct-out">1%</output></div><input type="range" id="riskPct" min=".25" max="5" step=".25" value="1"></div>
+<div class="field"><div class="slider-head"><label for="marginPct">Teto da margem disponível</label><output id="marginPct-out">30%</output></div><input type="range" id="marginPct" min="5" max="90" step="5" value="30"></div>
+<div class="two"><div class="field"><div class="slider-head"><label for="stopPct">Stop-loss</label><output id="stopPct-out">3%</output></div><input type="range" id="stopPct" min=".5" max="20" step=".5" value="3"></div>
+<div class="field"><div class="slider-head"><label for="takePct">Take-profit</label><output id="takePct-out">6%</output></div><input type="range" id="takePct" min="1" max="40" step=".5" value="6"></div></div>
+<div class="two"><div class="field"><div class="slider-head"><label for="feePct">Taxa por lado</label><output id="feePct-out">0,10%</output></div><input type="range" id="feePct" min="0" max=".3" step=".01" value=".1"></div>
+<div class="field"><div class="slider-head"><label for="fundingPct">Funding / 8h</label><output id="fundingPct-out">0,01%</output></div><input type="range" id="fundingPct" min="-.05" max=".05" step=".005" value=".01"></div></div>
+<label class="check"><input type="checkbox" id="scaleIn" checked> Duas entradas e realização parcial</label>
+<button class="primary" id="simulate">Recalcular simulação</button>
+<p id="error" class="error" role="status"></p>
+<p class="note">Risco por trade é apenas um orçamento teórico: gaps e liquidações podem superá-lo. Funding é uma hipótese constante, não uma série histórica. A margem e o preço de liquidação são aproximações.</p>
+</aside>
+<div class="right">
+<div class="summary" aria-label="Resumo">
+<div class="stat"><small>Patrimônio simulado</small><strong id="equity">—</strong><sub>Saldo inicial 1.000 USDT</sub></div>
+<div class="stat"><small>Retorno Perps Lab</small><strong id="ret">—</strong><sub>Após taxas e funding</sub></div>
+<div class="stat"><small>Spot buy-and-hold</small><strong id="hold">—</strong><sub>Mesma janela, sem alavancagem</sub></div>
+<div class="stat"><small>Drawdown máximo</small><strong id="dd">—</strong><sub>Pico até fundo simulado</sub></div>
+</div>
+<div class="panel"><div class="chart-top"><h2>Curva de patrimônio</h2><div class="legend"><span><i></i> Perps</span><span><i class="spot"></i> Spot hold</span></div></div>
+<canvas id="chart" role="img" aria-label="Curvas de patrimônio de simulação e hold"></canvas>
+<div id="chart-description" class="info">Carregando os candles históricos...</div>
+</div>
+<div class="metrics">
+<div class="metric"><small>Execuções</small><strong id="trades">—</strong></div>
+<div class="metric"><small>Taxas USDT</small><strong id="fees">—</strong></div>
+<div class="metric"><small>Funding USDT</small><strong id="funding">—</strong></div>
+<div class="metric"><small>Liquidações</small><strong id="liqs">—</strong></div>
+<div class="metric"><small>Exposição média</small><strong id="exposure">—</strong></div>
+</div>
+<div class="panel"><h2>Execuções simuladas recentes</h2><div class="scroll"><table class="log"><thead><tr><th>Data (BRT)</th><th>Evento</th><th>Preço (USDT)</th><th>Quantidade</th></tr></thead><tbody id="log"><tr><td colspan="4">Aguardando dados...</td></tr></tbody></table></div></div>
+<div class="banner">Fontes: candles de <b>mercado spot</b> da Bybit, usados apenas como <b>proxy</b> para preço de perpétuos. Sem histórico real de mark price, funding ou livro de ordens, esta simulação não reproduz liquidações da corretora. Não trate resultados como previsão ou validação de lucro.</div>
+</div></div>
+</main><footer><div class="wrap">Vértice Labs · Ferramenta educacional com dados públicos e cálculos locais no navegador. Sem credenciais e sem execução de ordens. <a href="https://github.com/sabinkleo/sabinkleo.github.io">Código aberto ↗</a></div></footer>
+</body></html>

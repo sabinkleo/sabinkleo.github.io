@@ -1,0 +1,34 @@
+{
+  "fonte": "Bybit spot candles via /v5/market/kline, fallback gráfico spot oficial",
+  "inicio_inclusivo_utc": "2025-11-20T00:00:00.000Z",
+  "fim_exclusivo_utc": "2026-11-20T00:00:00.000Z",
+  "intervalo_minutos": 60,
+  "esperado_por_par": 8760,
+  "pares": {
+    "BTCUSDT": {
+      "arquivo": "BTCUSDT-60m-2025-11-20_2026-11-19.csv",
+      "linhas": 8760,
+      "fontes": {
+        "grafico_spot": 8760
+      },
+      "sha256": "05fe27477be6e6ce3657e2c9348a3c2fc5c9543b21c85fd4d498e00c315fb91f"
+    },
+    "ETHUSDT": {
+      "arquivo": "ETHUSDT-60m-2025-11-20_2026-11-19.csv",
+      "linhas": 8760,
+      "fontes": {
+        "grafico_spot": 8760
+      },
+      "sha256": "0fd3e6bccf79f8af25ebb049a999d943bfcffeb19130e1bb3d949f6439ad4c2f"
+    },
+    "SOLUSDT": {
+      "arquivo": "SOLUSDT-60m-2025-11-20_2026-11-19.csv",
+      "linhas": 8760,
+      "fontes": {
+        "grafico_spot": 8760
+      },
+      "sha256": "b368ac0f498ffdec967114c73935194aa806d4be7fdd8cfd89d2d9bd78f350e0"
+    }
+  },
+  "observacao": "Dados históricos de mercado, sem chave, ordens ou saldo real. Fonte registrada em cada linha."
+}

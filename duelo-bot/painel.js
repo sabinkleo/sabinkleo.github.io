@@ -16,7 +16,7 @@ const linhas=[
   ['Operações','trades',v=>numero(v,0)],['Tempo em posição','tempo_em_posicao_pct',percentual],
   ['Taxas pagas','taxas_usdt',moeda],['Diferença vs. hold','diferenca_hold_pp',v=>numero(v)+' p.p.']
 ];
-let modo='backtest', fase='teste', pedido=0, historico;
+let modo='backtest12m', fase='teste', pedido=0, historicos={};
 const local='../bot/', raw='https://raw.githubusercontent.com/sabinkleo/sabinkleo.github.io/main/bot/';
 const producao=['verticelabs.me','www.verticelabs.me','sabinkleo.github.io'].includes(location.hostname);
 function linha(valores,celula='td'){
@@ -43,20 +43,21 @@ async function json(url) {
 }
 async function mostrar() {
   const id=++pedido, papel=modo==='paper';
-  for(const k of ['paper','backtest','treino','teste']) el(k).setAttribute('aria-pressed',String(k===modo||k===fase));
+  for(const k of ['paper','backtest','backtest12m','treino','teste']) el(k).setAttribute('aria-pressed',String(k===modo||k===fase));
   el('amostras').hidden=papel;el('relatorio').hidden=true;el('repetir').hidden=true;
   el('estado').hidden=false;el('estado').textContent='Carregando resultados…';
   try {
-    let url=local+'results/'+modo+'.json', raizDados=local, aviso='', j;
+    const arquivo=modo==='backtest12m'?'backtest-12m':modo;
+    let url=local+'results/'+arquivo+'.json', raizDados=local, aviso='', j;
     if(papel && producao) {
       try {j=await json(raw+'results/paper.json');url=raw+'results/paper.json';raizDados=raw;}
       catch {j=await json(url);aviso='A consulta ao GitHub falhou. Exibindo a cópia do site.';}
     } else if(papel) j=await json(url);
-    else j=historico ??= await json(url);
+    else j=historicos[modo] ??= await json(url);
     if(id!==pedido) return;
     const r=papel?j:j[fase];
     if(!r.curva?.length || !r.metricas?.bot || !r.metricas?.hold) throw Error('Resultado incompleto');
-    el('titulo').textContent=papel?'Simulação ao vivo':fase==='teste'?'Teste reservado':'Treino da estratégia';
+    el('titulo').textContent=papel?'Simulação ao vivo':fase==='teste'?(modo==='backtest12m'?'Teste reservado · 12 meses':'Teste reservado'):(modo==='backtest12m'?'Treino · 12 meses':'Treino da estratégia');
     el('periodo').textContent=horario(r.inicio)+' — '+horario(r.fim)+' (Brasília)';
     for(const lado of ['bot','hold']) {
       el('ret-'+lado).textContent=percentual(r.metricas[lado].retorno_pct);
@@ -71,7 +72,7 @@ async function mostrar() {
     el('contexto').textContent=j.pares.join(' · ')+' | '+j.intervalo_minutos+' min | '+moeda(j.capital)+' iniciais por carteira. '+descricao+' Fonte: '+origem+'.';
     if(papel && Date.now()-r.fim>2*j.intervalo_minutos*60000) aviso+=' Atualização atrasada. A última abertura processada foi '+horario(r.fim)+' (Brasília).';
     el('baixar').href=url;el('csv').textContent=papel?'Operações em CSV ↗':'Curva em CSV ↗';
-    el('csv').href=papel?raizDados+'state/trades.csv':local+'results/patrimonio.csv';
+    el('csv').href=papel?raizDados+'state/trades.csv':local+'results/'+(modo==='backtest12m'?'patrimonio-12m':'patrimonio')+'.csv';
     el('estado').textContent=aviso.trim();el('estado').hidden=!aviso;el('repetir').hidden=!aviso;
     el('relatorio').hidden=false;curva(r.curva);
   } catch {
@@ -80,7 +81,7 @@ async function mostrar() {
     el('repetir').hidden=false;
   }
 }
-for(const k of ['paper','backtest']) el(k).addEventListener('click',()=>{modo=k;mostrar();});
+for(const k of ['paper','backtest','backtest12m']) el(k).addEventListener('click',()=>{modo=k;mostrar();});
 for(const k of ['treino','teste']) el(k).addEventListener('click',()=>{fase=k;mostrar();});
 el('repetir').addEventListener('click',mostrar);
 setInterval(()=>{if(modo==='paper'&&!document.hidden) mostrar();},60000);
