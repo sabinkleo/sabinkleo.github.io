@@ -32,7 +32,18 @@ button{background:var(--a);color:#17200f;font-weight:700;cursor:pointer}button:d
 #message{min-height:20px}.warn{color:#ffda84}
 @media print{@page{size:A4;margin:9mm}header,.panel,.noprint{display:none!important}body{background:white}main{padding:0;max-width:none}#sheet{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm}.label{min-height:62mm;max-height:80mm;padding:5mm;border:1px solid #222}.label svg{max-width:37mm} }
 </style>
-</head><body>
+<link rel="stylesheet" href="/assets/site-shell.css">
+</head><body class="vl-site">
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/">Ferramentas</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/observatorio/">Observatório</a>
+    </div>
+  </div>
+</nav>
 <header><strong>VÉRTICE LABS · N1</strong> <a href="../visao/">N1 Visão</a> · <a href="../">Estoque N1</a></header>
 <main>
 <h1>Gerador de etiquetas QR</h1>

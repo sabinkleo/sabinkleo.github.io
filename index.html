@@ -11,111 +11,86 @@
   <meta property="og:url" content="https://verticelabs.me/">
   <meta property="og:title" content="Vértice Labs // Ferramentas de laboratório">
   <meta property="og:description" content="Um laboratório digital para transformar informação dispersa em próximos passos claros.">
-  <style>
-    :root{--bg:#090a09;--panel:#111310;--paper:#ecebe2;--muted:#8e9285;--lime:#d3fa43;--line:#262922;--mono:'Cascadia Code','Courier New',monospace}
-    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--paper);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background-image:linear-gradient(to right,rgba(211,250,67,.025) 1px,transparent 1px),linear-gradient(to bottom,rgba(211,250,67,.025) 1px,transparent 1px);background-size:28px 28px}.topline{height:5px;background:repeating-linear-gradient(115deg,var(--lime) 0 16px,#090a09 16px 24px)}.wrap{max-width:1100px;margin:0 auto;padding:0 24px}header{border-bottom:1px solid var(--line);background:rgba(9,10,9,.9)}nav{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{color:var(--paper);font-weight:900;font-size:20px;letter-spacing:-1px;text-decoration:none}.brand span{color:var(--lime)}.nav-note,.eyebrow{font:11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}main{padding:72px 0 80px}.hero{max-width:760px}.hero h1{font-family:Impact,'Arial Narrow',sans-serif;font-size:clamp(54px,9vw,108px);line-height:.9;letter-spacing:-.02em;text-transform:uppercase;margin:12px 0 20px}.hero h1 em{font-style:normal;color:var(--lime)}.hero p{max-width:620px;color:var(--muted);font-size:18px}.catalog{margin-top:54px}.catalog h2{font:14px var(--mono);text-transform:uppercase;letter-spacing:.08em}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:18px}.card{min-height:220px;padding:24px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}.card.active{border-color:rgba(211,250,67,.6)}.card h3{margin:10px 0 8px;font-size:22px}.card p{color:var(--muted);margin:0 0 20px}.card a{margin-top:auto;color:var(--lime);font:12px var(--mono);text-decoration:none}.card a:hover{text-decoration:underline}.status{color:var(--lime);font:11px var(--mono);text-transform:uppercase}.footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px}@media(max-width:760px){.cards{grid-template-columns:1fr}.nav-note{display:none}main{padding-top:48px}}
-.offer{margin-top:43px;border:1px solid #607e33;border-radius:10px;background:#141d11;padding:clamp(22px,4vw,35px)}.offer h2{font-size:clamp(24px,3vw,36px);letter-spacing:-.02em;margin:10px 0}.offer p{max-width:730px;color:#afb8a4;margin:0 0 20px}.offer a{display:inline-block;color:#0a0d08;background:var(--lime);padding:12px 20px;border-radius:7px;text-decoration:none;font-weight:800}.offer a:focus-visible{outline:3px solid var(--paper);outline-offset:4px}
-  </style>
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="/assets/consent.css">
 <script defer src="/assets/measurement.js"></script>
+<link rel="stylesheet" href="/assets/site-shell.css">
 </head>
-<body>
-  <div class="topline"></div>
-  <header>
-    <nav class="wrap" aria-label="Navegação principal">
-      <a class="brand" href="/" aria-label="Vértice Labs, página inicial">VÉRTICE<span>LABS</span></a>
-      <span class="nav-note">Laboratório digital · Curitiba</span>
-    </nav>
-  </header>
-  <main class="wrap">
+<body class="vl-site">
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/" aria-current="page">Ferramentas</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/observatorio/">Observatório</a>
+    </div>
+  </div>
+</nav>
+  <main class="vl-home">
     <section class="hero" aria-labelledby="page-title">
-      <span class="eyebrow">Ferramentas independentes // Vértice Labs</span>
-      <h1 id="page-title">Informação<br><em>em órbita.</em></h1>
-      <p>Ferramentas para engenharia, estoque, automotivo e aprendizagem técnica.</p>
+      <h1 id="page-title">Ferramentas para o trabalho técnico.</h1>
+      <p>Diagnostique vendas, organize estoque, prepare um acerto ou explore dados de mercado.</p>
     </section>
-    <section class="offer" aria-labelledby="offer-title">
-      <span class="status">Implementação para empresas · Piloto B2B</span>
-      <h2 id="offer-title">Seu WhatsApp recebe oportunidades. Você acompanha o resultado?</h2>
-      <p>A Vértice organiza origem dos contatos, etapas de atendimento, retornos e relatórios usando as ferramentas que sua empresa já possui. Conheça o escopo antes de investir.</p>
-      <a href="/solucoes/">Conhecer a implantação comercial</a>
-    </section>
-    <section class="catalog" aria-labelledby="catalog-title">
-      <h2 id="catalog-title">Catálogo de módulos</h2>
+    <section class="catalog" id="ferramentas" aria-labelledby="catalog-title">
+      <h2 id="catalog-title">Escolha uma ferramenta</h2>
       <div class="cards">
-        <article class="card active">
-          <span class="status">Disponível agora</span>
-          <h3>Automotivo / Tuning</h3>
-          <p>Triagem pré-dyno para organizar setup, escopo e prontidão antes do contato técnico.</p>
-          <a href="/tuning/">Abrir módulo <span aria-hidden="true">↗</span></a>
+        <article class="card">
+          <h3>Raio-X de Vendas</h3>
+          <p>Calcule oportunidades não atendidas, identifique gargalos de rastreamento e receba um plano de ação comercial.</p>
+          <a href="/raio-x-vendas/">Abrir diagnóstico gratuito <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="card active">
-          <span class="status">Disponível agora</span>
-          <h3>Estoque / Núcleo N1</h3>
+        <article class="card">
+          <h3>Núcleo N1 · Estoque</h3>
           <p>Registre entradas, saídas e transferências. Compare a contagem física com o saldo e consulte o histórico das diferenças.</p>
           <a href="/n1/">Abrir ferramenta de estoque <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="card active">
-          <span class="status">Disponível agora</span>
+        <article class="card">
+          <h3>Triagem pré-dyno</h3>
+          <p>Triagem pré-dyno para organizar setup, escopo e prontidão antes do contato técnico.</p>
+          <a href="/tuning/">Abrir Pré-Dyno <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="card">
           <h3>Bancada de Mecatrônica</h3>
           <p>Calculadoras de eletricidade, resistores por cores, simulador de código C e exercícios interativos. Projeto estudantil independente.</p>
           <a href="/estudos/mecatronica/">Abrir bancada de estudos <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="card active">
-          <span class="status">Disponível agora · diagnóstico local</span>
+        <article class="card">
           <h3>Privacidade / OPSEC LAB</h3>
           <p>Entenda o setup GrapheneOS, veja os sinais expostos pelo navegador e monte um plano prático de proteção. Sem API nem envio de resultados.</p>
           <a href="/privacy/">Abrir laboratório de privacidade <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="card active">
-          <span class="status">Disponível agora</span>
-          <h3>Vendas / Raio-X de Leads</h3>
-          <p>Calcule oportunidades não atendidas, identifique gargalos de rastreamento e receba um plano de ação comercial.</p>
-          <a href="/raio-x-vendas/">Abrir diagnóstico gratuito <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card active">
-          <span class="status">Editorial · inteligência aplicada</span>
-          <h3>Vértice Intelligence / Observatório</h3>
-          <p>O que mudou, quem é afetado e o que fazer agora. Matérias com fontes, histórico editorial e feed RSS.</p>
-          <a href="/observatorio/">Abrir Observatório <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card active">
-          <span class="status">Benefícios públicos · ofertas verificadas</span>
-          <h3>Vértice Drops / Créditos & Ferramentas</h3>
-          <p>Créditos para devs, ferramentas gratuitas e promoções com fonte, condições e validade. Sem cupons inventados e sem vender dados de ninguém.</p>
-          <a href="/drops/">Abrir Vértice Drops <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card active">
-          <span class="status">Disponível agora</span>
+        <article class="card">
           <h3>Radar IA + Cripto</h3>
           <p>Leia os candles da Bybit e consulte uma linha do tempo de IA, cripto e regulação com fontes verificáveis.</p>
           <a href="/radar-ia-cripto/">Abrir Radar IA + Cripto <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="card active">
-          <span class="status">Novo · Simulação interativa</span>
-          <h3>Perps Lab / Long & Short</h3>
-          <p>Explore alavancagem, stops, funding, liquidação e entradas parciais com 12 meses de candles públicos. Nenhuma ordem real.</p>
-          <a href="/perps/">Abrir laboratório de perpétuos <span aria-hidden="true">↗</span></a>
-        </article>
-        <article class="card active">
-          <span class="status">Simulação spot</span>
+        <article class="card">
           <h3>Duelo: Bot vs Hold</h3>
           <p>Compare uma estratégia de EMA e RSI com comprar e manter os mesmos ativos. Consulte o backtest e as carteiras simuladas hora a hora.</p>
           <a href="/duelo-bot/">Abrir duelo <span aria-hidden="true">↗</span></a>
         </article>
         <article class="card">
-          <span class="status">Próximo módulo</span>
-          <h3>Dados</h3>
-          <p>Utilitários para CSV, JSON e rotinas locais de organização de informação.</p>
-          <span class="nav-note">Em preparação</span>
+          <h3>Perps Lab / Long & Short</h3>
+          <p>Explore alavancagem, stops, funding, liquidação e entradas parciais com 12 meses de candles públicos. Nenhuma ordem real.</p>
+          <a href="/perps/">Abrir laboratório de perpétuos <span aria-hidden="true">↗</span></a>
         </article>
         <article class="card">
-          <span class="status">Próximo módulo</span>
-          <h3>Mídia</h3>
-          <p>Ferramentas futuras para organizar fluxos de imagem, áudio e vídeo.</p>
-          <span class="nav-note">Em preparação</span>
+          <h3>Vértice Drops / Créditos & Ferramentas</h3>
+          <p>Créditos para devs, ferramentas gratuitas e promoções com fonte, condições e validade. Sem cupons inventados e sem vender dados de ninguém.</p>
+          <a href="/drops/">Abrir Vértice Drops <span aria-hidden="true">↗</span></a>
+        </article>
+        <article class="card">
+          <h3>Vértice Intelligence / Observatório</h3>
+          <p>O que mudou, quem é afetado e o que fazer agora. Matérias com fontes, histórico editorial e feed RSS.</p>
+          <a href="/observatorio/">Abrir Observatório <span aria-hidden="true">↗</span></a>
         </article>
       </div>
+    </section>
+    <section class="offer" aria-labelledby="offer-title">
+      <h2 id="offer-title">Seu WhatsApp recebe oportunidades. Você acompanha o resultado?</h2>
+      <p>A Vértice organiza origem dos contatos, etapas de atendimento, retornos e relatórios usando as ferramentas que sua empresa já possui. Conheça o escopo antes de investir.</p>
+      <a href="/solucoes/">Conhecer a implantação comercial</a>
     </section>
   </main>
   <footer class="footer">
