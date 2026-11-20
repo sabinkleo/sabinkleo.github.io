@@ -6,11 +6,6 @@ on:
     branches: [main]
     paths: ['.github/workflows/duelo-paper.yml']
   workflow_dispatch:
-    inputs:
-      seed_runtime:
-        description: 'Criar duelo-runtime a partir do estado íntegro em main (somente na migração)'
-        type: boolean
-        default: false
 
 permissions: {}
 concurrency:
@@ -35,15 +30,4 @@ jobs:
           cache-dependency-path: bot/package-lock.json
       - run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
       - name: Atualizar os dois livros
-        env:
-          SEED_RUNTIME: ${{ inputs.seed_runtime }}
-          BEFORE: ${{ github.event.before }}
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" == push && "$BEFORE" =~ ^[a-f0-9]{40}$ ]]; then
-            git fetch --depth=1 --no-tags origin "$BEFORE"
-            # Só a transição do workflow anterior autoriza a primeira cópia automática.
-            if [[ "$(git rev-parse "$BEFORE:.github/workflows/duelo-paper.yml")" == 3b07455b875d30d913bb454e27ca44e94a70fb0c ]]; then
-              export SEED_RUNTIME=true
-            fi
-          fi
-          bash bot/measure-paper-run.sh bash bot/paper-runtime.sh
+        run: bash bot/measure-paper-run.sh bash bot/paper-runtime.sh
