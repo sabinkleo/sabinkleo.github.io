@@ -419,3 +419,13 @@ test('Raio-X discards unregistered and repeated attribution fields before opt-in
     await page.evaluate(() => localStorage.removeItem('vertice_measurement_consent_v2'));
   }
 });
+
+test('Homepage prioritizes Drops and Observatório while preserving featured business tools', async ({ page }) => {
+  await page.goto(origin + '/');
+  const groups = page.locator('.catalog > .tool-group');
+  await expect(groups.first().locator('h2')).toHaveText('Recursos e pesquisa');
+  await expect(groups.first().locator('.card h3')).toHaveText(['Vértice Drops', 'Observatório']);
+  await expect(groups.first().locator('a[href="/drops/"]')).toHaveCount(1);
+  await expect(groups.first().locator('a[href="/observatorio/"]')).toHaveCount(1);
+  await expect(groups.nth(1).locator('h2')).toHaveText('Negócios e operação');
+});
