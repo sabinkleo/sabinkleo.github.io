@@ -47,3 +47,17 @@ test('Observatório on mobile keeps its archive usable and favorites persistent'
   await expect(page.locator('h1')).toContainText('frete');
   await expect(page.locator('#fontes')).toBeVisible();
 });
+
+test('Revenue OS pilot preserves known tags and omits unrelated input', async ({ page }) => {
+  const known = '?utm_source=linkedin&utm_medium=organic_social&utm_campaign=revenue-os-piloto-cwb&extra=sentinel';
+  await page.goto(origin + '/solucoes/' + known);
+  const diagnostic = page.locator('main a[href*="/raio-x-vendas/"]').first();
+  const whatsapp = page.locator('main a[href^="https://wa.me/"]').first();
+  expect(new URL(await diagnostic.getAttribute('href')).searchParams.get('utm_source')).toBe('linkedin');
+  expect(decodeURIComponent(await whatsapp.getAttribute('href'))).toContain('Origem da campanha: linkedin');
+  expect(await whatsapp.getAttribute('href')).not.toContain('sentinel');
+
+  await page.goto(origin + '/solucoes/' + known.replace('linkedin', 'unknown'));
+  await expect(diagnostic).toHaveAttribute('href', '/raio-x-vendas/');
+  expect(decodeURIComponent(await whatsapp.getAttribute('href'))).not.toContain('Origem da campanha');
+});
