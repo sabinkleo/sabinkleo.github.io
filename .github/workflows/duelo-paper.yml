@@ -46,4 +46,4 @@ jobs:
               export SEED_RUNTIME=true
             fi
           fi
-          bash bot/paper-runtime.sh
+          bash bot/measure-paper-run.sh bash bot/paper-runtime.sh
