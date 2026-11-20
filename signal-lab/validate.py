@@ -19,7 +19,7 @@ FIELDS = {
     "id", "title", "maker", "category", "phase", "evidence",
     "model", "claim", "verified", "mechanism", "test", "risks",
     "why", "source", "url", "potential", "speed", "cash",
-    "repeat", "proof", "score", "priority", "tag",
+    "repeat", "proof", "score", "priority", "tag", "creative", "validation",
 }
 CATEGORIES = {"compliance", "distribution", "automation", "acquisition", "infra", "research"}
 PHASES = {"agir", "testar", "validar", "observar", "descartar"}
@@ -85,6 +85,13 @@ def validate() -> int:
         for field in ["title", "maker", "model", "claim", "mechanism", "test", "risks", "why", "source"]:
             if not isinstance(item.get(field), str) or not item[field].strip():
                 errors.append(f"{p}: empty text {field}")
+        creative = item.get("creative")
+        if not isinstance(creative, dict) or set(creative) != {"hook", "demo", "result", "cta"}:
+            errors.append(f"{p}: expected creative hook/demo/result/cta")
+        elif any(not isinstance(v, str) or not v.strip() for v in creative.values()):
+            errors.append(f"{p}: empty creative field")
+        if item.get("validation") != "hipotese_sem_venda_confirmada":
+            errors.append(f"{p}: must distinguish commercial validation from source verification")
         values = [item.get(f) for f in FACTORS]
         if all(type(v) is int and 1 <= v <= 5 for v in values):
             expected = math.floor(20 * sum(w * v for w, v in zip(WEIGHTS, values)) + 0.5)
