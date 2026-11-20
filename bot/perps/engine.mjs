@@ -148,6 +148,12 @@ export function simulate(bars, options={}) {
       const payment=pos.side*pos.qty*b.o*rate;
       cash-=payment;funding+=payment;
     }
+    // Gap de abertura pode ultrapassar a liquidação antes de qualquer ordem de saída.
+    if(pos){
+      const liqOpen=liquidationPrice(pos);
+      if(pos.side===1?b.o<=liqOpen:b.o>=liqOpen)
+        close(pos.qty,b.o,t,'liquidação',true);
+    }
     if(pos){
       const changed=desired!==pos.side && desired!==0;
       if(changed)close(pos.qty,b.o,t,'reversão');
@@ -158,27 +164,27 @@ export function simulate(bars, options={}) {
     if(pos&&p.scaleIn&&!pos.added&&t>pos.t&&
       pos.side*(b.o-pos.entry)/pos.entry>=p.addPct/100)open(pos.side,b.o,t,true);
     if(pos){
-      const liq=liquidationPrice(pos);
-      const gap=pos.side===1?b.o<=liq:b.o>=liq;
-      const hit=pos.side===1?b.l<=liq:b.h>=liq;
-      if(gap||hit){
-        // Modelo pessimista intrabar: marcação do contrato real é desconhecida.
-        close(pos.qty,gap?b.o:liq,t,'liquidação',true);
-      }else{
-        const stopHit=pos.side===1?b.l<=pos.stop:b.h>=pos.stop;
-        const takeHit=pos.side===1?b.h>=pos.take:b.l<=pos.take;
-        if(stopHit){
-          const openBeyond=pos.side===1?b.o<pos.stop:b.o>pos.stop;
-          close(pos.qty,openBeyond?b.o:pos.stop,t,'stop');
-        }else if(takeHit&&!pos.partial){
-          close(pos.qty/2,pos.take,t,'parcial');
-          if(pos)pos.partial=true;
-        }
-        if(pos){
-          // Trailing atualizado APÓS o fechamento, nunca usado no candle em formação.
-          const newStop=b.c*(1-pos.side*p.trailingPct/100);
-          pos.stop=pos.side===1?Math.max(pos.stop,newStop):Math.min(pos.stop,newStop);
-        }
+      const liq=liquidationPrice(pos),side=pos.side;
+      const liqHit=side===1?b.l<=liq:b.h>=liq;
+      const stopHit=side===1?b.l<=pos.stop:b.h>=pos.stop;
+      const stopGap=side===1?b.o<=pos.stop:b.o>=pos.stop;
+      const takeHit=side===1?b.h>=pos.take:b.l<=pos.take;
+      // Se ambos os limites do mesmo lado forem tocados, a barreira MAIS PROXIMA
+      // da abertura e atingida primeiro (exceto gap, tratado anteriormente).
+      const stopFirst=side===1?pos.stop>=liq:pos.stop<=liq;
+      if(liqHit&&(!stopHit||!stopFirst)){
+        close(pos.qty,liq,t,'liquidação',true);
+      }else if(stopHit){
+        close(pos.qty,stopGap?b.o:pos.stop,t,'stop');
+      }else if(takeHit&&!pos.partial){
+        // Quando stop e alvo sao tocados no mesmo candle, stop prevalece.
+        close(pos.qty/2,pos.take,t,'parcial');
+        if(pos)pos.partial=true;
+      }
+      if(pos){
+        // Trailing atualizado APÓS o fechamento, nunca usado no candle em formação.
+        const newStop=b.c*(1-side*p.trailingPct/100);
+        pos.stop=side===1?Math.max(pos.stop,newStop):Math.min(pos.stop,newStop);
       }
     }
     const value=equity(b.c);
