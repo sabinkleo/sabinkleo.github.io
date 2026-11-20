@@ -47,6 +47,17 @@ jobs:
             }
             summary+='\n';
           }
+          summary+='## Robustez: Donchian60 por moeda e atraso adicional\n\n';
+          for(const phase of phases){
+            summary+='### '+phase+'\n\n| Pares | Abertura seguinte | +1 dia de atraso |\n|---|---:|---:|\n';
+            for(const subset of ['BTCUSDT','ETHUSDT','SOLUSDT','BTCUSDT,ETHUSDT','BTCUSDT,SOLUSDT','ETHUSDT,SOLUSDT']){
+              const get=lag=>r.robustez.find(x=>x.fase===phase&&x.pares===subset&&x.atraso_dias===lag);
+              const a=get(1),b=get(2);
+              if(!a||!b||![a.retorno_pct,b.retorno_pct].every(Number.isFinite))throw Error('Robustez incompleta '+phase+' '+subset);
+              summary+='| '+subset+' | '+a.retorno_pct.toFixed(2)+'% | '+b.retorno_pct.toFixed(2)+'% |\n';
+            }
+            summary+='\n';
+          }
           summary+='**Nota:** Cinco meses nao comprovam edge; o periodo foi observado, nao e holdout cego. Validade requer novos dados, mais pares, execucao e exposicao comparaveis.\n';
           appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary);
           console.log(summary);
