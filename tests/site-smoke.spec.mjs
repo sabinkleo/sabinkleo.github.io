@@ -54,10 +54,10 @@ test('Revenue OS pilot preserves known tags and omits unrelated input', async ({
   const diagnostic = page.locator('main a[href*="/raio-x-vendas/"]').first();
   const whatsapp = page.locator('main a[href^="https://wa.me/"]').first();
   expect(new URL(await diagnostic.getAttribute('href')).searchParams.get('utm_source')).toBe('linkedin');
-  expect(decodeURIComponent(await whatsapp.getAttribute('href'))).toContain('Origem da campanha: linkedin');
+  expect(new URL(await whatsapp.getAttribute('href')).searchParams.get('text')).toContain('Origem da campanha: linkedin');
   expect(await whatsapp.getAttribute('href')).not.toContain('sentinel');
 
   await page.goto(origin + '/solucoes/' + known.replace('linkedin', 'unknown'));
   await expect(diagnostic).toHaveAttribute('href', '/raio-x-vendas/');
-  expect(decodeURIComponent(await whatsapp.getAttribute('href'))).not.toContain('Origem da campanha');
+  expect(new URL(await whatsapp.getAttribute('href')).searchParams.get('text')).not.toContain('Origem da campanha');
 });
