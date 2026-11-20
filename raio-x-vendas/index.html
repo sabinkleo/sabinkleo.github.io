@@ -76,6 +76,7 @@ h1,h2,h3,p{margin-top:0}.hero{max-width:870px}h1{font:clamp(54px,9vw,112px)/.9 I
 </section>
 </main>
 <footer><div class="wrap">© 2026 Vértice Labs • Diagnóstico informativo, não promessa de faturamento. Métricas opcionais apenas com consentimento. <a href="/politica-de-privacidade/">Privacidade</a>. <a href="/">Ver outros módulos</a>.</div></footer>
+<script src="/assets/revenue-campaign.js"></script>
 <script>
 (function(){
 'use strict';
@@ -104,8 +105,8 @@ function update(){
  el('advice').textContent=todo.length?'Prioridade: '+todo.join('; ')+'.':'Processo básico declarado. Próximo passo: conferir dados reais de campanhas e vendas.';
  var condition=contribution>=1694&&score<100&&leads>=30;
  el('fit').textContent=condition?'Existe potencial matemático para uma implantação; valide recuperação real, custos e qualidade dos dados antes de contratar.':'Os números atuais não justificam automaticamente contratar. Corrija o processo sem custo e valide o ganho primeiro.';
- var u=new URLSearchParams(location.search),ref=['utm_source','utm_medium','utm_campaign'].map(function(k){return u.get(k)||'';}).map(function(s){return s.slice(0,80).replace(/[\r\n]/g,' ');});
- var origin=ref.some(Boolean)?ref.filter(Boolean).join(' / '):'não informada';
+ var tags=window.vlRevenueCampaign?.(location.search);
+ var origin=tags?Object.values(tags).join(' / '):'não informada';
  last=[
  '*RAIO-X DE VENDAS | VÉRTICE LABS*',
  msgField('Leads/mês',String(leads)),

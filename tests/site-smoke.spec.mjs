@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const origin = 'http://127.0.0.1:8765';
+const origin = process.env.SITE_TEST_ORIGIN || 'http://127.0.0.1:8765';
 const routes = [
   '/',
   '/n1/',
@@ -305,3 +305,60 @@ for (const width of [320, 375, 390, 768, 1440]) {
     await expect(page.locator('#ticket')).toHaveValue('180');
   });
 }
+
+test('Revenue OS pilot preserves known tags and omits unrelated input', async ({ page }) => {
+  const known = '?utm_source=linkedin&utm_medium=organic_social&utm_campaign=revenue-os-piloto-cwb&extra=sentinel';
+  await page.goto(origin + '/solucoes/' + known);
+  const diagnostic = page.locator('main a[href*="/raio-x-vendas/"]').first();
+  const whatsapp = page.locator('main a[href^="https://wa.me/"]').first();
+  expect(new URL(await diagnostic.getAttribute('href')).searchParams.get('utm_source')).toBe('linkedin');
+  expect(new URL(await whatsapp.getAttribute('href')).searchParams.get('text')).toContain('Origem da campanha: linkedin');
+  expect(await whatsapp.getAttribute('href')).not.toContain('sentinel');
+
+  await page.goto(origin + '/solucoes/' + known.replace('linkedin', 'unknown'));
+  await expect(diagnostic).toHaveAttribute('href', '/raio-x-vendas/');
+  expect(new URL(await whatsapp.getAttribute('href')).searchParams.get('text')).not.toContain('Origem da campanha');
+});
+
+test('Revenue OS links Soluções to Raio-X and offers a clean WhatsApp draft', async ({ page }) => {
+  const requests = await stubGtm(page);
+  await page.addInitScript(() => {
+    window.open = url => { window.openedForTest = url; };
+  });
+  const tags = 'utm_source=linkedin&utm_medium=organic_social&utm_campaign=revenue-os-piloto-cwb';
+  const sensitive = '&email=sentinela%40example.invalid&tel=41999999999&utm_content=texto-livre';
+  await page.goto(origin + '/solucoes/?' + tags + sensitive);
+  await accept(banner(page)).click();
+  await expect(page).toHaveURL(origin + '/solucoes/?' + tags);
+  await page.getByRole('link', { name: 'Fazer diagnóstico gratuito' }).click();
+  await expect(page).toHaveURL(origin + '/raio-x-vendas/?' + tags);
+  await page.locator('#whats').click();
+  const draft = new URL(await page.evaluate(() => window.openedForTest)).searchParams.get('text');
+  expect(draft).toContain('linkedin / organic_social / revenue-os-piloto-cwb');
+  const events = await siteEvents(page);
+  expect(events.find(item => item.event === 'vl_page_view').page_location).toBe(origin + '/raio-x-vendas/?' + tags);
+  expect(events.find(item => item.event === 'vl_contact_intent')).toEqual({
+    event: 'vl_contact_intent', route: '/raio-x-vendas/', channel: 'whatsapp', cta: 'whats'
+  });
+  expect(draft + JSON.stringify(events)).not.toMatch(/sentinela|41999999999|texto-livre/);
+  await expect.poll(() => requests.length).toBe(2);
+});
+
+test('Raio-X discards unregistered and repeated attribution fields before opt-in', async ({ page }) => {
+  const requests = await stubGtm(page);
+  await page.addInitScript(() => {
+    window.open = url => { window.openedForTest = url; };
+  });
+  const campaign = '&utm_campaign=revenue-os-piloto-cwb&utm_medium=organic_social';
+  for (const query of ['utm_source=nome-41999999999', 'utm_source=linkedin&utm_source=sentinela']) {
+    await page.goto(origin + '/raio-x-vendas/?' + query + campaign);
+    await reject(banner(page)).click();
+    await page.locator('#whats').click();
+    const draft = new URL(await page.evaluate(() => window.openedForTest)).searchParams.get('text');
+    expect(draft).toContain('Origem da visita: não informada');
+    expect(draft).not.toMatch(/sentinela|41999999999|revenue-os-piloto-cwb/);
+    expect(await siteEvents(page)).toEqual([]);
+    expect(requests).toEqual([]);
+    await page.evaluate(() => localStorage.removeItem('vertice_measurement_consent_v2'));
+  }
+});
