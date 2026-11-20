@@ -1,0 +1,42 @@
+name: Risk Lab - testes e backtest isolado
+on:
+  pull_request:
+    paths:
+      - 'bot/lab/**'
+      - 'bot/tests/risk-lab.test.mjs'
+      - '.github/workflows/risk-lab.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verificar-laboratorio:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Dependencias travadas
+        run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+      - name: Testes do motor principal
+        run: npm --prefix bot test
+      - name: Testes do laboratorio de risco
+        run: node --test bot/tests/risk-lab.test.mjs
+      - name: Simulacao offline com candles versionados
+        shell: bash
+        run: |
+          set -euo pipefail
+          node bot/lab/risk-lab.mjs | tee /tmp/risk-lab-report.json
+          node --input-type=module -e "
+            import {readFileSync} from 'node:fs';
+            const r=JSON.parse(readFileSync('/tmp/risk-lab-report.json','utf8'));
+            for(const s of ['treino','teste']){
+              const m=r[s];
+              if(!m || !['patrimonio','retorno_pct','drawdown_max_pct','operacoes','taxas'].every(k=>Number.isFinite(m[k])))
+                throw Error('Metrica invalida em '+s);
+              if(m.patrimonio<0 || m.drawdown_max_pct<0 || m.drawdown_max_pct>100 ||
+                 m.operacoes<0 || m.taxas<0) throw Error('Metrica fora do dominio em '+s);
+            }
+            console.log('Metricas basicas do laboratorio: OK');
+          "
