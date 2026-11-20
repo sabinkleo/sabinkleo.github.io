@@ -27,6 +27,10 @@ function statusText(x){
  const pair=badges[x.evidence]||['SEM VERIFICAÇÃO','claim'];
  return '<span class="pill '+pair[1]+'">'+pair[0]+'</span>';
 }
+function creativeScript(x) {
+ const v=x.creative||{};
+ return ['VÉRTICE LABS · IDEIA DE REELS (HIPÓTESE)', 'GANCHO: '+(v.hook||''), 'DEMONSTRAÇÃO: '+(v.demo||''), 'RESULTADO A MOSTRAR: '+(v.result||''), 'CTA: '+(v.cta||''), 'Nota: não divulgar números não verificados como resultados reais.'].join('\n');
+}
 function renderCard(x){
  const selected=state.saved.has(x.id),expanded=state.opened.has(x.id);
  const link=safeUrl(x.url);
@@ -41,12 +45,18 @@ function renderCard(x){
  '<dt>Mecanismo a adaptar</dt><dd>'+esc(x.mechanism)+'</dd>'+
  '<dt>Experimento mínimo</dt><dd>'+esc(x.test)+'</dd>'+
  '<dt>Risco / bloqueio</dt><dd>'+esc(x.risks)+'</dd>'+
- '<dt>Proveniência</dt><dd>'+esc(x.source)+' · '+(x.verified?'checado '+esc(x.verified):'afirmação não verificada independentemente')+'</dd></dl>'+
+ '<dt>Proveniência</dt><dd>'+esc(x.source)+' · '+(x.verified?'checado '+esc(x.verified):'afirmação não verificada independentemente')+'</dd>'+ 
+ '<dt>VALIDAÇÃO COMERCIAL</dt><dd>Hipótese editorial, sem venda ou retorno comprovado pela Vértice</dd>'+ 
+ '<dt>REELS / GANCHO</dt><dd>'+esc(x.creative?.hook)+'</dd>'+ 
+ '<dt>DEMONSTRAÇÃO</dt><dd>'+esc(x.creative?.demo)+'</dd>'+ 
+ '<dt>RESULTADO A MOSTRAR</dt><dd>'+esc(x.creative?.result)+'</dd>'+ 
+ '<dt>CTA</dt><dd>'+esc(x.creative?.cta)+'</dd></dl>'+ 
+ '<button type="button" class="action secondary" data-action="copy" style="margin-top:15px">COPIAR ROTEIRO DE REELS</button> '+
  (link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">ABRIR REFERÊNCIA ↗</a>':'')+'</div></article>';
 }
 function render(){
  let values=state.data.filter(x=>{
- const text=[x.title,x.maker,x.claim,x.mechanism,x.why,x.model,x.priority].join(' ').toLocaleLowerCase('pt-BR');
+ const text=[x.title,x.maker,x.claim,x.mechanism,x.why,x.model,x.priority,...Object.values(x.creative||{})].join(' ').toLocaleLowerCase('pt-BR');
  return (state.category==='all'||state.category===x.category)&&
  (state.phase==='all'||state.phase===x.phase)&&
  (!state.savedOnly||state.saved.has(x.id))&&
@@ -100,10 +110,28 @@ get('filters').addEventListener('click',e=>{
  state.category=button.dataset.category;render();
 });
 get('savedOnly').addEventListener('click',()=>{state.savedOnly=!state.savedOnly;render();});
-get('cards').addEventListener('click',e=>{
+async function copyScript(textToCopy){
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {await navigator.clipboard.writeText(textToCopy);return true;} catch(_) {}
+  }
+  const input=document.createElement('textarea');
+  input.value=textToCopy;
+  input.setAttribute('readonly','');
+  Object.assign(input.style,{position:'fixed',top:'-9999px',left:'-9999px'});
+  document.body.appendChild(input);input.select();
+  let ok=false;
+  try {ok=document.execCommand('copy');} catch(_) {}
+  input.remove();return ok;
+}
+get('cards').addEventListener('click',async e=>{
  const button=e.target.closest('button[data-action]');if(!button)return;
  const card=button.closest('article[data-id]');if(!card)return;
- const id=card.dataset.id;if(!state.data.some(x=>x.id===id))return;
+ const id=card.dataset.id;const x=state.data.find(y=>y.id===id);if(!x)return;
+ if(button.dataset.action==='copy'){
+  const ok=await copyScript(creativeScript(x));
+  button.textContent=ok?'ROTEIRO COPIADO ✓':'FALHA NA CÓPIA — SELECIONE O TEXTO';
+  return;
+ }
  if(button.dataset.action==='detail'){state.opened.has(id)?state.opened.delete(id):state.opened.add(id);}
  if(button.dataset.action==='save'){state.saved.has(id)?state.saved.delete(id):state.saved.add(id);persist();}
  render();
