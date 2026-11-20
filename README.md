@@ -28,3 +28,7 @@ python -m http.server 8000
 Open `/`, `/n1/`, `/tuning/`, and `/tunning/` on the local server. In N1, each warehouse demo round starts with 20 items, three discrepancies and 17 matches. The demo and personal inventory have separate storage for each profile. A JSON backup can move inventory between the website and the offline copy. The source module
 contains no analytics IDs; do not add tracking IDs or customer data without
 approval.
+
+## Vértice Intelligence
+
+[`/observatorio/`](https://verticelabs.me/observatorio/) reúne guias e matérias com fontes, histórico editorial e ferramentas relacionadas. A [operação editorial](editorial/README.md) descreve a entrada do radar, a geração local, as verificações e a revisão dos pacotes de mídia.

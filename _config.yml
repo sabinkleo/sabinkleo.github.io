@@ -1,0 +1,9 @@
+# Editorial working files are public in Git but are not part of the Pages site.
+exclude:
+  - editorial/
+  - AGENTS.md
+  - build/
+  - vendor/
+  - node_modules/
+  - Gemfile
+  - Gemfile.lock

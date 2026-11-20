@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "id": "google-frete-search-console-2025-11-12",
+  "slug": "frete-search-console",
+  "title": "Qual prazo de frete sua loja informa ao Google?",
+  "event_date": "2025-11-12",
+  "published_at": "2026-11-19T22:49:22Z",
+  "verified_at": "2026-11-19T22:49:22Z",
+  "updated_at": "2026-11-19T22:49:22Z",
+  "event_type": "educational",
+  "category": "Busca e comércio",
+  "sector": "Varejo",
+  "country": "Global",
+  "evidence_level": "high",
+  "summary": "Imagine que a página de um produto prometa entrega em dois dias e que apareçam cinco no checkout para o mesmo CEP. Este guia mostra como conferir qual prazo a loja também está informando ao Google.",
+  "what_changed": "Em 12 de novembro de 2025, o Google anunciou que passaria a aceitar políticas de frete e devolução no Search Console de sites que reconhecesse como lojas, inclusive sem conta configurada no Merchant Center. Segundo o anúncio, o que a loja informa no painel tem prioridade sobre os dados estruturados do site. Isso muda onde procurar uma divergência antes de pedir uma alteração no código.",
+  "who_is_affected": "A conferência interessa a quem mantém loja virtual própria e divide a operação entre catálogo, logística e atendimento. Se um cliente pede confirmação do prazo pelo WhatsApp, a equipe pode repetir a consulta com o mesmo produto e destino antes de responder.",
+  "how_to_adapt": [
+    "Escolha um produto em estoque e um CEP de teste. Anote o prazo, o custo e a modalidade de envio na página e no checkout para a mesma quantidade. Se a página só informa o prazo depois de receber o CEP, use esse campo na comparação.",
+    "Abra as configurações da propriedade correta no Search Console e procure a seção de frete e devoluções. Se ela aparecer, compare os dados cadastrados com os do pedido de teste. Se não aparecer, registre a ausência e peça a quem mantém o site que confira a marcação de frete.",
+    "Peça à expedição que confirme a promessa que consegue cumprir para esse destino. Corrija a informação divergente e repita a consulta. Por sete dias, conte quantas conversas trazem dúvidas de prazo e quantas chegam a pedido pago, em colunas separadas."
+  ],
+  "brazil_status": "unconfirmed",
+  "brazil_note": "O Google anunciou liberação gradual para todos os países e idiomas. A presença da configuração em uma propriedade brasileira específica precisa ser conferida por quem tem acesso à loja.",
+  "limitations": "A Vértice conferiu o anúncio público. Os prazos de dois e cinco dias são um exemplo fictício. A configuração da loja, a exibição na busca e o efeito sobre pedidos exigem verificações distintas. O anúncio não oferece uma estimativa de vendas.",
+  "business_opportunity": "Em uma loja que recebe perguntas repetidas sobre frete, vale testar se a equipe consegue acompanhar essas conversas até o pedido pago. Use o Raio-X de Vendas para identificar lacunas no atendimento. Uma revisão só se justifica comercialmente se a loja encontrar divergências ou oportunidades sem acompanhamento.",
+  "opportunity_status": "hypothesis",
+  "related_tool": "/raio-x-vendas/",
+  "sources": [
+    {
+      "url": "https://developers.google.com/search/blog/2025/11/more-ways-to-share-shipping",
+      "title": "Google Search Central · Anúncio sobre as configurações de frete e devolução",
+      "publisher": "Google Search Central",
+      "date": "2025-11-12",
+      "kind": "primary",
+      "anchor": "settings configured in Search Console will take precedence over structured data on your site"
+    }
+  ],
+  "rubric": {
+    "relevance": 4,
+    "adaptation": 4,
+    "urgency": 1,
+    "evidence": 5,
+    "novelty": 1
+  },
+  "risk": "standard",
+  "review": {
+    "by": "Revisão editorial de demonstração · Vértice Intelligence",
+    "claim": true,
+    "privacy": true,
+    "rights": true
+  },
+  "content_status": "approved",
+  "history": [
+    {
+      "status": "candidate",
+      "at": "2026-11-19T22:49:22Z",
+      "note": "Anúncio de arquivo selecionado para um guia de conferência de frete."
+    },
+    {
+      "status": "verified",
+      "at": "2026-11-19T22:49:22Z",
+      "note": "Conferida a publicação primária de 12/11/2025 sobre elegibilidade e prioridade da configuração."
+    },
+    {
+      "status": "draft",
+      "at": "2026-11-19T22:49:22Z",
+      "note": "Elaborados o exemplo fictício e o roteiro de três conferências."
+    },
+    {
+      "status": "approved",
+      "at": "2026-11-19T22:49:22Z",
+      "note": "Edição de demonstração aprovada para gerar os arquivos de revisão do projeto."
+    }
+  ],
+  "social_package": {
+    "reel": [
+      {
+        "title": "Dois dias ou cinco?",
+        "voice": "Dois dias ou cinco?"
+      },
+      {
+        "title": "O mesmo produto e CEP",
+        "voice": "Neste exemplo, a página promete dois dias. No checkout aparecem cinco."
+      },
+      {
+        "title": "Confira o Search Console",
+        "voice": "Se o Google reconhece sua loja, confira o frete no Search Console."
+      },
+      {
+        "title": "O painel tem prioridade",
+        "voice": "Segundo o anúncio de 2025, o painel tem prioridade sobre a marcação do site."
+      },
+      {
+        "title": "Repita a consulta",
+        "voice": "Confirme o prazo com a expedição. Siga o guia da Vértice."
+      }
+    ],
+    "carousel": [
+      {
+        "title": "Qual prazo sua loja informa ao Google?",
+        "body": "Comece por um produto e um CEP. Confira o que o cliente lê e o que a loja cadastrou.",
+        "alt": "Capa do guia de frete. A orientação é escolher um produto e um CEP para comparar os prazos."
+      },
+      {
+        "title": "O que o Google anunciou?",
+        "body": "Em novembro de 2025, o Google anunciou a ampliação do painel de frete e devoluções para sites reconhecidos como lojas.",
+        "alt": "O anúncio de novembro de 2025 trata da ampliação do painel no Search Console para lojas reconhecidas pelo Google."
+      },
+      {
+        "title": "Onde surge a divergência?",
+        "body": "Exemplo fictício. A página promete dois dias e o checkout mostra cinco. O produto e o CEP são os mesmos.",
+        "alt": "Exemplo fictício de divergência. O prazo da página é de dois dias e o do checkout é de cinco para a mesma consulta."
+      },
+      {
+        "title": "Quem consegue conferir?",
+        "body": "Quem administra a propriedade da loja pode procurar a configuração. A disponibilidade precisa ser verificada na própria conta.",
+        "alt": "O responsável pela propriedade da loja deve verificar se a opção de frete aparece na conta."
+      },
+      {
+        "title": "Resolva com quem despacha",
+        "body": "Compare página, checkout e painel. Valide o prazo com a expedição, corrija o dado divergente e repita o teste.",
+        "alt": "A conferência compara três pontos e termina com a validação do prazo pela expedição."
+      },
+      {
+        "title": "Use o guia na próxima conferência",
+        "body": "Leia o passo a passo no Observatório da Vértice. O Google Search Central publicou o anúncio em 12/11/2025.",
+        "alt": "Convite para abrir o guia da Vértice. A fonte primária é o Google Search Central, em 12 de novembro de 2025."
+      }
+    ],
+    "stories": [
+      {
+        "title": "Os prazos da sua loja batem?",
+        "body": "Escolha um produto e um CEP. A página e o checkout mostram o mesmo prazo? Sim / Preciso conferir.",
+        "alt": "Enquete sobre os prazos na página e no checkout. As opções são Sim e Preciso conferir."
+      },
+      {
+        "title": "Há outro lugar para olhar",
+        "body": "No anúncio de 2025, o Google explicou que o frete configurado no Search Console tem prioridade sobre a marcação do site.",
+        "alt": "O guia explica que a configuração de frete no painel tem prioridade sobre os dados estruturados do site."
+      },
+      {
+        "title": "Faça o teste na sua loja",
+        "body": "Abra o guia da Vértice. Veja como comparar os dados e com quem confirmar o prazo antes de corrigir a promessa.",
+        "alt": "Chamada para abrir o guia no Observatório e confirmar o prazo com a equipe de expedição."
+      }
+    ],
+    "captions": {
+      "instagram": "O produto é o mesmo. O CEP também. Por que a página promete entrega em dois dias e o checkout mostra cinco? Esse exemplo fictício serve para testar sua loja. Escolha um item, anote os dois prazos e peça à expedição que confirme qual consegue cumprir. No guia, veja também como conferir o dado informado ao Google.",
+      "linkedin": "Quem responde por um prazo de entrega quando catálogo, expedição e atendimento consultam lugares diferentes? O anúncio do Google de novembro de 2025 dá uma pista para o diagnóstico. Em lojas elegíveis, a configuração no Search Console prevalece sobre a marcação no site. Nosso guia propõe uma conferência com um produto e um CEP, que a equipe pode repetir depois de corrigir uma divergência.",
+      "shorts": "Dois dias na página e cinco no checkout? Veja o teste com o mesmo produto e CEP. Exemplo fictício baseado em um anúncio de 2025 do Google Search Central. Abra o guia para conferir na sua loja.",
+      "whatsapp": "Guia para quem cuida de loja virtual. Escolha um produto e um CEP, compare página e checkout e veja onde conferir o frete informado ao Google. Dá para repetir o teste depois da correção."
+    },
+    "rss": {
+      "title": "Como conferir o frete que sua loja informa ao Google",
+      "summary": "Guia baseado no anúncio de 12 de novembro de 2025. Compare o prazo da página e do checkout, confira o Search Console da loja e valide com a expedição."
+    },
+    "comparison": {
+      "left_label": "Página da loja",
+      "left_value": "2 dias",
+      "right_label": "Checkout",
+      "right_value": "5 dias",
+      "note": "Exemplo fictício · mesmo produto e CEP"
+    }
+  }
+}
