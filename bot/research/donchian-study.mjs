@@ -43,13 +43,15 @@ export function donchianSignals(days,window) {
   if(!Number.isInteger(window)||window<2) throw Error('Janela invalida');
   const signal=Array(days.length).fill(0);
   let state=0,trail=-Infinity;
-  for(let i=window-1;i<days.length;i++){
-    const slice=days.slice(i-window+1,i+1).map(x=>x.c);
-    const upper=Math.max(...slice),lower=Math.min(...slice),middle=(upper+lower)/2;
+  for(let i=window;i<days.length;i++){
+    const previous=days.slice(i-window,i).map(x=>x.c);
+    const recent=days.slice(i-window+1,i+1).map(x=>x.c);
+    const upperPrior=Math.max(...previous);
+    const middle=(Math.max(...recent)+Math.min(...recent))/2;
     const last=days[i].c;
     if(state===1 && last<=trail) {
       state=0;trail=-Infinity;
-    } else if(state===0 && last>=upper) {
+    } else if(state===0 && last>upperPrior) {
       state=1;trail=middle;
     } else if(state===1) {
       trail=Math.max(trail,middle);
