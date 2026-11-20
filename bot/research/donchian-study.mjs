@@ -106,8 +106,10 @@ export function simulate(series,kind,start,end,fee,slippage,capital=1000) {
       const current=worth>0?s.qty*o/worth:0;
       const prev= i>start?aims[p][i-2]:-1;
       const signalChanged=Math.abs(desired-prev)>1e-8;
-      const rebalance=(kind!=='ensemble-vol') || signalChanged ||
-        (Math.abs(desired-current)>=.20);
+      // Manter posicoes sem rebalanceamento desnecessario; para vol-target,
+      // somente modificar por sinal ou diferenca de pelo menos 20 p.p.
+      const rebalance=signalChanged ||
+        (kind==='ensemble-vol' && Math.abs(desired-current)>=.20);
       if(!rebalance) continue;
       // Vendas recebem slippage adverso; compras pagam fee e slippage.
       if(desired<current-1e-8) {
