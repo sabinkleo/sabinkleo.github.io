@@ -1,0 +1,100 @@
+/* Leo Klein personal portfolio. Inspired by the archived Leo Klein theme:
+   lime accent, mono/grotesk typography, hairline grid and fictitious CLI demo.
+   All rules are scoped to .vl-klein or .vl-home .vt-founder. */
+.vl-site.vl-klein {
+  --vl-accent: #a3e635;
+  --vl-paper: #efefef;
+  --vl-muted: #adb3a8;
+  --vl-edge: #30372c;
+  --vt-head: "Space Grotesk", "Segoe UI", sans-serif;
+  --vt-mono: "IBM Plex Mono", Consolas, monospace;
+  margin: 0;
+  min-width: 0;
+  color: var(--vl-paper);
+  background:
+    linear-gradient(rgba(163,230,53,.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(163,230,53,.024) 1px, transparent 1px),
+    #0a0a0a;
+  background-size: 52px 52px;
+  color-scheme: dark;
+  font: 400 16px/1.65 var(--vt-head);
+}
+.vl-klein *, .vl-klein *::before, .vl-klein *::after { box-sizing: border-box; }
+.vl-site.vl-klein .vl-nav { background: #0e120f; border-bottom-color: #303b31; }
+.vl-site.vl-klein .vl-nav .vl-wordmark { font-family: var(--vt-head); }
+.vl-site.vl-klein .vl-nav .vl-nav-links a { border-radius: 2px; }
+.vl-site.vl-klein a:focus-visible { outline: 2px solid var(--vl-accent); outline-offset: 3px; }
+.vl-klein .kl-main { width: min(1120px, 100%); padding: 0 clamp(16px,4vw,36px) 90px; margin: 0 auto; }
+.vl-klein .kl-hero { padding: clamp(66px, 9vw, 126px) 0 clamp(35px, 6vw, 65px); }
+.vl-klein .kl-eyebrow, .vl-klein .kl-section-tag {
+  margin: 0 0 19px; font: 500 11px/1.5 var(--vt-mono);
+  color: var(--vl-accent); letter-spacing: .13em; text-transform: uppercase;
+}
+.vl-klein .kl-eyebrow span { color: #626e5b; margin: 0 7px; }
+.vl-klein h1, .vl-klein h2, .vl-klein h3 { color: var(--vl-paper); font-family: var(--vt-head); }
+.vl-klein h1 { max-width: 970px; font-size: clamp(43px, 7.2vw, 84px); line-height: 1.055; letter-spacing: -.055em; margin: 0 0 24px; font-weight: 700; }
+.vl-klein h1 em { font-style: normal; color: var(--vl-accent); }
+.vl-klein .kl-lead { max-width: 740px; color: var(--vl-muted); font-size: clamp(16px, 2vw, 19px); line-height: 1.7; margin: 0; }
+.vl-klein .kl-actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 30px 0 46px; }
+.vl-klein .kl-button { display:inline-flex; align-items:center; justify-content:center; min-height: 48px; padding: 12px 18px; gap: 10px; text-decoration:none; border: 1px solid transparent; font: 600 12px/1.35 var(--vt-mono); }
+.vl-klein .kl-button-primary { background: var(--vl-accent); color: #0a0a0a; }
+.vl-klein .kl-button-primary:hover { background: #caf772; }
+.vl-klein .kl-button-secondary { background: #141b14; border-color: #475142; color: var(--vl-paper); }
+.vl-klein .kl-button-secondary:hover { border-color: var(--vl-accent); }
+.vl-klein .kl-metrics { border-block: 1px solid #394236; padding: 22px 0; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.vl-klein .kl-metrics > div { display:flex; flex-direction:column; gap: 3px; }
+.vl-klein .kl-metrics strong { color: var(--vl-accent); font: 700 clamp(28px,4vw,40px)/1.1 var(--vt-head); }
+.vl-klein .kl-metrics span { color: var(--vl-muted); font: 500 11px/1.5 var(--vt-mono); }
+.vl-klein .kl-section { padding: clamp(44px, 6vw, 78px) 0; border-bottom: 1px solid #384034; }
+.vl-klein .kl-section h2, .vl-klein .kl-final h2 { max-width: 760px; font-size: clamp(29px, 4vw, 49px); letter-spacing: -.04em; line-height: 1.12; margin: 0 0 20px; }
+.vl-klein .kl-description { color: var(--vl-muted); max-width: 680px; margin: 0 0 25px; }
+.vl-klein .kl-grid { display:grid; gap: 1px; border: 1px solid #364134; background: #364134; }
+.vl-klein .kl-grid-three { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.vl-klein .kl-grid-projects { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.vl-klein .kl-panel, .vl-klein .kl-project { padding: clamp(21px,3vw,30px); min-width:0; background: #101511; display:flex; flex-direction:column; align-items:flex-start; gap: 12px; }
+.vl-klein .kl-panel:hover, .vl-klein .kl-project:hover { background: #141d14; }
+.vl-klein .kl-panel-tag { margin:0; color: var(--vl-accent); font: 500 10px/1.5 var(--vt-mono); letter-spacing: .07em; }
+.vl-klein .kl-panel h3, .vl-klein .kl-project h3 { font-size: clamp(19px,2.4vw,24px); letter-spacing:-.03em; line-height:1.18; margin:0; }
+.vl-klein .kl-panel p, .vl-klein .kl-project p { color: var(--vl-muted); font-size: 14px; margin:0 0 5px; }
+.vl-klein .kl-panel a, .vl-klein .kl-project a, .vl-klein .kl-inline-cta { display: inline-flex; align-items:center; gap:8px; min-height:44px; margin-top:auto; color: var(--vl-accent); text-underline-offset:4px; font: 600 12px/1.5 var(--vt-mono); }
+.vl-klein .kl-price { font: 700 30px/1.2 var(--vt-head); color: var(--vl-paper); margin-top:auto; }
+.vl-klein .kl-price small { display:block; color:var(--vl-muted); font: 400 11px/1.6 var(--vt-mono); }
+.vl-klein .kl-disclaimer { color: var(--vl-muted); font-size:12px; margin:16px 0 0; }
+.vl-klein .kl-terminal { border:1px solid #364134; background:#080b08; }
+.vl-klein .kl-terminal-bar { display:flex; align-items:center; gap: 15px; min-height:47px; padding: 10px 18px; border-bottom:1px solid #364134; color:#aab3a2; background:#111711; font: 500 11px/1.5 var(--vt-mono); }
+.vl-klein .kl-terminal-dots { display:flex; gap:5px; }
+.vl-klein .kl-terminal-dots i { display:block; width:9px; height:9px; border-radius:50%; background:#4d564c; }
+.vl-klein .kl-terminal-badge { margin-left:auto; color: var(--vl-accent); white-space:nowrap; font-size:10px; }
+.vl-klein .kl-terminal-screen { width:100%; max-width:100%; overflow-x:auto; padding:clamp(16px,3vw,32px); }
+.vl-klein .kl-terminal pre { margin:0; width:max-content; min-width:0; max-width:none; white-space:pre; color:#e7e9dc; font: 400 12px/1.8 var(--vt-mono); }
+.vl-klein .kl-terminal-muted { color:#8b9885; }
+.vl-klein .kl-terminal-accent { color:var(--vl-accent); }
+.vl-klein .kl-inline-cta { margin-top:20px; }
+.vl-klein .kl-about p:not(.kl-section-tag) { max-width:780px; color:var(--vl-muted); }
+.vl-klein .kl-final { border: 1px solid #5b733e; background: linear-gradient(125deg,#192314,#111711); padding: clamp(24px,5vw,48px); margin-top: 60px; }
+.vl-klein .kl-final p:not(.kl-section-tag) { max-width:700px; color:var(--vl-muted); }
+.vl-klein .kl-final .kl-button { margin-top:15px; }
+.vl-klein .kl-footer { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; padding: 25px max(16px,calc((100% - 1048px)/2)); border-top:1px solid #384034; background:#0a0a0a; color:var(--vl-muted); font: 500 11px/1.5 var(--vt-mono); }
+.vl-klein .kl-footer a { color:var(--vl-accent); text-underline-offset:4px; }
+.vl-home .vt-founder { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; margin-top:22px; padding:24px; border:1px solid var(--vt-edge,#344541); border-radius:2px; background:#111b18; }
+.vl-home .vt-founder > div { min-width:0; flex: 1 1 310px; }
+.vl-home .vt-founder .vt-founder-tag { color:#91d6bd; font:500 10px/1.5 "IBM Plex Mono",Consolas,monospace; letter-spacing:.1em; text-transform:uppercase; }
+.vl-home .vt-founder h2 { margin:5px 0 7px; font:650 clamp(21px,2.5vw,29px)/1.16 "Space Grotesk",system-ui,sans-serif; letter-spacing:-.03em; }
+.vl-home .vt-founder p { color:#aab9b4; font-size:13px; margin:0; }
+.vl-home .vt-founder a { display:inline-flex; align-items:center; min-height:44px; color:#91d6bd; font:600 12px "IBM Plex Mono",Consolas,monospace; text-underline-offset:4px; white-space:nowrap; }
+@media (max-width: 760px) {
+  .vl-klein .kl-grid-three { grid-template-columns:1fr; }
+  .vl-klein .kl-grid-projects { grid-template-columns:1fr; }
+  .vl-klein .kl-metrics { grid-template-columns:1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .vl-klein .kl-hero { padding-top:55px; }
+  .vl-klein h1 { font-size:clamp(36px,10.2vw,53px); }
+  .vl-klein .kl-actions .kl-button { flex: 1 1 100%; }
+  .vl-klein .kl-metrics { grid-template-columns:1fr; }
+  .vl-klein .kl-terminal-bar { gap:9px; padding-inline:10px; }
+  .vl-klein .kl-terminal-badge { font-size:9px; }
+  .vl-home .vt-founder { padding:18px; }
+  .vl-home .vt-founder a { white-space:normal; }
+}
+@media (prefers-reduced-motion: reduce) { .vl-klein *, .vl-home .vt-founder { scroll-behavior:auto; transition:none!important; animation:none!important; } }
