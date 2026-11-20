@@ -2,6 +2,7 @@ name: Duelo engine CI (sem paper nem commits)
 on:
   pull_request:
     paths:
+      - 'radar-ia-cripto/js/indicadores.js'
       - 'bot/**'
       - 'duelo-bot/**'
       - '.github/workflows/duelo-paper.yml'
@@ -30,6 +31,8 @@ jobs:
         run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
       - name: Test trading simulator
         run: npm --prefix bot test
+      - name: Test paper publication against an isolated Git remote
+        run: bash bot/tests/paper-publisher.integration.sh
       - name: Validate browser JS syntax
         run: |
           node --check duelo-bot/painel.js
@@ -43,7 +46,9 @@ jobs:
           s = Path('.github/workflows/duelo-paper.yml').read_text(encoding='utf-8')
           assert s.count("cron: '17 * * * *'") == 1, 'Expected single hourly schedule'
           assert s.count('cron:') == 1, 'No duplicate cron expressions'
-          assert 'git add -- bot/data bot/state bot/results/paper.json' in s, 'Paper state paths changed; review migration'
-          assert "github.event_name != 'schedule'" in s, 'Tests should run on manual workflow / code PR CI'
-          print('PASS: single hourly scheduler and existing paper state contract retained')
+          assert 'npm --prefix bot test' not in s and 'pull_request:' not in s
+          assert 'cancel-in-progress: false' in s
+          script = Path('bot/paper-runtime.sh').read_text(encoding='utf-8')
+          assert 'branch=refs/heads/duelo-runtime' in script and '--force' not in script
+          print('PASS: single hourly scheduler with independent runtime branch')
           PY
