@@ -51,3 +51,17 @@ test('bloqueia parametros acima do risco maximo',()=>{
   assert.throws(()=>simularComRisco({XUSDT:baseline},cfg,{},
     {...params,risco_por_trade:1},15,40,{XUSDT:sinais}),/Limites de risco/);
 });
+
+
+test('dados vazios sao recusados com erro claro',()=>{
+  assert.throws(()=>simularComRisco({},cfg,{},params,0,1),/Sem pares/);
+  assert.throws(()=>simularComRisco(null,cfg,{},params,0,1),/Sem pares/);
+});
+
+test('treino inicia no mesmo primeiro candle da carteira de referencia',()=>{
+  const semEntradas=Array(40).fill(0);
+  const resultado=sim(baseline,semEntradas,0,40);
+  assert.equal(resultado.curva.length,41);
+  assert.equal(resultado.curva[0].t,baseline[0].t);
+  assert.equal(resultado.resultados.patrimonio,cfg.capital);
+});
