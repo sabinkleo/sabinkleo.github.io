@@ -42,7 +42,7 @@ function renderCard(x){
  '<dt>Experimento mínimo</dt><dd>'+esc(x.test)+'</dd>'+
  '<dt>Risco / bloqueio</dt><dd>'+esc(x.risks)+'</dd>'+
  '<dt>Proveniência</dt><dd>'+esc(x.source)+' · '+(x.verified?'checado '+esc(x.verified):'afirmação não verificada independentemente')+'</dd></dl>'+
- (link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">ABRIR FONTE PRIMÁRIA ↗</a>':'')+'</div></article>';
+ (link!=='#'?'<a href="'+esc(link)+'" target="_blank" rel="noopener noreferrer">ABRIR REFERÊNCIA ↗</a>':'')+'</div></article>';
 }
 function render(){
  let values=state.data.filter(x=>{
