@@ -47,3 +47,34 @@ test('Observatório on mobile keeps its archive usable and favorites persistent'
   await expect(page.locator('h1')).toContainText('frete');
   await expect(page.locator('#fontes')).toBeVisible();
 });
+
+test('measurement is inert in production config and honors consent with a test container', async ({ page }) => {
+  let providerRequests = 0;
+  await page.route('https://www.googletagmanager.com/**', async route => {
+    providerRequests += 1;
+    await route.fulfill({ contentType: 'application/javascript', body: '' });
+  });
+  await page.goto(origin + '/solucoes/');
+  await expect(page.getByRole('dialog', { name: 'Preferências de privacidade' })).toHaveCount(0);
+  expect(providerRequests).toBe(0);
+  await page.route('**/assets/measurement.js', async route => {
+    const response = await route.fetch();
+    const source = (await response.text()).replace("var GTM_ID = '';", "var GTM_ID = 'GTM-TEST';");
+    await route.fulfill({ response, body: source });
+  });
+  await page.reload();
+  const dialog = page.getByRole('dialog', { name: 'Preferências de privacidade' });
+  await expect(dialog).toBeVisible();
+  await dialog.getByRole('button', { name: 'Rejeitar' }).click();
+  expect(providerRequests).toBe(0);
+  await page.getByRole('button', { name: 'Revisar consentimento de métricas e anúncios' }).click();
+  await dialog.getByRole('button', { name: 'Aceitar métricas e anúncios' }).click();
+  await expect.poll(() => providerRequests).toBe(1);
+  expect(await page.evaluate(() => window.dataLayer.filter(x => x.event === 'vl_page_view').length)).toBe(1);
+  await page.getByRole('button', { name: 'Revisar consentimento de métricas e anúncios' }).click();
+  await Promise.all([page.waitForEvent('load'), dialog.getByRole('button', { name: 'Rejeitar' }).click()]);
+  expect(providerRequests).toBe(1);
+  await page.goto(origin + '/privacy/');
+  await expect(page.locator('script[src*="measurement.js"]')).toHaveCount(0);
+  expect(providerRequests).toBe(1);
+});

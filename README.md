@@ -32,3 +32,6 @@ approval.
 ## Vértice Intelligence
 
 [`/observatorio/`](https://verticelabs.me/observatorio/) reúne guias e matérias com fontes, histórico editorial e ferramentas relacionadas. A [operação editorial](editorial/README.md) descreve a entrada do radar, a geração local, as verificações e a revisão dos pacotes de mídia.
+## Measurement (opt-in; disabled until configured)
+
+Marketing routes are wired to the consent-gated GTM loader in `assets/measurement.js`. No real GTM ID has been configured. Read [the setup and verification runbook](ops/MEASUREMENT_SETUP.md) before enabling tracking. `/privacy/` and the stockroom modules remain excluded.
