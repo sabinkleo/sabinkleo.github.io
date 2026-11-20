@@ -176,7 +176,7 @@ export function runDataset() {
     ['completo',start,length]];
   const results={premissas:{
     dados:'Candles Bybit spot cacheados, agregados em dias UTC completos',
-    pares,pre_especificado:'Donchian 20/60 dias, ensemble 10/20/60 e vol-target 25% sem alavancagem',
+    pares:pairs,pre_especificado:'Donchian 20/60 dias, ensemble 10/20/60 e vol-target 25% sem alavancagem',
     corretagem:'0.1% taker + 0.05% slippage por lado; cenario de custos em dobro',
     sinal:'Somente fechamento anterior; execucao na proxima abertura',
     aviso:'2026 foi visto na discussao; comparacao exploratoria, NAO validacao cega ou lucro futuro'
