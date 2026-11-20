@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "id": "github-cli-pr-events-2026-11-18",
+  "slug": "github-cli-eventos-pr",
+  "title": "Como esperar o resultado de um PR sem consultar o GitHub em loop",
+  "event_date": "2026-11-18",
+  "published_at": "2026-11-20T05:53:43Z",
+  "verified_at": "2026-11-20T05:53:43Z",
+  "updated_at": "2026-11-20T05:53:43Z",
+  "event_type": "release",
+  "category": "Automação",
+  "sector": "Software",
+  "country": "Global",
+  "evidence_level": "high",
+  "summary": "O GitHub CLI ganhou uma forma de aguardar eventos de pull requests. Para uma equipe pequena, vale testar se a espera por revisão ou CI pode sair do script que consulta o mesmo PR repetidamente.",
+  "what_changed": "Em 18 de novembro de 2026, o GitHub anunciou suporte a Event Streams no CLI a partir da versão 2.105.0. Em contas com acesso, gh event listen acompanha os eventos selecionados de um PR e entrega cada ocorrência como uma linha JSON. O comando pode parar após o primeiro evento.",
+  "who_is_affected": "Equipes que já usam scripts para acompanhar revisões, alterações no PR ou conclusão de verificações. Se a equipe já recebe e usa as notificações do GitHub, só vale mudar algo se houver retrabalho mensurável.",
+  "how_to_adapt": [
+    "Confira a versão com gh --version e confirme acesso à prévia na conta que fará o teste.",
+    "Escolha um PR de teste e um único evento, como a conclusão das verificações. Compare a abordagem atual com a escuta e defina um limite de espera.",
+    "Registre o atraso até a reação e se houve evento perdido. Mantenha o fluxo anterior disponível durante a avaliação."
+  ],
+  "brazil_status": "unconfirmed",
+  "brazil_note": "O anúncio descreve uma prévia no GitHub.com com lista de espera. Confira a elegibilidade da conta antes de contar com o recurso no Brasil.",
+  "limitations": "O exemplo descreve um teste a executar. A Vértice verificou o anúncio. A prévia, a entrega de eventos e a economia de tempo precisam ser confirmadas na conta de teste.",
+  "business_opportunity": "Se o atraso entre um evento e a próxima ação afeta a operação, faça um piloto de um único fluxo. Em vendas, a pergunta equivalente é quem assume a conversa quando ela chega. O Raio-X ajuda a estimar o impacto das conversas sem atendimento.",
+  "opportunity_status": "hypothesis",
+  "related_tool": "/raio-x-vendas/",
+  "sources": [
+    {
+      "url": "https://github.blog/changelog/2026-11-18-wait-for-pull-request-events-with-github-cli/",
+      "title": "GitHub Changelog · Eventos de pull requests no CLI",
+      "publisher": "GitHub",
+      "date": "2026-11-18",
+      "kind": "primary",
+      "anchor": "GitHub CLI now supports GitHub Event Streams"
+    }
+  ],
+  "rubric": {
+    "relevance": 3,
+    "adaptation": 4,
+    "urgency": 2,
+    "evidence": 5,
+    "novelty": 5
+  },
+  "risk": "standard",
+  "review": {
+    "by": "Redação Vértice Intelligence",
+    "claim": true,
+    "privacy": true,
+    "rights": true
+  },
+  "content_status": "approved",
+  "history": [
+    {
+      "status": "candidate",
+      "at": "2026-11-20T05:53:43Z",
+      "note": "Anúncio selecionado para análise editorial."
+    },
+    {
+      "status": "verified",
+      "at": "2026-11-20T05:53:43Z",
+      "note": "Data, versão mínima e condições da prévia verificadas na fonte oficial."
+    },
+    {
+      "status": "draft",
+      "at": "2026-11-20T05:53:43Z",
+      "note": "Roteiro e artigo preparados com teste sugerido e limites explícitos."
+    },
+    {
+      "status": "approved",
+      "at": "2026-11-20T05:53:43Z",
+      "note": "Material revisado para apresentação em pull request."
+    }
+  ],
+  "social_package": {
+    "reel": [
+      {
+        "title": "Seu script pergunta de novo?",
+        "voice": "Seu script ainda pergunta se o PR terminou?"
+      },
+      {
+        "title": "O evento avisa",
+        "voice": "O GitHub anunciou escuta de eventos no CLI."
+      },
+      {
+        "title": "Prévia com acesso",
+        "voice": "A função está em prévia, com lista de espera."
+      },
+      {
+        "title": "Teste um evento",
+        "voice": "Compare os dois fluxos em um PR de teste."
+      },
+      {
+        "title": "Meça a espera",
+        "voice": "Conte o tempo até a próxima ação. Leia o guia."
+      }
+    ],
+    "carousel": [
+      {
+        "title": "Seu script está esperando?",
+        "body": "Uma revisão chega enquanto o script continua consultando o PR.",
+        "alt": "Seu script está esperando?. Uma revisão chega enquanto o script continua consultando o PR."
+      },
+      {
+        "title": "Escuta de eventos",
+        "body": "O GitHub anunciou suporte a Event Streams no CLI em 18 de novembro de 2026.",
+        "alt": "Escuta de eventos. O GitHub anunciou suporte a Event Streams no CLI em 18 de novembro de 2026."
+      },
+      {
+        "title": "Um evento por teste",
+        "body": "Compare o tempo até reagir quando os checks terminarem.",
+        "alt": "Um evento por teste. Compare o tempo até reagir quando os checks terminarem."
+      },
+      {
+        "title": "Acesso à prévia",
+        "body": "Confirme a versão do CLI e a elegibilidade da conta.",
+        "alt": "Acesso à prévia. Confirme a versão do CLI e a elegibilidade da conta."
+      },
+      {
+        "title": "Controle o piloto",
+        "body": "Defina limite de espera e registre atrasos e eventos perdidos.",
+        "alt": "Controle o piloto. Defina limite de espera e registre atrasos e eventos perdidos."
+      },
+      {
+        "title": "Leia o passo a passo",
+        "body": "Veja o guia da Vértice. Fonte: GitHub Changelog, 18/11/2026.",
+        "alt": "Leia o passo a passo. Veja o guia da Vértice. Fonte: GitHub Changelog, 18/11/2026."
+      }
+    ],
+    "stories": [
+      {
+        "title": "Você consulta o mesmo PR?",
+        "body": "Você espera no navegador, no script ou usa notificações?",
+        "alt": "Você consulta o mesmo PR?. Você espera no navegador, no script ou usa notificações?"
+      },
+      {
+        "title": "O GitHub anunciou escuta",
+        "body": "A função depende de acesso à prévia. Teste em um único PR.",
+        "alt": "O GitHub anunciou escuta. A função depende de acesso à prévia. Teste em um único PR."
+      },
+      {
+        "title": "Quer testar?",
+        "body": "Leia o guia e compare o tempo até a próxima ação.",
+        "alt": "Quer testar?. Leia o guia e compare o tempo até a próxima ação."
+      }
+    ],
+    "captions": {
+      "instagram": "Seu script consulta o mesmo PR várias vezes? Em 18/11/2026, o GitHub anunciou escuta de eventos no CLI. Confira a prévia e veja como montar um piloto.",
+      "linkedin": "Uma espera por CI pode ficar escondida em scripts que consultam o mesmo PR. O GitHub anunciou escuta de eventos no CLI, ainda em prévia. Compare o atraso e os eventos perdidos antes de migrar.",
+      "shorts": "Seu script espera o PR terminar? Veja a alternativa que o GitHub anunciou e como comparar os fluxos em um teste.",
+      "whatsapp": "Guia rápido para avaliar a nova opção de escuta de eventos de PR pelo GitHub CLI. Confira a prévia antes de testar."
+    },
+    "rss": {
+      "title": "Como esperar o resultado de um PR sem consultar o GitHub em loop",
+      "summary": "O GitHub CLI ganhou uma forma de aguardar eventos de pull requests. Para uma equipe pequena, vale testar se a espera por revisão ou CI pode sair do script que consulta o mesmo PR repetidamente."
+    }
+  }
+}
