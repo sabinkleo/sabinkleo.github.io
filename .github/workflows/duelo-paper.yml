@@ -1,11 +1,10 @@
 name: Duelo spot simulado
 on:
   schedule:
-    # Duas verificações por hora, fora do minuto 0 para evitar pico do scheduler.
-    # Cada abertura é processada uma única vez; a segunda execução é idempotente.
-    - cron: '7,22,37,52 * * * *'
-    # GitHub Actions pode atrasar ou pular eventos agendados.
-    # A execucao idempotente recupera cada hora perdida a partir do ultimo estado.
+    # Uma consulta por hora, fora do pico do minuto 0.
+    # A simulação é idempotente e recupera aberturas perdidas na execução seguinte.
+    # O scheduler do GitHub pode atrasar/pular; workflow_dispatch permite recuperação manual.
+    - cron: '17 * * * *'
   workflow_dispatch:
   # Ao alterar o agendador, executar uma vez após o merge para validar imediatamente.
   push:
@@ -32,8 +31,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: npm
+          cache-dependency-path: bot/package-lock.json
       - run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
-      - run: npm --prefix bot test
+      # Os testes completos rodam no CI de PR/push; não repetir 24 vezes por dia.
+      # Workflow manual e atualização do agendador ainda validam antes de processar.
+      - name: Testes do motor (manual ou atualização do workflow)
+        if: github.event_name != 'schedule'
+        run: npm --prefix bot test
       - name: Atualizar os dois livros
         run: npm --prefix bot run paper
       - name: Versionar a atualização completa
