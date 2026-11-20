@@ -18,10 +18,10 @@ if(Date.now()<end)throw Error('Janela ainda não concluída: há candles abertos
 cfg.inicio=first;
 cfg.fim_utc=to;
 cfg.pares=pairs;
-const output=join(new URL('.',import.meta.url).pathname,'downloads');
-// Use fileURLToPath no Windows, embora workflow rode em Linux.
+// Publicar os CSVs na branch de trabalho para consumo da interface,
+// sem modificar os dados ou o estado do paper trading.
 import {fileURLToPath} from 'node:url';
-const dest=fileURLToPath(new URL('./downloads/',import.meta.url));
+const dest=fileURLToPath(new URL('../history/',import.meta.url));
 mkdirSync(dest,{recursive:true});
 const market=coletor(cfg);
 const manifest={
