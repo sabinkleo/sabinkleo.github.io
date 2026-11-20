@@ -39,6 +39,11 @@ NODE_OPTIONS="--import=$sandbox/clock.mjs" bash bot/paper-runtime.sh
 for archive in bot/data/*.csv; do cmp "$archive" "$source_dir/$archive"; done
 
 # A remote write rejection leaves no partial publication.
+git clone --quiet --bare "$sandbox/origin" "$sandbox/measurement"
+(cd "$sandbox/measurement" && bash "$source_dir/bot/prepare-paper-compaction.sh" "$ref" "$sandbox/recovery")
+(cd "$sandbox/recovery" && sha256sum -c SHA256SUMS)
+[[ "$(cat "$sandbox/recovery/source.txt")" == "$latest" ]]
+
 git remote set-url origin "$sandbox/rejected"
 if SEED_RUNTIME=true bash bot/paper-runtime.sh; then exit 1; fi
 [[ -z "$(tip)" ]]
