@@ -1,0 +1,66 @@
+{
+  "id": "github-copilot-mcp-conectores-2026-11-18",
+  "slug": "copilot-conectores-mcp-pmes",
+  "event_date": "2026-11-18",
+  "published_at": "2026-11-18T00:00:00Z",
+  "verified_at": "2026-11-20T11:34:37Z",
+  "title": "Copilot conecta mais oito serviços: quando vale testar em uma PME?",
+  "summary": "Em 18 de novembro de 2026, o GitHub anunciou oito novos conectores MCP verificados para o Copilot, em prévia pública. A lista inclui Supabase, Calendly, ClickUp, Mixpanel, Webflow, Wix, Box e Buildkite. A novidade reduz a necessidade de copiar contexto manualmente entre ferramentas, mas não prova que uma pequena empresa terá mais vendas ou menor custo. Para negócios brasileiros que já usam uma dessas plataformas, o caminho prudente é escolher uma tarefa repetitiva, testar o conector com acesso mínimo e comparar tempo, erros e custo por execução. O Copilot CLI oferece a configuração pelo comando /mcp; a disponibilidade e as permissões precisam ser confirmadas na conta. O anúncio não exige migração nem contratação de serviços novos. Na Vértice Labs, o caso comercial mais promissor é uma auditoria de integração e um piloto supervisionado para equipes que já usam Supabase ou Calendly. A hipótese só vira oferta validada quando um cliente paga e o resultado é medido. Antes de instalar qualquer agente, verifique quais dados ele poderá ler ou alterar. Veja o Raio-X de Vendas para mapear gargalos do atendimento.",
+  "impact": "Empresas brasileiras que já utilizam Supabase, Calendly, ClickUp, Mixpanel, Wix, Webflow, Box ou Buildkite podem testar automações supervisionadas; não há evidência de aumento de vendas.",
+  "topics": [
+    "IA aplicada a negócios",
+    "MCP",
+    "Automação",
+    "GitHub Copilot"
+  ],
+  "audience": [
+    "PMEs brasileiras",
+    "agências",
+    "operações B2B"
+  ],
+  "what_changed": "GitHub anunciou oito conectores MCP verificados adicionais, disponíveis em prévia pública para planos Copilot. Data do anúncio: 18/11/2026; não há data geral de encerramento da prévia informada.",
+  "why_it_matters": "Conectores podem reduzir troca manual de contexto entre sistemas existentes; ROI depende de tarefa, permissões, custo e validação operacional.",
+  "how_to_adapt": [
+    "Inventariar plataformas já utilizadas e selecionar um fluxo manual com custo de tempo mensurável.",
+    "No Copilot CLI, abrir /mcp > Connectors; conectar somente serviço autorizado, com escopo mínimo, e testar em dados fictícios.",
+    "Comparar tempo total, falhas e custo por execução antes de oferecer automação em produção."
+  ],
+  "opportunity": "HIPÓTESE comercial Vértice: auditoria e piloto supervisionado por R$ 497–1.497, sem licenças incluídas. Margem e lucro/hora não estimáveis antes de medir horas, custos e disposição de pagamento. Risco: permissões excessivas e indisponibilidade da prévia.",
+  "primary_sources": [
+    {
+      "title": "GitHub Changelog — Connect Supabase, Box, Calendly, and more to Copilot",
+      "url": "https://github.blog/changelog/2026-11-18-connect-supabase-box-calendly-and-more-to-copilot/",
+      "date": "2026-11-18"
+    }
+  ],
+  "status": "draft",
+  "social": {
+    "reel": {
+      "script": "[0–3s] Seu time copia dados entre cinco sistemas? [3–10s] Em 18 de novembro, o GitHub anunciou oito novos conectores para Copilot. [10–20s] Se você já usa Supabase ou Calendly, teste uma tarefa supervisionada, com dados fictícios. [20–29s] Compare tempo, erros e custo. [29–33s] Veja o diagnóstico no Raio-X de Vendas da Vértice.",
+      "scenes": [
+        "0–3s: tela própria com planilha e calendário fictícios; legenda 'Copiar tudo à mão?'",
+        "3–10s: cards gráficos autorais com nomes dos serviços; legenda '8 conectores MCP — anúncio 18/11'",
+        "10–20s: gravação própria de terminal demonstrativo, sem credenciais; legenda 'Teste supervisionado'",
+        "20–29s: quadro antes/depois sem números inventados; legenda 'Meça tempo, falhas e custo'",
+        "29–33s: URL verticelabs.me/raio-x-vendas/; legenda 'Diagnostique seu processo'"
+      ]
+    },
+    "carousel": {
+      "slides": [
+        "Capa: Copilot ganhou oito conectores. Sua empresa precisa deles?",
+        "O que mudou: GitHub anunciou conectores para Supabase, Calendly, ClickUp, Mixpanel, Webflow, Wix, Box e Buildkite.",
+        "Diagnóstico: sua equipe copia dados entre ferramentas que já utiliza?",
+        "Adequação 1: escolha um processo repetitivo e documente o tempo atual.",
+        "Adequação 2: teste com acesso mínimo e dados fictícios; registre erros.",
+        "CTA: só contrate automação após medir custo e resultado. Veja o Raio-X de Vendas."
+      ]
+    },
+    "stories": {
+      "slides": [
+        "Enquete: sua equipe transfere dados manualmente? Sim / Não",
+        "GitHub anunciou oito conectores MCP em prévia em 18/11. Acesso e permissões dependem da conta.",
+        "Pergunta: qual tarefa você automatizaria primeiro? Veja o Raio-X em verticelabs.me/raio-x-vendas/."
+      ]
+    }
+  }
+}
