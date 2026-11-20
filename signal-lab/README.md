@@ -60,3 +60,13 @@ Critérios de aceite:
 - Formulário criando um rascunho de issue, sem envio automático.
 - Mobile responsivo e página inicial do domínio com link para o módulo.
 - `/privacy/` não alterado.
+
+## Expansão Library (20/11/2026)
+
+Inventário de metadados acessível pela Library do ChatGPT: **221 imagens** datadas entre 27/10 e 20/11/2026; essa contagem **não** significa 221 anúncios analisados. A listagem recursiva do Google Drive montado na Library não foi abrangida. O arquivo privado de triagem permanece na Library e não no repositório público.
+
+Cinco novas oportunidades originaram-se de capturas anteriores inspecionadas visualmente: **Kommo, Bruning Eixo, Hubdash, Squad.com e referência de prova comercial odontológica**. Os registros públicos contêm apenas sínteses originais e links externos, nunca as capturas ou IDs internos da Library. Material de infraestrutura pessoal, contas, redes, imagens pessoais, print de dados sensíveis e imagens sem relação comercial são excluídos da publicação.
+
+Todos os registros têm agora quatro campos `creative` originais (**hook**, **demo**, **result**, **cta**) que alimentam um roteiro de Reels copiável no painel de detalhes. Isso é um **conceito de conteúdo**, não uma declaração de resultado observado. Os 17 registros permanecem `validation=hipotese_sem_venda_confirmada`: confirmação de que uma plataforma ou programa existe é independente de provar aquisição ou lucro para a Vértice.
+
+Próxima rodada: retornar aos arquivos selecionados na Library, verificar o fornecedor e só então promover alegações a hipóteses priorizadas. Como GitHub Pages não tem permissão para abrir sua Library privada, a curadoria exige ferramentas conectadas e aprovação de mudanças ao repositório. Não criar um falso scraper contínuo que só simule evolução.
