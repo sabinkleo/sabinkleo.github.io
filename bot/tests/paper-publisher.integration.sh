@@ -38,6 +38,44 @@ NODE_OPTIONS="--import=$sandbox/clock.mjs" bash bot/paper-runtime.sh
 [[ "$(tip)" == "$latest" ]]
 for archive in bot/data/*.csv; do cmp "$archive" "$source_dir/$archive"; done
 
+# A normal run with one unavailable pair must preserve its durable checkpoint.
+export PAPER_TEST_NOW=$(node -p "require('./bot/state/paper_state.json').ultima_abertura + 3600000")
+fixture="--import=$source_dir/bot/tests/fixtures/paper-bybit.mjs"
+if NODE_OPTIONS="$fixture" PAPER_TEST_OUTAGE=1 bash bot/paper-runtime.sh; then exit 1; fi
+[[ "$(tip)" == "$latest" ]]
+
+# Two runners with the same opening may race, but publish only one successor.
+git clone --quiet --branch main "$sandbox/origin" "$sandbox/racer"
+cp -a "$source_dir/bot" "$source_dir/radar-ia-cripto" "$sandbox/racer/"
+NODE_OPTIONS="$fixture" bash bot/paper-runtime.sh > "$sandbox/runner-a.log" 2>&1 &
+first=$!
+(cd "$sandbox/racer" && NODE_OPTIONS="$fixture" bash bot/paper-runtime.sh) > "$sandbox/runner-b.log" 2>&1 &
+second=$!
+status_a=0
+status_b=0
+wait "$first" || status_a=$?
+wait "$second" || status_b=$?
+cat "$sandbox/runner-a.log" "$sandbox/runner-b.log"
+((status_a == 0 || status_b == 0))
+successor=$(tip)
+[[ "$successor" != "$latest" ]]
+[[ "$(git --git-dir="$sandbox/origin" rev-parse "$successor^")" == "$latest" ]]
+git --git-dir="$sandbox/origin" show "$successor:bot/state/paper_state.json" > "$sandbox/next.json"
+git --git-dir="$sandbox/origin" show "$latest:bot/state/paper_state.json" > "$sandbox/previous.json"
+node -e '
+  const assert = require("node:assert/strict");
+  const [previous, next] = process.argv.slice(1).map(require);
+  assert.equal(next.ultima_abertura, Number(process.env.PAPER_TEST_NOW));
+  assert.equal(next.intervalos, previous.intervalos + 1);
+  assert.equal(next.contrato, previous.contrato);
+  assert.deepEqual(next.estrategia, previous.estrategia);
+  assert.deepEqual(next.trades.slice(0,previous.trades.length), previous.trades);
+' "$sandbox/previous.json" "$sandbox/next.json"
+latest=$successor
+# Restore the advanced checkpoint before trying another seed against the rejected remote.
+NODE_OPTIONS="$fixture" bash bot/paper-runtime.sh
+[[ "$(tip)" == "$latest" ]]
+
 # A remote write rejection leaves no partial publication.
 git clone --quiet --bare "$sandbox/origin" "$sandbox/measurement"
 (cd "$sandbox/measurement" && bash "$source_dir/bot/prepare-paper-compaction.sh" "$ref" "$sandbox/recovery")
