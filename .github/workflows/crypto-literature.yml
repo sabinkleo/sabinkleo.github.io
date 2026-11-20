@@ -1,0 +1,64 @@
+name: Crypto Literature Strategies - audit
+on:
+  pull_request:
+    paths:
+      - 'bot/research/**'
+      - '.github/workflows/crypto-literature.yml'
+      - 'bot/data/**'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Testes de causalidade, custos, calendario e sinais
+        run: node --test bot/research/donchian-study.test.mjs
+      - name: Motor existente - testes de regressao
+        run: |
+          npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+          npm --prefix bot test
+      - name: Replay historico e sensibilidade 2x custos
+        shell: bash
+        run: |
+          set -euo pipefail
+          node bot/research/donchian-study.mjs > "$RUNNER_TEMP/literature-report.json"
+          REPORT_PATH="$RUNNER_TEMP/literature-report.json" node --input-type=module <<'JS'
+          import {readFileSync,appendFileSync} from 'node:fs';
+          const r=JSON.parse(readFileSync(process.env.REPORT_PATH,'utf8'));
+          const phases=['treino','teste_historico','completo'];
+          const s=['cash','hold50','hold','donchian20','donchian60','ensemble','ensemble-vol'];
+          let summary='# Crypto Literature Lab: resultados exploratorios\n\n';
+          summary+='Parametros pre-especificados; 3 pares spot, sem alavancagem. A replica NAO reproduz a carteira de 20 ativos do artigo e NAO valida retorno futuro.\n\n';
+          for(const phase of phases) {
+            summary+='## '+phase+' — '+r.periodos[phase].dias+' dias\n\n';
+            summary+='| Estrategia | Base retorno | Dobro custos | DD base | Fills | Taxas USDT | Exposicao media |\n|---|---:|---:|---:|---:|---:|---:|\n';
+            for(const name of s){
+              const a=r.resultados.find(x=>x.fase===phase&&x.custos==='base'&&x.estrategia===name);
+              const b=r.resultados.find(x=>x.fase===phase&&x.custos==='custos_2x'&&x.estrategia===name);
+              if(!a||!b||!['patrimonio','retorno_pct','drawdown_pct','fees','fills','taxas_usdt'].filter(k=>k!=='fees').every(k=>Number.isFinite(a[k]))) throw Error('Dados invalidos '+phase+' '+name);
+              if(a.patrimonio<=0||a.drawdown_pct<0||a.drawdown_pct>100||a.fills<0||a.taxas_usdt<0)throw Error('Metrica invalida');
+              summary+='| '+name+' | '+a.retorno_pct.toFixed(2)+'% | '+b.retorno_pct.toFixed(2)+'% | '+a.drawdown_pct.toFixed(2)+'% | '+a.fills+' | '+a.taxas_usdt.toFixed(2)+' | '+a.exposicao_media_pct.toFixed(1)+'% |\n';
+            }
+            summary+='\n';
+          }
+          summary+='## Robustez: Donchian60 por moeda e atraso adicional\n\n';
+          for(const phase of phases){
+            summary+='### '+phase+'\n\n| Pares | Abertura seguinte | +1 dia de atraso |\n|---|---:|---:|\n';
+            for(const subset of ['BTCUSDT','ETHUSDT','SOLUSDT','BTCUSDT,ETHUSDT','BTCUSDT,SOLUSDT','ETHUSDT,SOLUSDT']){
+              const get=lag=>r.robustez.find(x=>x.fase===phase&&x.pares===subset&&x.atraso_dias===lag);
+              const a=get(1),b=get(2);
+              if(!a||!b||![a.retorno_pct,b.retorno_pct].every(Number.isFinite))throw Error('Robustez incompleta '+phase+' '+subset);
+              summary+='| '+subset+' | '+a.retorno_pct.toFixed(2)+'% | '+b.retorno_pct.toFixed(2)+'% |\n';
+            }
+            summary+='\n';
+          }
+          summary+='**Nota:** Cinco meses nao comprovam edge; o periodo foi observado, nao e holdout cego. Validade requer novos dados, mais pares, execucao e exposicao comparaveis.\n';
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary);
+          console.log(summary);
+          JS
