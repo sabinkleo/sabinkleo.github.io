@@ -3,9 +3,9 @@ on:
   schedule:
     # Duas verificações por hora, fora do minuto 0 para evitar pico do scheduler.
     # Cada abertura é processada uma única vez; a segunda execução é idempotente.
-    - cron: '17 * * * *'
-    # Segunda oportunidade na mesma hora se a primeira execução atrasar ou não disparar.
-    - cron: '47 * * * *'
+    - cron: '7,22,37,52 * * * *'
+    # GitHub Actions pode atrasar ou pular eventos agendados.
+    # A execucao idempotente recupera cada hora perdida a partir do ultimo estado.
   workflow_dispatch:
   # Ao alterar o agendador, executar uma vez após o merge para validar imediatamente.
   push:
