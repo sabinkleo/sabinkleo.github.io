@@ -2,6 +2,11 @@
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Núcleo N1 · Estoque e rastreio | Vértice Labs</title>
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://verticelabs.me/n1/">
+<meta property="og:title" content="Núcleo N1 · Estoque e rastreio | Vértice Labs">
+<meta property="og:description" content="Controle de estoque N1 com movimentos, conciliação de contagens, backups e treinamento local.">
+
 <meta name="description" content="Registre entradas, saídas e transferências. Confira o estoque físico e consulte o histórico de materiais, ferramentas, EPIs, ativos e lotes.">
 <meta name="theme-color" content="#10140e">
 <link rel="canonical" href="https://verticelabs.me/n1/">
@@ -283,7 +288,7 @@ function iniciarTreinoContagem(){
   db.itens=[item];
   db.mov=db.mov.filter(m=>m.id===item.id);
   db.cont=Object.create(null);
-  $('#v').innerHTML=`<section class="count-practice"><h1>Treino de contagem</h1>
+  $('#v').innerHTML=`<section class="count-practice"><h2>Treino de contagem</h2>
     <p>Na prateleira <strong>${esc(item.local)}</strong>, você contou <strong>16 unidades</strong> do item <strong>${esc(item.id)} · ${esc(item.nome)}</strong>. O sistema registra ${saldo(db,item.id)}.</p>
     <form id="count-form"><label for="count-value">Contado na prateleira</label>
     <div class="row"><input id="count-value" type="number" inputmode="numeric" min="0" step="1" required><button>Conferir contagem</button></div></form>

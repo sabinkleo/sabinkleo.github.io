@@ -1,0 +1,49 @@
+import { test, expect } from '@playwright/test';
+
+const origin = 'http://127.0.0.1:8765';
+const routes = [
+  '/',
+  '/n1/',
+  '/n1/equipe/',
+  '/n1/etiquetas/',
+  '/n1/visao/',
+  '/n1/visao/fotos/',
+  '/tuning/',
+  '/raio-x-vendas/',
+  '/privacy/',
+  '/estudos/mecatronica/'
+];
+
+for (const route of routes) {
+  test('HTML and main heading load: ' + route, async ({ page }) => {
+    const exceptions = [];
+    page.on('pageerror', error => exceptions.push(error.message));
+    const response = await page.goto(origin + route, {
+      waitUntil: 'domcontentloaded',
+      timeout: 45000
+    });
+    expect(response?.status(), route).toBe(200);
+    await expect(page.locator('h1')).toHaveCount(1);
+    await expect(page.locator('h1')).toBeVisible();
+    expect(exceptions, 'JavaScript errors on ' + route).toEqual([]);
+  });
+}
+
+test('Observatório on mobile keeps its archive usable and favorites persistent', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(origin + '/observatorio/');
+  await expect(page.locator('h1')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  const search = page.locator('[name=busca]');
+  await search.fill('zzzz-no-match');
+  await expect(page.locator('#sem-resultados')).toBeVisible();
+  await page.locator('#limpar').click();
+  const card = page.locator('[data-card="frete-search-console"]');
+  await expect(card).toBeVisible();
+  await card.locator('[data-save]').click();
+  await page.reload();
+  await expect(card.locator('[data-save]')).toHaveAttribute('aria-pressed', 'true');
+  await card.locator('h3 a').click();
+  await expect(page.locator('h1')).toContainText('frete');
+  await expect(page.locator('#fontes')).toBeVisible();
+});

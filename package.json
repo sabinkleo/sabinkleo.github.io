@@ -1,0 +1,12 @@
+{
+  "name": "vertice-labs-site-checks",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Development-only browser smoke tests for the static site",
+  "scripts": {
+    "test:browser": "playwright test tests/site-smoke.spec.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1"
+  }
+}
