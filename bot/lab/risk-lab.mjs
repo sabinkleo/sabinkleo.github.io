@@ -19,10 +19,11 @@ export function atrSerie(barras, n) {
 }
 
 export function simularComRisco(dados, cfg, estrategia, parametros, inicio, fim, sinaisSobrescritos=null) {
+  if (!dados || typeof dados !== 'object') throw Error('Sem pares');
   const pares = Object.keys(dados);
   if (!pares.length) throw Error('Sem pares');
-  const n = dados[pares[0]].length;
-  if (n < fim || inicio < 1 || fim <= inicio ||
+  const n = dados[pares[0]]?.length;
+  if (!Number.isInteger(n) || n < 2 || n < fim || inicio < 0 || fim <= inicio ||
       pares.some(p => dados[p].length !== n)) throw Error('Janela inválida');
   const p = parametros;
   for (const k of ['risco_por_trade','exposicao_maxima','stop_atr','alvo_atr','adicional_atr','trailing_atr','custo_minimo_extra']) {
@@ -170,9 +171,9 @@ function carregar() {
 
 if (process.argv[1] && fileURLToPath(import.meta.url)===process.argv[1]) {
   const {cfg,params,dados,ind,campos}=carregar();
-  const warm=Math.max(cfg.estrategia.ema_lenta,params.atr_periodo)+2;
+  // Mesmo marco inicial do backtest-base: aquecimento acontece com posição zerada.
   // A janela anteriormente "reservada" já foi vista. Esta avaliação é exploratória.
-  const treino=simularComRisco(dados,campos,cfg.estrategia,params,warm,ind);
+  const treino=simularComRisco(dados,campos,cfg.estrategia,params,0,ind);
   const teste=simularComRisco(dados,campos,cfg.estrategia,params,ind,dados[cfg.pares[0]].length);
   console.log(JSON.stringify({
     aviso:'Comparação exploratória; o teste original não está mais intocado para novas hipóteses.',
