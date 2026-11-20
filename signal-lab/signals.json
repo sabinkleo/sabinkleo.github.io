@@ -26,7 +26,14 @@
       "proof": 5,
       "priority": "B2B / ticket alto",
       "tag": "NOVO • 16 NOV",
-      "score": 78
+      "score": 78,
+      "creative": {
+        "hook": "Sua emissão fiscal está pronta para a mudança de CBS e IBS?",
+        "demo": "Mostrar teste com payload fictício usando motor oficial e diferença detectada por teste de regressão.",
+        "result": "Uma integração versionada e com conferência técnica, não uma promessa de conformidade automática.",
+        "cta": "Solicite auditoria de integração fiscal."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "rf-simples",
@@ -51,7 +58,14 @@
       "proof": 5,
       "priority": "Extensão fiscal",
       "tag": "OPEN SOURCE",
-      "score": 72
+      "score": 72,
+      "creative": {
+        "hook": "O Simples Nacional também precisa de testes para CBS e IBS.",
+        "demo": "Exibir comparação de casos sintéticos entre a API oficial e o ERP usado.",
+        "result": "Identificar inconsistências antes do uso em produção.",
+        "cta": "Peça uma avaliação de compatibilidade."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "kiro",
@@ -76,7 +90,14 @@
       "proof": 4,
       "priority": "Prazo 30/11",
       "tag": "PRAZO CURTO",
-      "score": 86
+      "score": 86,
+      "creative": {
+        "hook": "Três meses de ferramenta de código valem mesmo o desconto?",
+        "demo": "Comparar um PR produzido com assistência e outro sem, usando testes e horas registradas.",
+        "result": "Medir qualidade por PR aceito e custo evitado, não por linhas geradas.",
+        "cta": "Acompanhe o experimento no Signal Lab."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "whatsapp-orch",
@@ -101,7 +122,14 @@
       "proof": 2,
       "priority": "Prototipar sem envio",
       "tag": "CAPTURA",
-      "score": 72
+      "score": 72,
+      "creative": {
+        "hook": "Uma lista de leads não precisa virar spam.",
+        "demo": "Demonstrar segmentação com contatos sintéticos, copy por canal e fila de aprovação humana.",
+        "result": "Mensagens adequadas ao canal com trilha de revisão; nenhum disparo não autorizado.",
+        "cta": "Veja nosso protótipo de campanhas responsáveis."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "helena",
@@ -126,7 +154,14 @@
       "proof": 4,
       "priority": "Revenda",
       "tag": "WHITE LABEL",
-      "score": 85
+      "score": 85,
+      "creative": {
+        "hook": "Você não precisa construir outro CRM para vender implantação.",
+        "demo": "Mostrar configuração de funil em uma instância de demonstração, com dados fictícios.",
+        "result": "Cliente recebe processo operacional; custos reais dependem da licença.",
+        "cta": "Solicite diagnóstico de operação comercial."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "saipos",
@@ -151,7 +186,14 @@
       "proof": 4,
       "priority": "Canal comercial",
       "tag": "PARTNER",
-      "score": 84
+      "score": 84,
+      "creative": {
+        "hook": "Software de restaurante pode ser vendido sem programar um ERP.",
+        "demo": "Explicar o processo de descoberta, demonstração e ativação de uma revenda autorizada.",
+        "result": "Comparar comissão contratada com horas de prospecção, sem números inventados.",
+        "cta": "Conheça os critérios da parceria."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "rev-os",
@@ -176,7 +218,14 @@
       "proof": 4,
       "priority": "Já temos MVP",
       "tag": "EXECUÇÃO",
-      "score": 95
+      "score": 95,
+      "creative": {
+        "hook": "Seu anúncio trouxe um clique. E a venda, de onde veio?",
+        "demo": "Abrir Raio-X de Vendas e exemplificar o registro de UTM, contato real e estágio comercial.",
+        "result": "Uma cadeia de evidências até a venda em vez de números de vaidade.",
+        "cta": "Faça o diagnóstico gratuito na Vértice."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "geo",
@@ -201,7 +250,14 @@
       "proof": 4,
       "priority": "Distribuição",
       "tag": "CONTEÚDO",
-      "score": 79
+      "score": 79,
+      "creative": {
+        "hook": "Sua marca aparece nas respostas de IA? Adivinhar não vale.",
+        "demo": "Demonstrar 10 consultas reproduzíveis e citar exatamente quais fontes apareceram.",
+        "result": "Uma auditoria com amostra e limitações documentadas.",
+        "cta": "Peça uma avaliação GEO com evidências."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "ad-credit",
@@ -226,7 +282,14 @@
       "proof": 2,
       "priority": "Depois do pixel",
       "tag": "PROMO CONDICIONAL",
-      "score": 45
+      "score": 45,
+      "creative": {
+        "hook": "Crédito de anúncio é dinheiro grátis? Só se ler os termos.",
+        "demo": "Exibir as condições publicadas e calcular contrapartida e CPA máximo tolerável.",
+        "result": "Uma decisão de mídia condicionada ao CAC e ao rastreamento real.",
+        "cta": "Acompanhe nosso teste antes de gastar."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "madgicx",
@@ -251,7 +314,14 @@
       "proof": 2,
       "priority": "Referência UX",
       "tag": "COPILOTO",
-      "score": 65
+      "score": 65,
+      "creative": {
+        "hook": "Seu anúncio vencedor está recebendo orçamento ou só barulho?",
+        "demo": "Comparar gasto e resultados em CSV sintético com uma regra de redistribuição revisada por humano.",
+        "result": "Identificar hipóteses de melhoria sem alterar campanha automaticamente.",
+        "cta": "Teste nossa auditoria de mídia."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "rd-station",
@@ -276,7 +346,14 @@
       "proof": 2,
       "priority": "Benchmark",
       "tag": "CAMPANHA",
-      "score": 71
+      "score": 71,
+      "creative": {
+        "hook": "Primeiro mês grátis não é custo total zero.",
+        "demo": "Comparar custo do contrato, onboarding e capacidade de atendimento com dados fictícios.",
+        "result": "Uma avaliação de implantação pelo custo total, não pelo preço promocional.",
+        "cta": "Compare alternativas antes de contratar."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "chainup",
@@ -301,7 +378,14 @@
       "proof": 2,
       "priority": "Arquivar",
       "tag": "NO-GO",
-      "score": 31
+      "score": 31,
+      "creative": {
+        "hook": "White-label de exchange parece fácil até chegar o compliance.",
+        "demo": "Mostrar matriz de custos: custódia, liquidez, risco e regulação, com valores em branco onde não houver evidência.",
+        "result": "Critérios claros para arquivar uma ideia incompatível com nosso capital.",
+        "cta": "Veja os projetos que decidimos não construir."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "kommo-partner",
@@ -326,7 +410,14 @@
       "proof": 5,
       "priority": "Parceiro / verticalização",
       "tag": "ANÚNCIO NOV 18",
-      "score": 88
+      "score": 88,
+      "creative": {
+        "hook": "A agência ganha mais montando processo ou reinventando CRM?",
+        "demo": "Demonstrar funil fictício com origem, estágio e tarefas; comparar horas de configuração.",
+        "result": "Uma proposta de implantação com escopo definido e contrato verificável.",
+        "cta": "Avalie seu funil de vendas."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "bruning-auto",
@@ -351,7 +442,14 @@
       "proof": 5,
       "priority": "Oficinas / Curitiba",
       "tag": "PARCERIA VERTICAL",
-      "score": 91
+      "score": 91,
+      "creative": {
+        "hook": "A oficina precisa de mais um software ou de uma implantação que funciona?",
+        "demo": "Comparar entrada de veículo, OS, estoque e emissão numa jornada simulada.",
+        "result": "Um caso claro de uso e custo de suporte antes da revenda.",
+        "cta": "Peça diagnóstico da operação da oficina."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "hubdash-attribution",
@@ -376,7 +474,14 @@
       "proof": 5,
       "priority": "Produto já iniciado",
       "tag": "PRIMEIRO EM CASA",
-      "score": 97
+      "score": 97,
+      "creative": {
+        "hook": "O lead veio do Instagram. Você consegue provar que virou venda?",
+        "demo": "Mostrar campanha → UTM → CRM → estágio → pedido confirmado numa planilha fictícia.",
+        "result": "Reconciliação das origens, inclusive quando o dado é desconhecido.",
+        "cta": "Teste o Raio-X de Vendas."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "squad-sales",
@@ -401,7 +506,14 @@
       "proof": 3,
       "priority": "Benchmark",
       "tag": "IA COMERCIAL",
-      "score": 69
+      "score": 69,
+      "creative": {
+        "hook": "IA no WhatsApp consegue vender ou apenas responder rápido?",
+        "demo": "Simular vinte conversas de clientes e exibir onde o agente encaminha ao humano.",
+        "result": "Comparar taxa de encaminhamento correto, sem alegar faturamento obtido.",
+        "cta": "Veja os testes do agente comercial."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     },
     {
       "id": "dental-proof",
@@ -426,7 +538,14 @@
       "proof": 1,
       "priority": "Prova social responsável",
       "tag": "CRIATIVO OBSERVADO",
-      "score": 75
+      "score": 75,
+      "creative": {
+        "hook": "Print de R$16 mil: de onde veio essa venda?",
+        "demo": "Mostrar a diferença entre depoimento, lead registrado e venda validada no funil de uma clínica fictícia.",
+        "result": "Prova social com origem e contexto, sem transformar print em causalidade.",
+        "cta": "Faça o diagnóstico do seu processo comercial."
+      },
+      "validation": "hipotese_sem_venda_confirmada"
     }
   ]
 }
