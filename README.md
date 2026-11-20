@@ -32,3 +32,7 @@ approval.
 ## Vértice Intelligence
 
 [`/observatorio/`](https://verticelabs.me/observatorio/) reúne guias e matérias com fontes, histórico editorial e ferramentas relacionadas. A [operação editorial](editorial/README.md) descreve a entrada do radar, a geração local, as verificações e a revisão dos pacotes de mídia.
+
+## Mensuração opcional
+
+O [guia de configuração e teste](ops/MEASUREMENT_SETUP.md) descreve o contêiner GTM, os eventos permitidos e a validação antes da publicação.
