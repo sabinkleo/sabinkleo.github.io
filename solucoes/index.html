@@ -19,10 +19,23 @@ main{padding:68px 0 90px}h1{font:clamp(52px,8.3vw,102px)/.93 Impact,"Arial Narro
 .section{margin-top:76px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:23px}.box{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:10px}.box p{color:var(--muted);font-size:15px;margin:0}.box .tag{display:block;margin-bottom:14px}.pricing{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start;margin-top:25px}.money{font:clamp(45px,6vw,72px)/1 Impact,"Arial Narrow",sans-serif;color:var(--accent);margin:13px 0}.small{font-size:13px;color:var(--muted)}.terms{margin:18px 0;padding-left:20px}.terms li{margin:9px 0}.check{padding:0;list-style:none}.check li{padding:12px 0;border-bottom:1px solid var(--line)}.check li:before{content:"✓ ";color:var(--accent);font-weight:900}.FAQ{max-width:800px}.FAQ details{border-bottom:1px solid var(--line);padding:17px 0}.FAQ summary{cursor:pointer;font-weight:700}.FAQ p{color:var(--muted);margin:12px 0 0}.end{border:1px solid #6c843b;border-radius:12px;background:#151e10;padding:28px;margin-top:76px}.end p{max-width:730px;color:var(--muted)}footer{padding:24px 0;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 @media(max-width:760px){main{padding-top:43px}.grid,.pricing{grid-template-columns:1fr}.section{margin-top:55px}.actions .button{width:100%}nav .back{font-size:11px}.box{padding:21px}}
 </style>
+<meta name="referrer" content="no-referrer">
+<link rel="stylesheet" href="/assets/consent.css">
+<script defer src="/assets/measurement.js"></script>
+<link rel="stylesheet" href="/assets/site-shell.css">
 </head>
-<body>
+<body class="vl-site vl-tool">
 <div class="stripe"></div>
-<header><nav class="wrap" aria-label="Navegação principal"><a href="/" class="brand" aria-label="Voltar à Vértice Labs">VÉRTICE<span>LABS</span></a><a href="/" class="back">← Catálogo de ferramentas</a></nav></header>
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/">Ferramentas</a>
+      <a href="/solucoes/" aria-current="page">Soluções</a>
+      <a href="/observatorio/">Observatório</a>
+    </div>
+  </div>
+</nav>
 <main class="wrap">
 <section aria-labelledby="title">
 <span class="tag">Vértice Revenue OS / Implementação pontual</span>
@@ -31,13 +44,13 @@ main{padding:68px 0 90px}h1{font:clamp(52px,8.3vw,102px)/.93 Impact,"Arial Narro
 <div class="actions"><a class="button" href="/raio-x-vendas/">Fazer diagnóstico gratuito</a><a class="button alt" href="https://wa.me/5541998844684?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Conversar sobre implantação</a></div>
 <p class="note">Sem formulário obrigatório. O diagnóstico é uma simulação; uma oportunidade calculada não é faturamento recuperado.</p>
 </section>
-<section class="section" aria-labelledby="problem"><span class="tag">01 / Problema</span><h2 id="problem">O problema não é apenas gerar mensagens.</h2><p class="lead">Quando o atendimento fica disperso, fica difícil distinguir anúncio, indicação, orçamento pendente e venda. Uma planilha bem operada e um processo claro podem resolver a primeira camada do problema.</p>
+<section class="section" aria-labelledby="problem"><h2 id="problem">O problema não é apenas gerar mensagens.</h2><p class="lead">Quando o atendimento fica disperso, fica difícil distinguir anúncio, indicação, orçamento pendente e venda. Uma planilha bem operada e um processo claro podem resolver a primeira camada do problema.</p>
 <div class="grid">
 <article class="box"><span class="tag">Origem</span><h3>De onde veio?</h3><p>Organização de links identificados, origem declarada e registro de oportunidades — sem atribuição inventada.</p></article>
 <article class="box"><span class="tag">Atendimento</span><h3>Quem acompanha?</h3><p>Responsável, status, data do próximo contato e registro de conclusão.</p></article>
 <article class="box"><span class="tag">Decisão</span><h3>O que funcionou?</h3><p>Relatório de oportunidades e vendas registradas, sem prometer ROI que ainda não foi medido.</p></article>
 </div></section>
-<section class="section" aria-labelledby="delivery"><span class="tag">02 / Entrega</span><h2 id="delivery">Implantação com escopo definido</h2>
+<section class="section" aria-labelledby="delivery"><h2 id="delivery">Implantação com escopo definido</h2>
 <div class="pricing">
 <div class="box">
 <h3>Pacote de implantação</h3><p>Uma empresa, um processo comercial e os recursos que ela já utiliza.</p>
@@ -59,7 +72,7 @@ main{padding:68px 0 90px}h1{font:clamp(52px,8.3vw,102px)/.93 Impact,"Arial Narro
 <p class="note">Valores para o escopo descrito, sujeitos à confirmação de compatibilidade e proposta. Sem assinatura obrigatória.</p>
 </div>
 </div></section>
-<section class="section FAQ" aria-labelledby="questions"><span class="tag">03 / Condições</span><h2 id="questions">Antes de contratar</h2>
+<section class="section FAQ" aria-labelledby="questions"><h2 id="questions">Antes de contratar</h2>
 <details><summary>Preciso contratar uma API ou um CRM novo?</summary><p>Não. A proposta inicial reutiliza o WhatsApp Business, uma planilha ou o CRM existente. APIs, licenças e automações avançadas ficam fora do pacote.</p></details>
 <details><summary>Vocês garantem aumento de vendas?</summary><p>Não. A entrega é a implantação e a validação de um processo de registro e acompanhamento. Resultados comerciais dependem de operação, demanda e qualidade dos dados.</p></details>
 <details><summary>Vocês precisam receber conversas dos meus clientes?</summary><p>O diagnóstico inicial pode usar dados agregados e fictícios. Qualquer acesso a informações pessoais depende de escopo, finalidade e controles definidos com o contratante; nunca envie listas de clientes pelo formulário ou diagnóstico público.</p></details>

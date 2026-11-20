@@ -48,6 +48,7 @@ tr.alerta td:first-child{border-left:4px solid var(--wn)}
 #msg{min-height:1.5em;color:var(--mu);margin:6px 0}
 #res{white-space:pre-wrap;background:var(--sf);border:1px solid var(--bd);border-radius:4px;padding:10px;margin-top:10px}
 details{margin:8px 0}textarea{width:100%;font-family:Consolas,monospace}
+.vl-nav{display:none}
 .sitebar{background:#10140e;border-top:4px solid #d3fa43;color:#ecebe2}.sitebar>div{max-width:1020px;margin:auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}.sitebar a{color:#d3fa43;font-size:13px}.sitebar .brand{font-size:18px;font-weight:800;letter-spacing:-.8px;text-decoration:none;color:#ecebe2}.brand span{color:#d3fa43}.context{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.context label{font-size:13px}.context select{max-width:100%}.context-line{max-width:1020px;margin:auto;padding:0 16px 9px;font-size:13px;color:var(--mu)}#store-note{color:var(--er);font-weight:650}h1{font-size:clamp(21px,4vw,33px);letter-spacing:-.035em}#v{min-height:42vh}.tools{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.tw th{white-space:normal}textarea:focus,button:focus-visible,a:focus-visible{outline-offset:2px}
 @media(max-width:650px){header{align-items:flex-start}.context{display:grid;width:100%;grid-template-columns:minmax(0,1fr) auto}.context label{display:grid;gap:3px}.context select{width:100%}nav{gap:0}nav button{padding:9px 6px;font-size:13px}.sitebar>div{padding:8px 14px}.row select{max-width:100%}.tw{max-width:100%}}
 .sitebar .links{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px}.sitebar #guia{font-size:.95rem;font-weight:700}
@@ -55,7 +56,18 @@ details{margin:8px 0}textarea{width:100%;font-family:Consolas,monospace}
 .count-practice{max-width:38rem;margin:1.2rem auto;padding:clamp(1rem,3vw,1.75rem);background:var(--sf);border:1px solid var(--bd);border-radius:10px;font-size:1rem}
 .count-practice h1{line-height:1.15}.count-practice p{margin:.8rem 0}.count-practice label{display:block;font-weight:650}
 .count-practice .row{gap:.6rem}.count-practice .row input{flex:0 1 8rem}.count-practice button{min-height:44px}
-</style></head><body>
+</style><link rel="stylesheet" href="/assets/site-shell.css">
+</head><body class="vl-site">
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/">Ferramentas</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/observatorio/">Observatório</a>
+    </div>
+  </div>
+</nav>
 <div class="sitebar"><div><a class="brand" href="https://verticelabs.me/" aria-label="Vértice Labs, catálogo">VÉRTICE<span>LABS</span></a><div class="links"><a href="./equipe/" id="guia">Guia da equipe</a><a href="./index.html" download="Vertice_N1_Estoque.html" id="offline">Baixar HTML offline</a></div></div></div>
 <header>
   <div>
