@@ -54,7 +54,7 @@ python -m http.server 8000
 Abrir `http://localhost:8000/signal-lab/`. Abrir em `file://` não funciona porque o manifesto JSON é carregado por `fetch`.
 
 Critérios de aceite:
-- 12 sinais com fontes HTTPS e score reproduzível; nenhum ID duplicado.
+- 17 sinais iniciais com fontes HTTPS, score reproduzível e nenhum ID duplicado; novos registros exigem validação.
 - Busca, filtros, detalhes, shortlist e exportação funcionando.
 - Simulador atualizando sem divisão por zero.
 - Formulário criando um rascunho de issue, sem envio automático.
