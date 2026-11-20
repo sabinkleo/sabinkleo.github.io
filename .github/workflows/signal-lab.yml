@@ -1,0 +1,27 @@
+name: Signal Lab validation
+on:
+  pull_request:
+    paths:
+      - "signal-lab/**"
+      - ".github/workflows/signal-lab.yml"
+      - "index.html"
+  push:
+    branches: ["main"]
+    paths:
+      - "signal-lab/**"
+      - ".github/workflows/signal-lab.yml"
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate manifest and HTML
+        run: python signal-lab/validate.py
+      - name: Validate JavaScript syntax
+        run: node --check signal-lab/app.js
