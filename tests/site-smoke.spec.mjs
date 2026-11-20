@@ -29,6 +29,43 @@ for (const route of routes) {
   });
 }
 
+test('Terminal visual layer is scoped, responsive and keeps the commercial links reachable', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
+  for (const width of [375, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(origin + '/');
+    await expect(page.locator('.vt-eyebrow')).toBeVisible();
+    await expect(page.locator('link[href="/assets/terminal-design.css"]')).toHaveCount(1);
+    await expect(page.getByRole('link', { name: 'Abrir Raio-X de Vendas' })).toBeVisible();
+    const homeStyles = await page.evaluate(() => ({
+      grid: getComputedStyle(document.body).backgroundSize,
+      cardRadius: getComputedStyle(document.querySelector('.vl-home .card')).borderRadius,
+      headingFont: getComputedStyle(document.querySelector('.vl-home h1')).fontFamily,
+      scrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(homeStyles.grid).toBe('52px 52px');
+    expect(homeStyles.cardRadius).toBe('2px');
+    expect(homeStyles.headingFont).toContain('Space Grotesk');
+    expect(homeStyles.scrollWidth).toBeLessThanOrEqual(width);
+
+    await page.goto(origin + '/solucoes/');
+    await expect(page.locator('body')).toHaveClass(/vl-marketing/);
+    await expect(page.getByRole('link', { name: 'Fazer diagnóstico gratuito' })).toBeVisible();
+    const marketingStyles = await page.evaluate(() => ({
+      cardRadius: getComputedStyle(document.querySelector('.pricing .box')).borderRadius,
+      headingFont: getComputedStyle(document.querySelector('main h1')).fontFamily,
+      scrollWidth: document.documentElement.scrollWidth
+    }));
+    expect(marketingStyles.cardRadius).toBe('2px');
+    expect(marketingStyles.headingFont).toContain('Space Grotesk');
+    expect(marketingStyles.scrollWidth).toBeLessThanOrEqual(width);
+  }
+
+  await page.goto(origin + '/observatorio/');
+  await expect(page.locator('link[href="/assets/terminal-design.css"]')).toHaveCount(0);
+  await expect(page.locator('h1')).toBeVisible();
+});
+
 test('Observatório on mobile keeps its archive usable and favorites persistent', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(origin + '/observatorio/');
