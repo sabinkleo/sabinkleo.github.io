@@ -38,7 +38,7 @@ async function candles(pair){
 }
 function setSign(id,val){
   const node=$(id);node.textContent=fmtP(val);
-  node.classList.remove('good','bad');
+  node.classList.remove('good','bad','neutral');
   node.classList.add(val>0?'good':val<0?'bad':'neutral');
 }
 async function recalc(){
