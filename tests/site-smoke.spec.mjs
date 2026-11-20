@@ -254,7 +254,7 @@ for (const width of [320, 375, 390, 768, 1440]) {
     const cta = page.getByRole('link', { name: 'Fazer diagnóstico gratuito' });
     await cta.scrollIntoViewIfNeeded();
     await cta.click({ trial: true });
-    await page.getByRole('navigation').getByRole('link', { name: 'Catálogo de ferramentas' }).click({ trial: true });
+    await page.getByRole('navigation', { name: 'Menu da Vértice' }).getByRole('link', { name: 'Ferramentas' }).click({ trial: true });
     await reject(banner(page)).click();
     await expect(consentSettings(page)).toBeFocused();
     expect(errors).toEqual([]);
@@ -271,3 +271,37 @@ test('Ads-only can start on an already-clean URL reached from a detailed referre
   expect(await page.evaluate(() => document.referrer)).toBe('');
   expect(await siteEvents(page)).toEqual([{ event: 'vl_ads_page_view', route: '/solucoes/' }]);
 });
+
+for (const width of [320, 375, 390, 768, 1440]) {
+  test('Shared navigation, tool layout and catalog routes work at ' + width + 'px', async ({ page }) => {
+    await page.setViewportSize({ width, height: 812 });
+    await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
+    const nav = page.getByRole('navigation', { name: 'Menu da Vértice' });
+    for (const route of [
+      '/', '/solucoes/', '/raio-x-vendas/', '/tuning/', '/n1/', '/n1/equipe/',
+      '/n1/etiquetas/', '/n1/visao/', '/n1/visao/fotos/', '/duelo-bot/',
+      '/observatorio/', '/observatorio/frete-search-console/', '/drops/',
+      '/radar-ia-cripto/', '/perps/', '/privacy/', '/estudos/mecatronica/'
+    ]) {
+      await page.goto(origin + route, { waitUntil: 'domcontentloaded' });
+      await expect(nav, route).toBeInViewport();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth), route).toBeLessThanOrEqual(width);
+      const menu = await nav.boundingBox();
+      for (const label of ['Ferramentas', 'Soluções', 'Observatório']) {
+        const target = await nav.getByRole('link', { name: label, exact: true }).boundingBox();
+        expect(target.height, route).toBeGreaterThanOrEqual(44);
+        expect(target.y + target.height, route).toBeLessThanOrEqual(menu.y + menu.height);
+      }
+    }
+    const catalog = nav.getByRole('link', { name: 'Ferramentas' });
+    await catalog.focus();
+    await page.keyboard.press('Enter');
+    await expect(page).toHaveURL(origin + '/');
+    const diagnostic = page.getByRole('link', { name: 'Abrir diagnóstico gratuito' });
+    await expect(diagnostic).toBeInViewport();
+    await diagnostic.click();
+    await expect(page).toHaveURL(origin + '/raio-x-vendas/');
+    await page.locator('#ticket').fill('180');
+    await expect(page.locator('#ticket')).toHaveValue('180');
+  });
+}

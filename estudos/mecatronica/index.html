@@ -55,8 +55,19 @@
             border: 1px solid rgba(59, 130, 246, 0.35);
         }
     </style>
+<link rel="stylesheet" href="/assets/site-shell.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+<body class="vl-site bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-600 selection:text-white">
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/">Ferramentas</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/observatorio/">Observatório</a>
+    </div>
+  </div>
+</nav>
 <div style="background:#10140e;color:#d3fa43;padding:10px 16px;font:600 13px system-ui;display:flex;gap:15px;flex-wrap:wrap;align-items:center">
 <a style="color:#d3fa43" href="../../">VÉRTICE LABS</a>
 <a style="color:#d3fa43" href="/#catalog-title">Ferramentas</a>
@@ -229,7 +240,7 @@
                                 <h3 class="text-sm font-extrabold uppercase text-white">🔗 Calculadora Universal de Paralelo</h3>
                                 <p class="text-[11px] text-slate-400">Altere qualquer resistor para ver a conta passo a passo</p>
                             </div>
-                            <div class="inline-flex p-1 bg-slate-950 rounded-lg border border-slate-800">
+                            <div class="inline-flex flex-wrap gap-1 max-w-full p-1 bg-slate-950 rounded-lg border border-slate-800">
                                 <button onclick="setAssocCount(2)" id="btn-assoc-count-2" class="px-2.5 py-1 rounded text-xs font-bold text-slate-400 hover:text-white">2 Resistores</button>
                                 <button onclick="setAssocCount(3)" id="btn-assoc-count-3" class="px-2.5 py-1 rounded text-xs font-extrabold bg-emerald-600 text-white">3 Resistores</button>
                             </div>
