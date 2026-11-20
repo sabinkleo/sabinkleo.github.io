@@ -1,0 +1,31 @@
+name: Bybit spot - 12 meses OHLCV (export)
+on:
+  push:
+    branches:
+      - data/bybit-12m-export
+    paths:
+      - 'bot/research/export-12m.mjs'
+      - '.github/workflows/bybit-12m-export.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  exportar-12m:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Dependencias travadas do coletor existente
+        run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+      - name: Baixar e validar 26.280 candles horarios spot
+        run: node bot/research/export-12m.mjs
+      - name: Arquivar CSVs e manifesto SHA-256
+        uses: actions/upload-artifact@v4
+        with:
+          name: bybit-spot-1h-2025-11-20_2026-11-19
+          path: bot/research/downloads/*
+          retention-days: 30
+          if-no-files-found: error
