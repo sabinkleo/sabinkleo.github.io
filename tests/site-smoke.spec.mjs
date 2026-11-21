@@ -468,7 +468,10 @@ test('Astro Lab creates a natal reading without sending birth data', async ({ pa
       body: [
         'export const Body = { Moon: "Moon", Mercury: "Mercury", Venus: "Venus", Mars: "Mars", Jupiter: "Jupiter", Saturn: "Saturn", Uranus: "Uranus", Neptune: "Neptune", Pluto: "Pluto" };',
         'export function SunPosition() { return { elon: 290 }; }',
-        'export function EclipticLongitude(body) { return ({ Moon: 47, Mercury: 300, Venus: 280, Mars: 21, Jupiter: 88, Saturn: 150, Uranus: 320, Neptune: 330, Pluto: 237 })[body]; }',
+        'export function EclipticLongitude() { throw Error("Heliocentric API must not be called"); }',
+        'export function EclipticGeoMoon() { return { lon: 263.47 }; }',
+        'export function GeoVector(body) { return { body }; }',
+        'export function Ecliptic(vector) { return { elon: ({ Mercury: 225.3, Venus: 221.24, Mars: 314.56, Jupiter: 105.32, Saturn: 72.76, Uranus: 321.04, Neptune: 306.25, Pluto: 254.36 })[vector.body] }; }',
         'export function SiderealTime() { return 10; }'
       ].join('\n')
     }));
@@ -482,6 +485,7 @@ test('Astro Lab creates a natal reading without sending birth data', async ({ pa
   await page.locator('#birth-date').fill('2000-01-01');
   await page.locator('#birth-time').fill('12:00');
   await page.locator('#place').selectOption('-25.4284,-49.2733');
+  await expect(page.locator('#utc-offset')).toHaveValue('-2');
   await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
   await expect(page.locator('#result')).toBeVisible();
   await expect(page.locator('#big-three .sign-card')).toHaveCount(3);
@@ -501,4 +505,24 @@ test('Astro Lab creates a natal reading without sending birth data', async ({ pa
   expect(await page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).toBeNull();
   await expect(page.locator('#result')).toBeHidden();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
+
+
+test('Astro Lab matches independent geocentric positions and historical DST with a public date fixture', async ({ page }) => {
+  await page.goto(origin + '/horoscopo/');
+  // Public astronomical reference day, distinct from any personal birth record.
+  await page.locator('#birth-date').fill('2001-11-16');
+  await page.locator('#birth-time').fill('09:00');
+  await page.locator('#place').selectOption('-25.4284,-49.2733');
+  await expect(page.locator('#utc-offset')).toHaveValue('-2');
+  await expect(page.locator('#utc-offset')).toHaveAttribute('readonly');
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#result')).toBeVisible({ timeout: 45000 });
+  await expect(page.locator('#big-three .sign')).toHaveText(['Escorpião', 'Sagitário', 'Capricórnio']);
+  const placements = page.locator('#planets .planet-row');
+  await expect(placements.nth(2)).toContainText('Mercúrio');
+  await expect(placements.nth(2)).toContainText('Escorpião');
+  await expect(placements.nth(4)).toContainText('Aquário');
+  await expect(page.locator('#planets')).not.toContainText('Touro 25.2°');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
 });
