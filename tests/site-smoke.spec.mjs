@@ -456,3 +456,49 @@ test('Leo Klein portfolio keeps its own styles, honest proof and responsive layo
   await expect(page).toHaveURL(origin + '/klein/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Criativos para vender');
 });
+
+
+test('Astro Lab creates a natal reading without sending birth data', async ({ page }) => {
+  const outbound = [];
+  await page.route('https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      headers: { 'access-control-allow-origin': '*' },
+      body: [
+        'export const Body = { Moon: "Moon", Mercury: "Mercury", Venus: "Venus", Mars: "Mars", Jupiter: "Jupiter", Saturn: "Saturn", Uranus: "Uranus", Neptune: "Neptune", Pluto: "Pluto" };',
+        'export function SunPosition() { return { elon: 290 }; }',
+        'export function EclipticLongitude(body) { return ({ Moon: 47, Mercury: 300, Venus: 280, Mars: 21, Jupiter: 88, Saturn: 150, Uranus: 320, Neptune: 330, Pluto: 237 })[body]; }',
+        'export function SiderealTime() { return 10; }'
+      ].join('\\n')
+    }));
+  page.on('request', req => {
+    if (req.method() !== 'GET') outbound.push(req.url());
+  });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(origin + '/horoscopo/');
+  await expect(page.getByRole('heading', { name: /O céu tem coordenadas/ })).toBeVisible();
+  await page.locator('#person').fill('Teste Privado');
+  await page.locator('#birth-date').fill('2000-01-01');
+  await page.locator('#birth-time').fill('12:00');
+  await page.locator('#place').selectOption('-25.4284,-49.2733');
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#big-three .sign-card')).toHaveCount(3);
+  await expect(page.locator('#map-title')).toHaveText('Mapa natal de Teste Privado');
+  await expect(page.locator('#reading-title')).toHaveText('Seu céu de hoje');
+  await expect(page.locator('#wheel text')).not.toHaveCount(0);
+  expect(outbound).toEqual([]);
+  expect(await page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).toBeNull();
+  await page.locator('#save').click();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).not.toBeNull();
+  await page.reload();
+  await expect(page.locator('#person')).toHaveValue('Teste Privado');
+  await page.locator('#unknown-time').check();
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#time-caveat')).toContainText('Ascendente e casas omitidos');
+  await page.locator('#clear').click();
+  expect(await page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).toBeNull();
+  await expect(page.locator('#result')).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
