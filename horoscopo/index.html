@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0a15">
+  <meta name="referrer" content="no-referrer">
+  <title>Astro Lab // Seu mapa natal e o céu de hoje | Vértice Labs</title>
+  <meta name="description" content="Calcule seu mapa natal tropical e interprete os trânsitos astrológicos de hoje. Privativo, direto no navegador e sem cadastro.">
+  <link rel="canonical" href="https://verticelabs.me/horoscopo/">
+  <meta property="og:title" content="Astro Lab // Seu mapa natal e o céu de hoje">
+  <meta property="og:description" content="O céu tem coordenadas. O significado é seu. Descubra seu mapa natal e os trânsitos atuais.">
+  <link rel="stylesheet" href="/assets/site-shell.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--ink:#eeeafc;--muted:#b7b0c8;--edge:#3a3250;--gold:#f1cc90;--violet:#b7a0ef;--bg:#0b0a15;--panel:#181325;--font:"Space Grotesk",system-ui,sans-serif;--mono:"IBM Plex Mono",monospace}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body.vl-site.astro{margin:0;background:radial-gradient(ellipse 68% 40% at 78% 6%,#302147a1,transparent),radial-gradient(circle at 18% 38%,#1920396b,transparent 33%),#0b0a15;color:var(--ink);font:16px/1.5 var(--font)}
+    .astro::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.33;background-image:radial-gradient(#e3d9fe 0.65px,transparent .9px);background-size:43px 43px;mask-image:linear-gradient(#0005,transparent 65%)}
+    .astro .vl-nav{background:#100e1c;border-color:#40364e}
+    .astro .vl-nav .vl-wordmark span{color:var(--gold)}
+    .astro .vl-nav-links a{color:#cbc4db}
+    .astro .vl-nav-links a:hover{background:#31253c;color:var(--gold);border-color:#4b3c58}
+    .astro a{color:inherit}
+    .wrap{width:min(1180px,100%);margin:auto;padding:0 clamp(17px,4vw,36px)}
+    .hero{padding:70px 0 38px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:28px}
+    .overline,.micro{font:500 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+    .hero h1{font-size:clamp(43px,7vw,88px);letter-spacing:-.075em;line-height:.99;margin:13px 0 22px;max-width:720px;font-weight:600}
+    .hero h1 em{font-style:normal;color:var(--gold)}
+    .lead{font-size:clamp(16px,2vw,19px);color:#d0c8db;max-width:55ch}
+    .hero-note{font:12px/1.6 var(--mono);color:#aba4bb;margin-top:30px}
+    .hero-orbit{min-height:330px;display:grid;place-items:center;position:relative;overflow:hidden}
+    .orbit{border:1px solid #7f678d;position:absolute;border-radius:50%;width:300px;height:300px;box-shadow:0 0 65px #a36ac020,inset 0 0 60px #935bb016}
+    .orbit:nth-child(2){width:240px;height:240px;border-style:dashed;animation:spin 90s linear infinite}
+    .orbit:nth-child(3){width:340px;height:340px;border-color:#6b5a7438}
+    .orb-core{position:relative;text-align:center;font-size:80px;line-height:1;color:var(--gold);text-shadow:0 0 50px #e7b88773}
+    .orb-core span{display:block;font:10px/1.8 var(--mono);letter-spacing:.2em;color:var(--muted);margin-top:17px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .layout{display:grid;grid-template-columns:minmax(285px,390px) minmax(0,1fr);gap:22px;align-items:start;padding-bottom:60px}
+    .panel{border:1px solid var(--edge);background:linear-gradient(150deg,#1d172c,#12101e);border-radius:18px;padding:clamp(18px,3vw,27px);box-shadow:0 18px 60px #0004}
+    .panel h2{font-size:25px;line-height:1.15;letter-spacing:-.04em;margin:9px 0 10px}
+    .muted,.help{color:var(--muted)}
+    .help{font-size:12px;line-height:1.5}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:7px;margin-top:16px}
+    .field.full{grid-column:1/-1}
+    .field label{font:500 12px/1.4 var(--mono);color:#cfc5df}
+    .field input,.field select{width:100%;background:#0d0b18;border:1px solid #594c68;border-radius:9px;min-height:45px;color:#f7f3ff;padding:10px 11px;font:16px var(--font);color-scheme:dark}
+    .field input:focus-visible,.field select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+    .field input:invalid{border-color:#a77183}
+    .inline-check{display:flex;align-items:center;gap:10px;margin:12px 0 0;color:#d4cadf;font-size:13px}
+    .inline-check input{accent-color:var(--gold);width:18px;height:18px}
+    button{font:600 14px var(--font);cursor:pointer}
+    .primary{background:var(--gold);border:1px solid var(--gold);color:#261a22;border-radius:10px;padding:14px 18px;min-height:48px;width:100%;margin-top:22px}
+    .primary:hover{filter:brightness(1.08)}
+    .minor-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .secondary{background:transparent;border:1px solid #584769;border-radius:9px;color:#dbd1ed;padding:10px 12px;min-height:42px;flex:1}
+    .secondary:hover{border-color:var(--gold)}
+    .privacy{border-top:1px solid var(--edge);padding-top:13px;margin:17px 0 0}
+    .right{display:flex;flex-direction:column;gap:20px;min-width:0}
+    .placeholder{min-height:410px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px}
+    .placeholder .glyph{font-size:58px;color:var(--gold)}
+    .placeholder h2{margin:0}
+    .placeholder p{max-width:38ch;margin:0}
+    .result[hidden],.custom[hidden],.placeholder[hidden],.actions[hidden]{display:none!important}
+    .result-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px}
+    .result-head h2{margin:0}
+    .status{display:block;min-height:20px;color:var(--gold);font:12px/1.5 var(--mono);margin-top:10px}
+    .big-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 22px}
+    .sign-card{background:#21192f;border:1px solid #58466d;padding:16px 11px;border-radius:11px;text-align:center;min-width:0}
+    .sign-card .g{font-size:35px;line-height:1.4;color:var(--gold)}
+    .sign-card .sign{font-size:clamp(14px,2vw,19px);font-weight:700}
+    .sign-card .tag{font:10px/1.4 var(--mono);color:var(--muted);text-transform:uppercase;margin-top:4px}
+    .wheel-frame{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,240px);align-items:center;gap:15px}
+    .wheel{width:100%;max-width:450px;margin:auto;display:block;overflow:visible}
+    .planets{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;font-size:12px}
+    .planet-row{border-bottom:1px solid #393148;padding:7px 0;display:flex;justify-content:space-between;gap:5px}
+    .planet-row strong{font-weight:600;color:#f0e8ff}
+    .planet-row span{color:var(--muted);font-family:var(--mono)}
+    .reading{border-left:2px solid var(--gold);padding:2px 0 2px 17px;margin:18px 0 4px}
+    .reading h3{font-size:clamp(20px,3vw,27px);line-height:1.2;letter-spacing:-.03em;margin:7px 0}
+    .reading p{color:#d5cddd;margin:9px 0}
+    .aspect{padding:14px 0;border-top:1px solid #38304c}
+    .aspect strong{display:block;color:#f1dfbd;font-size:15px}
+    .aspect p{margin:8px 0 0;color:#c8bfd5;font-size:14px}
+    .context{font:12px/1.6 var(--mono);color:#a9a0bc;margin:0}
+    footer{border-top:1px solid #3b304a;color:#a89eb8;padding:22px 0 38px;font:12px/1.6 var(--mono)}
+    footer a{text-underline-offset:4px}
+    .explain{margin:0 0 54px;border-top:1px solid #4f3d59;padding-top:27px;max-width:850px;color:#bbb2c9;font-size:13px}
+    .explain strong{color:#e8defa}
+    @media(max-width:920px){.hero{grid-template-columns:1fr;padding-top:48px}.hero-orbit{display:none}.layout{grid-template-columns:1fr}.wheel-frame{grid-template-columns:1fr}.planets{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:480px){.form-grid{gap:9px}.big-three{gap:6px}.sign-card{padding:11px 4px}.sign-card .g{font-size:27px}.sign-card .sign{font-size:13px}.hero h1{font-size:43px}.panel{padding:18px}.planets{grid-template-columns:1fr 1fr}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation:none!important}}
+  </style>
+</head>
+<body class="vl-site astro">
+  <nav class="vl-nav" aria-label="Navegação principal">
+    <div class="vl-nav-inner">
+      <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+      <div class="vl-nav-links">
+        <a href="/">Ferramentas</a><a href="/solucoes/">Soluções</a><a href="/observatorio/">Observatório</a>
+      </div>
+    </div>
+  </nav>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <p class="overline">// VÉRTICE ASTRO LAB · EXPERIMENTO 01</p>
+        <h1>O céu tem coordenadas. <em>O significado é seu.</em></h1>
+        <p class="lead">Seu mapa natal, os trânsitos de hoje e uma interpretação astrológica que começa na sua hora e no seu lugar de nascimento — não num texto genérico para milhões de pessoas.</p>
+        <p class="hero-note">[ ZODÍACO TROPICAL ] &nbsp; [ CÁLCULO ASTRONÔMICO ] &nbsp; [ LEITURA SIMBÓLICA ]</p>
+      </div>
+      <div class="hero-orbit" aria-hidden="true"><div class="orbit"></div><div class="orbit"></div><div class="orbit"></div><div class="orb-core">☉<span>ORÁCULO / NATAL</span></div></div>
+    </section>
+    <div class="layout">
+      <section class="panel" aria-labelledby="form-title">
+        <p class="micro">01 / PONTO DE PARTIDA</p>
+        <h2 id="form-title">Onde o seu céu começou?</h2>
+        <p class="muted">Preencha os dados de nascimento. Tudo é calculado no seu navegador.</p>
+        <form id="birth-form">
+          <div class="field"><label for="person">Nome ou apelido (opcional)</label><input id="person" type="text" maxlength="40" autocomplete="off" placeholder="Viajante"></div>
+          <div class="form-grid">
+            <div class="field"><label for="birth-date">Data de nascimento</label><input id="birth-date" type="date" required min="1900-01-01"></div>
+            <div class="field"><label for="birth-time">Hora local</label><input id="birth-time" type="time"></div>
+          </div>
+          <label class="inline-check"><input type="checkbox" id="unknown-time"> Não sei minha hora de nascimento</label>
+          <div class="field"><label for="place">Cidade de nascimento</label>
+            <select id="place" required>
+              <option value="">Selecione a cidade</option>
+              <option value="-25.4284,-49.2733">Curitiba, PR</option>
+              <option value="-23.5505,-46.6333">São Paulo, SP</option>
+              <option value="-22.9068,-43.1729">Rio de Janeiro, RJ</option>
+              <option value="-19.9167,-43.9345">Belo Horizonte, MG</option>
+              <option value="-15.7939,-47.8828">Brasília, DF</option>
+              <option value="-30.0346,-51.2177">Porto Alegre, RS</option>
+              <option value="-27.5949,-48.5482">Florianópolis, SC</option>
+              <option value="-8.0476,-34.8770">Recife, PE</option>
+              <option value="-12.9777,-38.5016">Salvador, BA</option>
+              <option value="-3.7319,-38.5267">Fortaleza, CE</option>
+              <option value="custom">Outra cidade / coordenadas</option>
+            </select>
+          </div>
+          <div class="form-grid custom" id="coordinates" hidden>
+            <div class="field"><label for="lat">Latitude (°)</label><input id="lat" type="number" min="-89.9" max="89.9" step="any" placeholder="-25.4284"></div>
+            <div class="field"><label for="lon">Longitude (°)</label><input id="lon" type="number" min="-180" max="180" step="any" placeholder="-49.2733"></div>
+          </div>
+          <div class="field"><label for="utc-offset">Fuso UTC no nascimento (horário de verão incluso)</label><input type="number" id="utc-offset" min="-12" max="14" step="0.25" value="-3" required><span class="help">Exemplo: Brasília usual = -3; em datas com horário de verão, pode ser -2. Confirme o fuso histórico da data antes de confiar no ascendente.</span></div>
+          <button class="primary" type="submit">Calcular meu mapa e ler o dia ↗</button>
+          <div class="minor-actions"><button class="secondary" type="button" id="save">Salvar só neste dispositivo</button><button class="secondary" type="button" id="clear">Apagar dados</button></div>
+          <output class="status" id="status" role="status" aria-live="polite"></output>
+        </form>
+        <p class="help privacy">Privacidade: os campos não são enviados para a Vértice, não existe conta nem API de IA. A biblioteca astronômica é baixada de um CDN; seu mapa só fica salvo se você apertar “Salvar”.</p>
+      </section>
+      <div class="right">
+        <section class="panel placeholder" id="empty" aria-label="Resultado ainda não calculado">
+          <div class="glyph" aria-hidden="true">☽</div>
+          <h2>Seu mapa ainda não foi aberto.</h2>
+          <p class="muted">Sol, Lua, ascendente, planetas e encontros do céu de hoje com o seu mapa natal aparecem aqui.</p>
+          <span class="micro">AGUARDANDO COORDENADAS...</span>
+        </section>
+        <section class="result" id="result" hidden aria-live="polite">
+          <div class="panel">
+            <div class="result-head"><div><p class="micro">02 / ASSINATURA CÓSMICA</p><h2 id="map-title">Seu mapa natal</h2></div><span class="micro" id="chart-date"></span></div>
+            <div class="big-three" id="big-three"></div>
+            <div class="wheel-frame"><svg class="wheel" id="wheel" viewBox="0 0 420 420" role="img" aria-label="Roda zodiacal tropical com posições natais"></svg><div class="planets" id="planets"></div></div>
+            <p class="help" id="time-caveat"></p>
+          </div>
+          <section class="panel" aria-labelledby="reading-title">
+            <div class="result-head"><div><p class="micro">03 / INTERPRETAÇÃO DOS TRÂNSITOS</p><h2 id="reading-title">Seu céu de hoje</h2></div><span class="micro" id="today"></span></div>
+            <div class="reading"><span class="micro" id="signal-tag"></span><h3 id="signal-heading"></h3><p id="signal-text"></p></div>
+            <div id="aspects"></div>
+            <div class="minor-actions actions"><button class="secondary" id="copy" type="button">Copiar leitura do dia ↗</button></div>
+            <p class="context" id="calc-note"></p>
+          </section>
+        </section>
+      </div>
+    </div>
+    <aside class="explain">
+      <strong>O que é calculado e o que é interpretado?</strong> As longitudes planetárias são calculadas com a biblioteca de código aberto <a href="https://github.com/cosinekitty/astronomy" rel="noopener noreferrer" target="_blank">Astronomy Engine</a>. O ascendente usa tempo sideral local e coordenadas geográficas, e as casas apresentadas usam o sistema de signos inteiros. A interpretação é baseada na tradição astrológica: não há validação científica de previsões individuais. Horário de nascimento ausente ou fuso histórico incorreto pode afetar Lua, ascendente e casas.
+    </aside>
+  </main>
+  <footer><div class="wrap">VÉRTICE LABS / ASTRO LAB · UMA FERRAMENTA CRIATIVA E PRIVADA · <a href="/">VOLTAR AO LABORATÓRIO</a></div></footer>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const SIGNS = ["Áries","Touro","Gêmeos","Câncer","Leão","Virgem","Libra","Escorpião","Sagitário","Capricórnio","Aquário","Peixes"];
+const GLYPHS = ["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"];
+const BODIES = ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"];
+const NAMES = {Sun:"Sol",Moon:"Lua",Mercury:"Mercúrio",Venus:"Vênus",Mars:"Marte",Jupiter:"Júpiter",Saturn:"Saturno",Uranus:"Urano",Neptune:"Netuno",Pluto:"Plutão",Asc:"Ascendente"};
+const BG = {Sun:"☉",Moon:"☽",Mercury:"☿",Venus:"♀",Mars:"♂",Jupiter:"♃",Saturn:"♄",Uranus:"♅",Neptune:"♆",Pluto:"♇",Asc:"↑"};
+const THEMES = {Sun:"sua identidade e a direção que escolhe",Moon:"suas necessidades emocionais e sua sensação de segurança",Mercury:"a forma como pensa e se comunica",Venus:"seus afetos, valores e desejos",Mars:"seu impulso de agir e impor limites",Jupiter:"sua busca por expansão e sentido",Saturn:"seus limites, compromissos e responsabilidades",Uranus:"sua relação com liberdade e ruptura",Neptune:"seus ideais e a fronteira entre imaginação e realidade",Pluto:"suas mudanças profundas e a necessidade de controle",Asc:"a maneira como se apresenta ao mundo"};
+const MOVES = {Sun:"clareza e visibilidade",Moon:"sentimentos imediatos",Mercury:"conversas e decisões",Venus:"vínculos e prazer",Mars:"iniciativa e conflito",Jupiter:"possibilidades e aprendizado",Saturn:"estrutura e maturidade"};
+const ASPECTS = [{name:"conjunção",deg:0,meaning:"O tema fica mais intenso e presente. Observe o que está sendo ampliado antes de reagir."},{name:"sextil",deg:60,meaning:"Existe uma oportunidade de cooperação. Um gesto pequeno e deliberado pode destravar algo."},{name:"quadratura",deg:90,meaning:"Há atrito entre impulsos diferentes. Não precisa resolver tudo agora: identifique o limite real."},{name:"trígono",deg:120,meaning:"O fluxo tende a parecer natural. Use essa facilidade com intenção em vez de operar no automático."},{name:"oposição",deg:180,meaning:"Dois polos pedem negociação. Escute o outro lado sem abandonar sua própria posição."}];
+const norm = (v) => ((v % 360) + 360) % 360;
+const rad = (v) => v * Math.PI / 180;
+const sign = (lon) => SIGNS[Math.floor(norm(lon) / 30)];
+const signGlyph = (lon) => GLYPHS[Math.floor(norm(lon) / 30)];
+const deg = (lon) => (norm(lon) % 30).toFixed(1) + "°";
+const clampAngle = (a,b) => {const d = Math.abs(norm(a)-norm(b));return Math.min(d,360-d);};
+const svgNS = "http://www.w3.org/2000/svg";
+const savedKey = "vertice-astro-birth-v1";
+let copyText = "";
+function setStatus(msg){$("status").textContent = msg;}
+function showCoords(){$("coordinates").hidden = $("place").value !== "custom";}
+$("place").addEventListener("change",showCoords);
+$("unknown-time").addEventListener("change",()=>{
+  $("birth-time").disabled = $("unknown-time").checked;
+  if($("unknown-time").checked)$("birth-time").value="";
+});
+function readFields(){
+  const date = $("birth-date").value;
+  const noTime = $("unknown-time").checked;
+  const time = noTime ? "12:00" : $("birth-time").value;
+  if(!date || !time)throw Error("Informe data e hora, ou marque que não conhece a hora.");
+  const [y,m,d] = date.split("-").map(Number);
+  const [hh,mm] = time.split(":").map(Number);
+  if(y<1900 || y>2100 || !m || !d || hh>23 || mm>59)throw Error("Data ou hora fora do intervalo suportado.");
+  const off = Number($("utc-offset").value);
+  if(!Number.isFinite(off) || off<-12 || off>14)throw Error("Informe um fuso UTC válido.");
+  const place = $("place").value;
+  if(!place)throw Error("Selecione uma cidade de nascimento.");
+  let lat,lon;
+  if(place==="custom"){
+    if($("lat").value==="" || $("lon").value==="")throw Error("Informe latitude e longitude da cidade.");
+    lat = Number($("lat").value);lon = Number($("lon").value);
+  }else [lat,lon]=place.split(",").map(Number);
+  if(!Number.isFinite(lat)||!Number.isFinite(lon)||Math.abs(lat)>89.9||Math.abs(lon)>180)throw Error("Coordenadas inválidas.");
+  const millis = Date.UTC(y,m-1,d,hh,mm) - Math.round(off*60)*60000;
+  const utc = new Date(millis);
+  if(Number.isNaN(utc.getTime()) || utc.getUTCFullYear() < 1900 || utc.getUTCFullYear() > 2100)throw Error("Data UTC inválida.");
+  return {date,time,noTime,off,lat,lon,utc,name:$("person").value.trim().slice(0,40)};
+}
+function planetaryPositions(A,date){
+  const positions = {};
+  for(const body of BODIES){
+    positions[body] = norm(body==="Sun" ? A.SunPosition(date).elon : A.EclipticLongitude(A.Body[body],date));
+  }
+  return positions;
+}
+function ascendant(A,date,lat,lon){
+  const theta = rad(norm(A.SiderealTime(date)*15 + lon));
+  const phi=rad(lat),eps=rad(23.4392911);
+  return norm(Math.atan2(Math.cos(theta),-(Math.sin(theta)*Math.cos(eps)+Math.tan(phi)*Math.sin(eps)))*180/Math.PI);
+}
+function renderWheel(natal,asc){
+  const wheel=$("wheel");wheel.replaceChildren();
+  const add=(tag,attrs,text)=>{
+    const el=document.createElementNS(svgNS,tag);
+    for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+    if(text!==undefined)el.textContent=text;
+    wheel.appendChild(el);return el;
+  };
+  add("circle",{cx:210,cy:210,r:196,fill:"#100d1d",stroke:"#75618f","stroke-width":1.5});
+  add("circle",{cx:210,cy:210,r:152,fill:"none",stroke:"#574568","stroke-width":1});
+  add("circle",{cx:210,cy:210,r:94,fill:"#151020",stroke:"#51425f","stroke-width":1});
+  for(let i=0;i<12;i++){
+    const a=rad(i*30-90);
+    add("line",{x1:210+95*Math.cos(a),y1:210+95*Math.sin(a),x2:210+196*Math.cos(a),y2:210+196*Math.sin(a),stroke:"#453756"});
+    const b=rad(i*30-75);
+    add("text",{x:210+174*Math.cos(b),y:210+174*Math.sin(b)+6,"font-size":24,fill:"#c4a5e2","text-anchor":"middle"},GLYPHS[i]);
+  }
+  const listed=BODIES.filter((key)=>["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"].includes(key)).sort((a,b)=>natal[a]-natal[b]);
+  listed.forEach((key,i)=>{
+    const a=rad(natal[key]-90),r=111+(i%3)*13;
+    add("circle",{cx:210+r*Math.cos(a),cy:210+r*Math.sin(a),r:11,fill:"#23152f",stroke:"#c4a278","stroke-width":.7});
+    add("text",{x:210+r*Math.cos(a),y:210+r*Math.sin(a)+5,"font-size":17,fill:"#f1cc90","text-anchor":"middle"},BG[key]);
+  });
+  if(asc!==null){
+    const a=rad(asc-90);
+    add("line",{x1:210+90*Math.cos(a),y1:210+90*Math.sin(a),x2:210+196*Math.cos(a),y2:210+196*Math.sin(a),stroke:"#f3d396","stroke-width":2,"stroke-dasharray":"3 4"});
+  }
+  add("text",{x:210,y:204,"text-anchor":"middle","font-size":14,fill:"#e6c48f","font-family":"monospace"},"NATAL");
+  add("text",{x:210,y:226,"text-anchor":"middle","font-size":10,fill:"#a99dbc","font-family":"monospace"},"TROPICAL / 360°");
+}
+function appendSignCard(host,title,lon){
+  const el=document.createElement("div");el.className="sign-card";
+  const g=document.createElement("div");g.className="g";g.textContent=lon===null?"?":signGlyph(lon);
+  const name=document.createElement("div");name.className="sign";name.textContent=lon===null?"Desconhecido":sign(lon);
+  const tag=document.createElement("div");tag.className="tag";tag.textContent=title;
+  el.append(g,name,tag);host.append(el);
+}
+function renderNatal(natal,asc,fields){
+  $("map-title").textContent=fields.name ? "Mapa natal de "+fields.name : "Seu mapa natal";
+  $("chart-date").textContent=fields.date.split("-").reverse().join("/");
+  $("big-three").replaceChildren();
+  appendSignCard($("big-three"),"SOL",natal.Sun);
+  appendSignCard($("big-three"),"LUA",natal.Moon);
+  appendSignCard($("big-three"),"ASCENDENTE",asc);
+  renderWheel(natal,asc);
+  $("planets").replaceChildren();
+  for(const key of [...BODIES,...(asc!==null?["Asc"]:[])]){
+    const lon=key==="Asc"?asc:natal[key];
+    const row=document.createElement("div");row.className="planet-row";
+    const label=document.createElement("strong");label.textContent=BG[key]+" "+NAMES[key];
+    const value=document.createElement("span");value.textContent=sign(lon)+" "+deg(lon);
+    row.append(label,value);$("planets").append(row);
+  }
+  $("time-caveat").textContent=fields.noTime?
+   "Sem hora de nascimento: meio-dia local foi usado como referência aproximada. Ascendente e casas omitidos; a Lua pode mudar de signo nesse intervalo.":
+   "Ascendente calculado a partir de latitude, longitude e fuso informados. Casas por signos inteiros (whole sign); não é um cálculo Placidus.";
+}
+function buildAspects(natal,transits,asc){
+  const targets={Sun:natal.Sun,Moon:natal.Moon,Mercury:natal.Mercury,Venus:natal.Venus,Mars:natal.Mars,Jupiter:natal.Jupiter,Saturn:natal.Saturn,...(asc===null?{}:{Asc:asc})};
+  const found=[];
+  for(const from of ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn"]){
+    for(const [to,lon] of Object.entries(targets)){
+      const dist=clampAngle(transits[from],lon);
+      for(const a of ASPECTS){
+        const orb=Math.abs(dist-a.deg);
+        if(orb<=3.2){
+          const importance=(["Saturn","Jupiter"].includes(from)?0.6:0)+(["Sun","Moon","Asc"].includes(to)?0.7:0);
+          found.push({from,to,aspect:a,orb,importance,transit:transits[from],natal:lon});
+        }
+      }
+    }
+  }
+  return found.sort((a,b)=>(a.orb-a.importance)-(b.orb-b.importance)).slice(0,3);
+}
+function renderReading(natal,asc,transits,fields){
+  const list=buildAspects(natal,transits,asc);
+  const now=new Date();
+  $("today").textContent=new Intl.DateTimeFormat("pt-BR",{day:"2-digit",month:"short",year:"numeric"}).format(now);
+  const moonSign=sign(transits.Moon);
+  const biggest=list[0];
+  const identity=sign(natal.Sun),emotional=sign(natal.Moon);
+  $("signal-tag").textContent="TRÂNSITO LUNAR · LUA EM "+moonSign.toUpperCase();
+  if(biggest){
+    $("signal-heading").textContent="Hoje, o céu toca "+THEMES[biggest.to]+".";
+    $("signal-text").textContent="Com Sol natal em "+identity+" e Lua natal em "+emotional+", seu mapa coloca em destaque "+THEMES[biggest.to]+". "+NAMES[biggest.from]+" em "+sign(biggest.transit)+" forma "+biggest.aspect.name+" com "+NAMES[biggest.to].toLowerCase()+" natal. "+biggest.aspect.meaning;
+  }else{
+    $("signal-heading").textContent="A Lua muda o tom, não o seu rumo.";
+    $("signal-text").textContent="A Lua atravessa "+moonSign+" hoje. Sua combinação natal de Sol em "+identity+" e Lua em "+emotional+" oferece uma lente para observar sua resposta emocional. Escolha uma coisa que realmente precisa de atenção e deixe o resto fora do radar.";
+  }
+  $("aspects").replaceChildren();
+  for(const x of list){
+    const item=document.createElement("div");item.className="aspect";
+    const title=document.createElement("strong");
+    title.textContent=NAMES[x.from]+" em "+sign(x.transit)+" "+x.aspect.name+" "+NAMES[x.to]+" natal em "+sign(x.natal)+" · orbe "+x.orb.toFixed(1)+"°";
+    const message=document.createElement("p");
+    message.textContent="A tradição astrológica liga "+MOVES[x.from]+" a "+THEMES[x.to]+". "+x.aspect.meaning;
+    item.append(title,message);$("aspects").append(item);
+  }
+  $("calc-note").textContent="Trânsitos calculados para "+new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short"}).format(now)+" no horário do seu dispositivo. Orbe máximo: 3,2°. Os textos são leituras simbólicas, não previsões verificadas.";
+  copyText="ASTRO LAB · VÉRTICE LABS\n"+$("today").textContent+"\n"+$("signal-heading").textContent+"\n"+$("signal-text").textContent+"\n"+
+    list.map(x=>NAMES[x.from]+" "+x.aspect.name+" "+NAMES[x.to]+" natal (orbe "+x.orb.toFixed(1)+"°)").join("\n")+"\nhttps://verticelabs.me/horoscopo/";
+}
+function storeFields(){
+  return {person:$("person").value,date:$("birth-date").value,time:$("birth-time").value,
+    unknown:$("unknown-time").checked,place:$("place").value,lat:$("lat").value,lon:$("lon").value,utc:$("utc-offset").value};
+}
+function restore(data){
+  $("person").value=String(data.person||"").slice(0,40);
+  $("birth-date").value=data.date||"";
+  $("birth-time").value=data.time||"";
+  $("unknown-time").checked=!!data.unknown;
+  $("birth-time").disabled=!!data.unknown;
+  $("place").value=data.place||"";
+  $("lat").value=data.lat||"";
+  $("lon").value=data.lon||"";
+  $("utc-offset").value=data.utc||"-3";
+  showCoords();
+}
+$("save").addEventListener("click",()=>{
+  try{localStorage.setItem(savedKey,JSON.stringify(storeFields()));setStatus("Dados salvos neste navegador. Use “Apagar dados” para excluir.");}
+  catch{setStatus("Não foi possível salvar no armazenamento local.");}
+});
+$("clear").addEventListener("click",()=>{
+  $("birth-form").reset();$("birth-time").disabled=false;showCoords();
+  try{localStorage.removeItem(savedKey);}catch{}
+  $("result").hidden=true;$("empty").hidden=false;copyText="";setStatus("Campos e cópia local apagados.");
+});
+$("copy").addEventListener("click",async()=>{
+  if(!copyText)return;
+  try{await navigator.clipboard.writeText(copyText);setStatus("Leitura copiada.");}
+  catch{setStatus("Cópia indisponível. Use o recurso de seleção do navegador.");}
+});
+try{const stored=localStorage.getItem(savedKey);if(stored)restore(JSON.parse(stored));}catch{}
+$("birth-form").addEventListener("submit",async(event)=>{
+  event.preventDefault();
+  try{
+    const fields=readFields();
+    setStatus("Consultando efemérides astronômicas...");
+    const A=await import("https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm");
+    const natal=planetaryPositions(A,fields.utc);
+    const asc=fields.noTime?null:ascendant(A,fields.utc,fields.lat,fields.lon);
+    const transits=planetaryPositions(A,new Date());
+    if(Object.values(natal).some(v=>!Number.isFinite(v)) || !Number.isFinite(transits.Moon) || (asc!==null&&!Number.isFinite(asc)))throw Error("Posições astronômicas inválidas.");
+    renderNatal(natal,asc,fields);renderReading(natal,asc,transits,fields);
+    $("empty").hidden=true;$("result").hidden=false;
+    setStatus("Mapa calculado. Nenhum dado de nascimento foi enviado ao nosso servidor.");
+    $("result").scrollIntoView({behavior:"smooth",block:"start"});
+  }catch(error){setStatus("Não foi possível calcular: "+(error?.message||"erro desconhecido")+". Verifique a conexão e os dados.");}
+});
+</script>
+</body>
+</html>
