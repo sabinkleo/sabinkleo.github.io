@@ -470,7 +470,7 @@ test('Astro Lab creates a natal reading without sending birth data', async ({ pa
         'export function SunPosition() { return { elon: 290 }; }',
         'export function EclipticLongitude(body) { return ({ Moon: 47, Mercury: 300, Venus: 280, Mars: 21, Jupiter: 88, Saturn: 150, Uranus: 320, Neptune: 330, Pluto: 237 })[body]; }',
         'export function SiderealTime() { return 10; }'
-      ].join('\\n')
+      ].join('\n')
     }));
   page.on('request', req => {
     if (req.method() !== 'GET') outbound.push(req.url());
