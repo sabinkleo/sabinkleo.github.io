@@ -79,7 +79,7 @@
     .wheel-frame{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,240px);align-items:center;gap:15px}
     .wheel{width:100%;max-width:450px;margin:auto;display:block;overflow:visible}
     .planets{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;font-size:12px}
-    .planet-row{border-bottom:1px solid #393148;padding:7px 0;display:flex;justify-content:space-between;gap:5px}
+    .planet-row{border-bottom:1px solid #393148;padding:7px 0;display:flex;flex-wrap:wrap;justify-content:space-between;gap:5px;min-width:0}
     .planet-row strong{font-weight:600;color:#f0e8ff}
     .planet-row span{color:var(--muted);font-family:var(--mono)}
     .reading{border-left:2px solid var(--gold);padding:2px 0 2px 17px;margin:18px 0 4px}
@@ -296,7 +296,9 @@ function renderNatal(natal,asc,fields){
     const lon=key==="Asc"?asc:natal[key];
     const row=document.createElement("div");row.className="planet-row";
     const label=document.createElement("strong");label.textContent=BG[key]+" "+NAMES[key];
-    const value=document.createElement("span");value.textContent=sign(lon)+" "+deg(lon);
+    const value=document.createElement("span");
+    const house=asc===null?"":" · C"+((Math.floor(norm(lon)/30)-Math.floor(norm(asc)/30)+12)%12+1);
+    value.textContent=sign(lon)+" "+deg(lon)+house;
     row.append(label,value);$("planets").append(row);
   }
   $("time-caveat").textContent=fields.noTime?
