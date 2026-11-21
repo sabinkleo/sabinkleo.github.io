@@ -384,7 +384,9 @@ $("birth-form").addEventListener("submit",async(event)=>{
   try{
     const fields=readFields();
     setStatus("Consultando efemérides astronômicas...");
-    const A=await import("https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm");
+    const module=await import("https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm");
+    const A=typeof module.SunPosition==="function" ? module : module.default;
+    if(!A || typeof A.SunPosition!=="function" || typeof A.SiderealTime!=="function")throw Error("Biblioteca astronômica indisponível");
     const natal=planetaryPositions(A,fields.utc);
     const asc=fields.noTime?null:ascendant(A,fields.utc,fields.lat,fields.lon);
     const transits=planetaryPositions(A,new Date());
