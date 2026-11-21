@@ -4,6 +4,7 @@ const origin = process.env.SITE_TEST_ORIGIN || 'http://127.0.0.1:8765';
 const routes = [
   '/',
   '/klein/',
+  '/horoscopo/',
   '/n1/',
   '/n1/equipe/',
   '/n1/etiquetas/',
@@ -42,9 +43,10 @@ test('Home places Recursos e pesquisa first without losing commercial tools', as
     ]);
     await expect(groups.first().getByRole('link', { name: 'Abrir Vértice Drops' })).toBeVisible();
     await expect(groups.first().getByRole('link', { name: 'Abrir Observatório' })).toBeVisible();
+    await expect(groups.first().getByRole('link', { name: 'Abrir Astro Lab' })).toBeVisible();
     await expect(groups.nth(1).getByRole('link', { name: 'Abrir Raio-X de Vendas' })).toBeVisible();
     await expect(groups.nth(1).getByRole('link', { name: 'Abrir Núcleo N1' })).toBeVisible();
-    await expect(page.locator('.vl-home .card')).toHaveCount(10);
+    await expect(page.locator('.vl-home .card')).toHaveCount(11);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   }
 });
