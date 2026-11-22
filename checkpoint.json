@@ -1,12 +1,12 @@
 {
   "origem": "6f5109c263bf2c4c8cc91ff10df46af0c3bd26f1",
   "hashes": {
-    "state/paper_state.json": "2470dcba356c403e9db8de7ae4f9cd360acbecb639c3e357085de048bba72e08",
+    "state/paper_state.json": "5b608ace110df94a850547692d9eb3c865a10a7b2f43dec54c1bc74aab767203",
     "state/trades.csv": "00087ba2f0c9f0c63f61ae0a1949f6ba0649ab65892c6f4549ff95f8b902f660",
-    "results/paper.json": "0735d2cb10668e6ffb544713f8c9f89abe82e3761c4587697c21262145c6ebea"
+    "results/paper.json": "3499d6472b29a867750cb8c4402090cd305da50be433b72bb65e38dd4f857ab2"
   },
   "contrato": "167b0cc0b7e9fbff41ec0a5e55bfb59909f725f227acb3139d3767ba49e54d3c",
-  "abertura": 1795291200000,
+  "abertura": 1795305600000,
   "estrategia": {
     "ema_rapida": 20,
     "ema_lenta": 50,
