@@ -28,15 +28,22 @@ export function decode(source, filename) {
     throw new Error('Formato inválido. Use JSON ou CSV no formato de exportação do CRM.');
   }
   if (!Array.isArray(records)) throw new Error('O arquivo deve conter uma lista de leads.');
+  const seen = new Set();
   return records.map(record => {
     const lead = record?.lead;
     const state = record?.state ?? {};
     if (!lead || typeof lead.id !== 'string' || !lead.id.trim() || typeof lead.name !== 'string' || !lead.name.trim() ||
         !['city', 'segment', 'phone', 'whatsapp'].every(key => lead[key] === undefined || typeof lead[key] === 'string') ||
         !validList(lead.evidence, validText) || !validList(lead.hypotheses, validText) ||
-        typeof state !== 'object' || Array.isArray(state) || !validList(state.history, entry => validText(entry) && typeof entry.at === 'string')) {
+        typeof state !== 'object' || Array.isArray(state) ||
+        !['stage', 'nextAction', 'followUp'].every(key => state[key] == null || typeof state[key] === 'string') ||
+        !['proposal', 'monthly', 'received'].every(key => state[key] == null ||
+          (typeof state[key] === 'number' && state[key] >= 0 && Number.isSafeInteger(Math.round(state[key] * 100)))) ||
+        !validList(state.history, entry => validText(entry) && typeof entry.at === 'string')) {
       throw new Error('Registro inválido. Confira ID, empresa, evidências e histórico.');
     }
+    if (seen.has(lead.id)) throw new Error('ID repetido no arquivo de importação.');
+    seen.add(lead.id);
     return {lead, state};
   });
 }
