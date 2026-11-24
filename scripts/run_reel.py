@@ -20,7 +20,10 @@ from reel.beat import make_track
 ROOT = Path(__file__).resolve().parents[1]
 TOOL = ROOT / "scripts" / "reel"
 LIMIT = 3  # Initial attempt plus two retries.
-CLOSING = "O que muda na prática?"
+COPY = {
+    "en": {"closing": "What changes in practice?", "source": "Source", "date": "Publication date", "unknown_date": "Not stated by the source", "announcement": "What was announced", "visual": "Visual evidence", "material": "Announcement media", "verification": "Editorial verification is limited to the original announcement. This article reports the source’s statement.", "by": "Announcement by"},
+    "pt": {"closing": "O que muda na prática?", "source": "Fonte", "date": "Data informada pela fonte", "unknown_date": "Não identificada na fonte", "announcement": "O que foi anunciado", "visual": "Evidência visual", "material": "Material do anúncio", "verification": "Verificação editorial limitada ao anúncio original. A matéria registra a declaração da fonte.", "by": "Anúncio de"},
+}
 HTTP = ("http", "https")
 
 
@@ -35,6 +38,7 @@ class Source(HTMLParser):
     def __init__(self, document):
         super().__init__(convert_charrefs=True)
         self.meta = {}
+        self.language = ""
         self.media = []
         self.canonical = ""
         self.article_depth = 0
@@ -46,6 +50,8 @@ class Source(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "html":
+            self.language = attrs.get("lang", "")
         if tag in ("script", "style"):
             self.ignored += 1
         if tag == "article":
@@ -143,7 +149,7 @@ def date_from(source, document, title):
             return datetime.fromisoformat(date.replace("Z", "+00:00")).date().isoformat()
         except ValueError:
             pass
-    return "Não identificada na fonte"
+    return None
 
 
 def scrape(url, snapshot, workspace, runner):
@@ -233,16 +239,34 @@ def media_for(source, document, url, snapshot, workspace, browser, runner):
     return runner.step("Capture source page", screenshot), url
 
 
-def write_outputs(out, title, summary, company, date, url, media_url):
-    body = f"**O que foi anunciado**\n\n> {md(summary)}"
+def localized_source(source, canonical, title, summary, lang, translation):
+    """Require reviewed copy if source language does not match the requested language."""
+    source_lang = (source.language or source.meta.get("og:locale", "")).lower().replace("_", "-").split("-")[0]
+    if translation:
+        data = json.loads(translation.read_text(encoding="utf-8"))
+        if (data.get("source_url") != canonical or data.get("lang") != lang
+                or data.get("source_title") != title or data.get("source_summary") != summary):
+            raise ValueError("Translation must match the exact source URL, title, summary and target language")
+        translated = [data.get("title"), data.get("summary")]
+        if not all(isinstance(item, str) and item.strip() for item in translated):
+            raise ValueError("Reviewed translation requires non-empty title and summary")
+        return tuple(clean(item) for item in translated)
+    if source_lang != lang:
+        raise ValueError("Source language is different or unknown; supply --translation with reviewed copy")
+    return title, summary
+
+
+def write_outputs(out, title, summary, company, date, url, media_url, lang="en"):
+    c = COPY[lang]
+    body = f"**{c['announcement']}**\n\n{md(summary)}"
     (out / "article.md").write_text(
-        f"# {md(title)}\n\n**Fonte** [{md(company)}](<{url}>)\n\n"
-        f"**Data informada pela fonte** {date}\n\n{body}\n\n"
-        f"**Evidência visual** [Material do anúncio](<{media_url}>)\n\n"
-        "Verificação editorial limitada ao anúncio original. A matéria registra a declaração da fonte.\n",
+        f"# {md(title)}\n\n**{c['source']}** [{md(company)}](<{url}>)\n\n"
+        f"**{c['date']}** {date or c['unknown_date']}\n\n{body}\n\n"
+        f"**{c['visual']}** [{c['material']}](<{media_url}>)\n\n"
+        f"{c['verification']}\n",
         encoding="utf-8",
     )
-    caption = f"{summary}\n\nFonte: {company} — {url}"
+    caption = f"{summary}\n\n{c['source']}: {company} — {url}"
     (out / "social.md").write_text(
         f"# Instagram Reels\n\n{title}\n\n{caption}\n\n"
         f"# TikTok\n\n{short(title, 120)}\n\n{caption}\n\n"
@@ -268,6 +292,8 @@ def validate_render(video):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", required=True)
+    parser.add_argument("--lang", choices=("en", "pt"), default="en")
+    parser.add_argument("--translation", type=Path, help="Reviewed translation JSON for a source in another language")
     parser.add_argument("--snapshot", type=Path, help="Replay saved official source.html, media.json and media")
     parser.add_argument("--out", type=Path, default=ROOT / "build" / "reel")
     parser.add_argument("--assets", type=Path, default=ROOT / "build" / "reel" / "assets")
@@ -287,15 +313,17 @@ def main():
         workspace = Path(directory)
         source, doc, canonical, title, summary, company, date = scrape(url, args.snapshot, workspace, runner)
         runner.note(f"Source check: heading and publisher description present; date: {date}")
+        title, summary = localized_source(source, canonical, title, summary, args.lang, args.translation)
+        copy = COPY[args.lang]
         moving, media_url = media_for(source, doc, canonical, args.snapshot, workspace, args.browser, runner)
         runner.note(f"Media: {media_url}")
         props = workspace / "props.json"
         sentences = re.split(r"(?<=[.!?])\s+", summary, maxsplit=1)
         props.write_text(json.dumps({
             "titles": [short(title, 115), short(sentences[0], 105),
-                       short(sentences[-1], 105) if len(sentences) > 1 else f"Anúncio de {company}",
-                       CLOSING],
-            "company": company, "moving": moving,
+                       short(sentences[-1], 105) if len(sentences) > 1 else f"{copy['by']} {company}",
+                       copy["closing"]],
+            "company": company, "moving": moving, "sourceLabel": copy["source"],
         }), encoding="utf-8")
         runner.step("Generate 120 BPM audio bed", lambda: make_track(str(workspace / "track.wav")))
         video = out / "reel.mp4"
@@ -312,7 +340,7 @@ def main():
         runner.step("Update used_memes.json (no reaction footage selected)", lambda: runner.cmd(
             [sys.executable, str(TOOL / "reaction_guard.py"), "--assets", str(args.assets),
              "approve", str(video)], 10))
-        write_outputs(out, title, summary, company, date, canonical, media_url)
+        write_outputs(out, title, summary, company, date, canonical, media_url, args.lang)
     runner.note(f"Complete: {out}")
 
 
