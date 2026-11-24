@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "tracks": [
+    {
+      "id": "night-shift",
+      "title": "Night Shift",
+      "file": "night-shift.mp3",
+      "duration_seconds": 12,
+      "bpm": 120,
+      "source": "Original synthesis by scripts/build_phonk_bank.py"
+    },
+    {
+      "id": "low-beam",
+      "title": "Low Beam",
+      "file": "low-beam.mp3",
+      "duration_seconds": 12,
+      "bpm": 120,
+      "source": "Original synthesis by scripts/build_phonk_bank.py"
+    },
+    {
+      "id": "after-hours",
+      "title": "After Hours",
+      "file": "after-hours.mp3",
+      "duration_seconds": 12,
+      "bpm": 120,
+      "source": "Original synthesis by scripts/build_phonk_bank.py"
+    }
+  ]
+}

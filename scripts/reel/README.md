@@ -15,3 +15,14 @@ The command writes article.md, social.md, reel.mp4 and execution.log to a new di
 Pass `--audio FILE` (alias `--phonk`) to loop/trim a local soundtrack to 12 seconds with a 50 ms fade-out. Without an audio file, the original generated 120 BPM bed is used. Supplied audio is not automatically tempo-matched.
 
 The guard history defaults to build/reel/assets/used_memes.json. Use `--assets` to share existing history. The editorial composition uses source material and records an empty reaction list.
+
+The original phonk bank is under `assets/audio/phonk/`. The catalog lists each
+12-second MP3 by filename relative to that directory. Rebuild it with FFmpeg
+and choose a clip for the English render:
+
+```sh
+python scripts/build_phonk_bank.py
+python scripts/run_reel.py --lang en \
+  --url https://www.canva.com/newsroom/news/canva-mcp-update/ \
+  --audio assets/audio/phonk/night-shift.mp3
+```
