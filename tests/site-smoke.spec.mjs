@@ -526,3 +526,67 @@ test('Astro Lab matches independent geocentric positions and historical DST with
   await expect(page.locator('#planets')).not.toContainText('Touro 25.2°');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
 });
+
+test('CRM operator can create, edit, filter and reopen a lead on mobile', async ({ page }) => {
+  test.skip(process.env.SITE_TEST_ORIGIN && !process.env.SITE_TEST_ORIGIN.includes('127.0.0.1'), 'Uses synthetic data on the local site');
+  await page.setViewportSize({ width: 375, height: 812 });
+  const rows = new Map();
+  const exceptions = [];
+  page.on('pageerror', error => exceptions.push(error.message));
+  let signedIn = false;
+  await page.route('https://api.verticelabs.me/v1/**', async route => {
+    const request = route.request();
+    const path = new URL(request.url()).pathname.slice(3);
+    const method = request.method();
+    if (path === '/account/sessions/email') {
+      signedIn = true;
+      return route.fulfill({ status: 201, json: {} });
+    }
+    if (!signedIn) return route.fulfill({ status: 401, json: {} });
+    if (path === '/account/sessions/current') {
+      signedIn = false;
+      return route.fulfill({ status: 204 });
+    }
+    if (path === '/account') return route.fulfill({ json: {} });
+    if (method === 'POST') {
+      const { rowId, data } = request.postDataJSON();
+      rows.set(rowId, { $id: rowId, ...data });
+      return route.fulfill({ status: 201, json: rows.get(rowId) });
+    }
+    const id = path.split('/').at(-1);
+    if (id === 'rows') return route.fulfill({ json: { rows: [...rows.values()] } });
+    if (method === 'PATCH') Object.assign(rows.get(id), request.postDataJSON().data);
+    return route.fulfill({ json: rows.get(id) });
+  });
+  await page.goto(origin + '/crm/');
+  await expect(page.locator('#workspace')).toBeHidden();
+  await page.getByLabel('E-mail').fill('operator@example.test');
+  await page.getByLabel('Senha').fill('synthetic-test-password');
+  await page.getByRole('button', { name: 'Entrar' }).click();
+  await page.getByRole('button', { name: 'Novo lead' }).click();
+  await page.getByLabel('Empresa').fill('Empresa de teste');
+  await page.getByLabel('WhatsApp').fill('41 99999-0000');
+  await page.getByRole('button', { name: 'Salvar dados' }).click();
+  await expect(page.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', 'https://wa.me/5541999990000');
+  await page.getByRole('button', { name: 'Editar dados' }).click();
+  await page.getByLabel('Empresa').fill('Empresa revisada');
+  await page.getByRole('button', { name: 'Salvar dados' }).click();
+  await expect(page.locator('#company')).toHaveText('Empresa revisada');
+  await page.getByLabel('Etapa', { exact: true }).selectOption('Qualificado');
+  await page.getByLabel('Retorno').fill('2026-12-01');
+  await page.getByLabel('Registrar contato').fill('Contato de teste');
+  await page.getByRole('button', { name: 'Salvar', exact: true }).click();
+  await expect(page.locator('#history')).toContainText('Contato de teste');
+  await page.reload();
+  await page.getByLabel('Buscar lead').fill('revisada');
+  await page.getByLabel('Filtrar por etapa').selectOption('Perdido');
+  await expect(page.locator('#leads tr')).toHaveCount(0);
+  await page.getByLabel('Filtrar por etapa').selectOption('Qualificado');
+  await page.getByRole('button', { name: 'Empresa revisada' }).click();
+  await expect(page.getByLabel('Retorno')).toHaveValue('2026-12-01');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+  await page.getByRole('button', { name: 'Sair' }).click();
+  await expect(page.locator('#login')).toBeVisible();
+  await expect(page.locator('#leads tr')).toHaveCount(0);
+  expect(exceptions).toEqual([]);
+});
