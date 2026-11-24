@@ -1,25 +1,17 @@
-# Reel editorial
+# Editorial Reel
 
-Instalação inicial em Linux, macOS ou WSL com Python 3.11+, Node.js, curl,
-Chromium, FFmpeg e FFprobe.
+Install Python 3.11+, Node.js, curl, Chromium, FFmpeg and FFprobe on Linux, macOS or WSL.
 
 ```sh
 npm install --prefix scripts/reel
 python scripts/run_reel.py --url https://www.canva.com/newsroom/news/canva-mcp-update/
+python scripts/run_reel.py --url https://www.canva.com/newsroom/news/canva-mcp-update/ --audio /path/to/phonk.mp3
 ```
 
-O comando gera `article.md`, `social.md`, `reel.mp4` e `execution.log` em um
-novo diretório de `build/reel/`. As afirmações são atribuídas à fonte original
-e conservam o idioma do anúncio. A saída é destinada à revisão editorial.
+English is the default. Use `--lang pt` for Portuguese. When the source language is different or unknown, provide `--translation FILE.json` with reviewed text and the exact `source_url`, `source_title`, `source_summary`, target `lang`, translated `title` and `summary`. Source evidence is retained; a translation is not independently verified by the renderer.
 
-O render usa vídeo ou imagem da fonte, com captura da página real como
-alternativa. Para reproduzir uma captura oficial em ambiente sem acesso à
-fonte, use `--snapshot DIR`. O diretório deve conter `source.html`,
-`media.json` com a chave `url` e o arquivo de mídia original com o nome
-`media`. O log indica quando o comando usou esse modo. Use `--browser` para
-selecionar uma instalação específica do Chromium.
+The command writes article.md, social.md, reel.mp4 and execution.log to a new directory under build/reel/. Media is taken from the official source or a real page capture. For offline replay, pass `--snapshot DIR` with source.html, media.json (the url field), and media. Use `--browser` to select Chromium.
 
-O histórico padrão está em `build/reel/assets/used_memes.json`. Passe
-`--assets` para compartilhar o histórico usado pelo guard existente. A
-composição editorial usa somente o material da fonte e registra a exportação
-com uma lista vazia de reações.
+Pass `--audio FILE` (alias `--phonk`) to loop/trim a local soundtrack to 12 seconds with a 50 ms fade-out. Without an audio file, the original generated 120 BPM bed is used. Supplied audio is not automatically tempo-matched.
+
+The guard history defaults to build/reel/assets/used_memes.json. Use `--assets` to share existing history. The editorial composition uses source material and records an empty reaction list.
