@@ -1,0 +1,47 @@
+---
+import '../styles/lab.css';
+
+const { title, description, home = false } = Astro.props;
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0c0e0d" />
+    <meta name="referrer" content="no-referrer" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {home ? (
+      <>
+        <link rel="canonical" href="https://verticelabs.me/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://verticelabs.me/" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <link rel="stylesheet" href="/assets/consent.css" />
+        <script is:inline defer src="/assets/measurement.js"></script>
+      </>
+    ) : <meta name="robots" content="noindex,nofollow" />}
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+    <header class="top">
+      <div class="frame top-inner flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
+        <a class="brand" href="/" aria-label="Vértice Labs, início"><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">.</span> LABS</a>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Menu da Vértice">
+          <a href={home ? '#pilares' : '/#pilares'}>Pilares</a>
+          <a href="/observatorio/">Observatório</a>
+          <a href="/solucoes/">Soluções</a>
+        </nav>
+      </div>
+    </header>
+    <slot />
+    <footer class="foot">
+      <div class="frame flex flex-wrap items-center justify-between gap-4">
+        <span>VÉRTICE LABS · LABORATÓRIO INDEPENDENTE</span>
+        <a href="/politica-de-privacidade/">Política de privacidade</a>
+      </div>
+    </footer>
+  </body>
+</html>
