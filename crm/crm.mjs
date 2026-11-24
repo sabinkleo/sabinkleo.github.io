@@ -7,7 +7,7 @@ const moneyFields = ['proposal', 'monthly', 'received'];
 for (const option of $('pipeline').elements.namedItem('stage').options) {
   $('stage-filter').append(option.cloneNode(true));
 }
-let config, rows = [], activeId, busy = false;
+let config, rows = [], activeId, editingId, busy = false;
 
 async function api(path, method = 'GET', body) {
   const response = await fetch(config.endpoint + path, {
@@ -21,6 +21,11 @@ async function api(path, method = 'GET', body) {
 
 function collection() {
   return '/tablesdb/' + encodeURIComponent(config.database) + '/tables/' + encodeURIComponent(config.table) + '/rows';
+}
+
+function readRow(row) {
+  const data = row.data ?? row;
+  return {id: row.$id, lead: JSON.parse(data.lead), state: JSON.parse(data.state)};
 }
 
 function displayList() {
@@ -96,7 +101,7 @@ async function refresh() {
     const query = new URLSearchParams({'queries[]': limit, total: 'false'});
     if (cursor) query.append('queries[]', JSON.stringify({method: 'cursorAfter', values: [cursor]}));
     const page = await api(collection() + '?' + query);
-    next.push(...page.rows.map(row => ({id: row.$id, lead: JSON.parse(row.lead), state: JSON.parse(row.state)})));
+    next.push(...page.rows.map(readRow));
     cursor = page.rows.length === 100 ? page.rows.at(-1).$id : null;
   } while (cursor);
   rows = next.sort((a, b) => Number(b.lead.confirmed === true) - Number(a.lead.confirmed === true) || a.lead.name.localeCompare(b.lead.name, 'pt-BR'));
@@ -109,6 +114,7 @@ function locked() {
   $('leads').replaceChildren();
   for (const id of ['company', 'lead-details', 'contacts', 'evidence', 'hypotheses', 'history']) $(id).replaceChildren();
   $('pipeline').reset();
+  closeLeadForm();
   $('search').value = '';
   $('stage-filter').value = '';
   $('revenue').textContent = '';
@@ -149,7 +155,12 @@ $('login').onsubmit = run(async event => {
   const fields = new FormData(form);
   try {
     await api('/account/sessions/email', 'POST', {email: fields.get('email'), password: fields.get('password')});
-    await showWorkspace();
+    try {
+      await showWorkspace();
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) await api('/account/sessions/current', 'DELETE');
+      throw error;
+    }
   } finally {
     form.reset();
   }
@@ -163,12 +174,66 @@ $('logout').onclick = run(async () => {
 $('search').oninput = displayList;
 $('stage-filter').onchange = displayList;
 
+const leadFields = ['name', 'segment', 'city', 'phone', 'whatsapp'];
+
+function closeLeadForm() {
+  editingId = undefined;
+  $('lead-form').reset();
+  $('lead-form').hidden = true;
+}
+
+function showLeadForm(id) {
+  closeLeadForm();
+  editingId = id;
+  const lead = rows.find(row => row.id === id)?.lead;
+  $('lead-form-title').textContent = lead ? 'Editar lead' : 'Novo lead';
+  const fields = $('lead-form').elements;
+  for (const key of leadFields) fields.namedItem(key).value = lead?.[key] ?? '';
+  $('lead-form').hidden = false;
+  fields.namedItem('name').focus();
+}
+
+function contactNumber(value) {
+  const digits = value.replace(/\D/g, '');
+  if (!value) return '';
+  const normalized = digits.length === 10 || digits.length === 11 ? '55' + digits : digits;
+  if (!/^55[1-9]\d{9,10}$/.test(normalized)) throw new Error('Informe o número com DDD.');
+  return normalized;
+}
+
+$('new-lead').onclick = () => showLeadForm();
+$('edit-lead').onclick = () => showLeadForm(activeId);
+$('cancel-lead').onclick = closeLeadForm;
+$('lead-form').onsubmit = run(async event => {
+  const input = new FormData(event.currentTarget);
+  const fields = Object.fromEntries(leadFields.map(key => [key, input.get(key).trim()]));
+  if (!fields.name) throw new Error('Informe o nome da empresa.');
+  fields.phone = contactNumber(fields.phone);
+  fields.whatsapp = contactNumber(fields.whatsapp);
+  const sourceId = editingId ? undefined : crypto.randomUUID();
+  const id = editingId ?? await rowId(sourceId);
+  const path = collection() + '/' + id;
+  const previous = editingId ? readRow(await api(path)).lead : {id: sourceId, confirmed: false};
+  const lead = {...previous, ...fields};
+  if (['phone', 'whatsapp'].some(key => (previous[key] || '') !== fields[key])) lead.confirmed = false;
+  const data = {lead: JSON.stringify(lead)};
+  if (editingId) {
+    await api(path, 'PATCH', {data});
+  } else {
+    await api(collection(), 'POST', {rowId: id, data: {...data, state: '{}'}});
+  }
+  closeLeadForm();
+  await refresh();
+  openProfile(id);
+  status('Dados do lead salvos.');
+});
+
 $('pipeline').onsubmit = run(async event => {
   const input = new FormData(event.currentTarget);
   const id = activeId;
   const path = collection() + '/' + id;
   const persisted = await api(path);
-  const state = JSON.parse(persisted.state);
+  const {state} = readRow(persisted);
   for (const field of ['stage', 'nextAction', 'followUp']) state[field] = input.get(field);
   for (const field of moneyFields) state[field] = input.get(field) === '' ? null : Number(input.get(field));
   const note = input.get('note').trim();
@@ -196,7 +261,7 @@ $('import').onchange = run(async event => {
     } catch (error) {
       if (error.status === 409) {
         const persisted = await api(collection() + '/' + id);
-        if (JSON.parse(persisted.lead).id === lead.id) {
+        if (readRow(persisted).lead.id === lead.id) {
           existing++;
           continue;
         }
