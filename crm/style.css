@@ -1,0 +1,16 @@
+:root { color-scheme: dark; font: 100% system-ui, sans-serif; background: #111619; color: #f3f6f6; }
+* { box-sizing: border-box; }
+main { max-width: 52rem; margin: auto; padding: 1rem; }
+h1, h2, h3 { line-height: 1.2; }
+form, section { margin-block: 1rem; }
+label { display: grid; gap: .35rem; margin-block: .8rem; }
+input, select, textarea, button, .actions a { font: inherit; min-height: 44px; border: 1px solid #6a8289; border-radius: .4rem; padding: .5rem; }
+input, textarea, select { background: #1c262a; color: inherit; width: 100%; }
+button, .actions a { background: #c0ece3; color: #102724; font-weight: 650; cursor: pointer; }
+a { color: #a5ece3; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.table-region { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: .45rem; text-align: left; border-bottom: 1px solid #44565b; }
+td:first-child button { text-align: left; }
+#profile { border-top: 1px solid #6a8289; padding-block: 1rem; }
