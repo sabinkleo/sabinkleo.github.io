@@ -294,12 +294,17 @@ def main():
     parser.add_argument("--url", required=True)
     parser.add_argument("--lang", choices=("en", "pt"), default="en")
     parser.add_argument("--translation", type=Path, help="Reviewed translation JSON for a source in another language")
+    parser.add_argument("--audio", "--phonk", dest="audio", type=Path, help="Local audio file for the 12-second soundtrack")
     parser.add_argument("--snapshot", type=Path, help="Replay saved official source.html, media.json and media")
     parser.add_argument("--out", type=Path, default=ROOT / "build" / "reel")
     parser.add_argument("--assets", type=Path, default=ROOT / "build" / "reel" / "assets")
     parser.add_argument("--browser", default=shutil.which("chromium") or shutil.which("google-chrome"))
     args = parser.parse_args()
     url = url_key(args.url)
+    if args.audio:
+        args.audio = args.audio.resolve()
+        if not args.audio.is_file():
+            parser.error("Audio file does not exist")
     remotion = TOOL / "node_modules" / ".bin" / "remotion"
     if not args.browser or not remotion.is_file():
         parser.error("Install Chromium and run npm install --prefix scripts/reel")
@@ -325,7 +330,14 @@ def main():
                        copy["closing"]],
             "company": company, "moving": moving, "sourceLabel": copy["source"],
         }), encoding="utf-8")
-        runner.step("Generate 120 BPM audio bed", lambda: make_track(str(workspace / "track.wav")))
+        if args.audio:
+            runner.step("Prepare supplied audio loop", lambda: runner.cmd([
+                "ffmpeg", "-v", "error", "-nostdin", "-y", "-stream_loop", "-1",
+                "-i", str(args.audio), "-map", "0:a:0", "-vn", "-t", "12",
+                "-af", "afade=t=out:st=11.95:d=0.05", "-ar", "48000", "-ac", "2",
+                "-c:a", "pcm_s16le", str(workspace / "track.wav")], 40))
+        else:
+            runner.step("Generate 120 BPM audio bed", lambda: make_track(str(workspace / "track.wav")))
         video = out / "reel.mp4"
 
         def render():
