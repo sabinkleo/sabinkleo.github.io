@@ -4,9 +4,14 @@
   "version": "1.0.0",
   "description": "Development-only browser smoke tests for the static site",
   "scripts": {
-    "test:browser": "playwright test tests/site-smoke.spec.mjs"
+    "test:browser": "playwright test tests/site-smoke.spec.mjs",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1"
   },
   "devDependencies": {
-    "@playwright/test": "1.65.1"
+    "@playwright/test": "1.65.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "astro": "^5.18.2",
+    "tailwindcss": "^4.3.5"
   }
 }

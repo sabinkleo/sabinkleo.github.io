@@ -1,0 +1,78 @@
+---
+import Lab from '../layouts/Lab.astro';
+
+const { PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT_ID,
+  PUBLIC_APPWRITE_OPERATOR_TEAM_ID, PUBLIC_VERTICE_AI_URL } = import.meta.env;
+---
+<Lab title="Controle / Vértice Labs" description="Prévia do painel de operadores.">
+  <main id="conteudo" class="frame control">
+    <p class="eyebrow">VÉRTICE LABS / OPERAÇÃO</p>
+    <h1>Painel de controle</h1>
+    <section class="control-panel" aria-labelledby="session-title"
+      data-session
+      data-endpoint={PUBLIC_APPWRITE_ENDPOINT ?? ''}
+      data-project={PUBLIC_APPWRITE_PROJECT_ID ?? ''}
+      data-team={PUBLIC_APPWRITE_OPERATOR_TEAM_ID ?? ''}
+      data-worker={PUBLIC_VERTICE_AI_URL ?? ''}>
+      <h2 id="session-title">Sessão do operador</h2>
+      <p role="status" data-session-status>Uma sessão autorizada do Appwrite é necessária. Sem configuração, a prévia fica bloqueada.</p>
+      <a class="button" href="/">Voltar ao laboratório</a>
+    </section>
+    <template id="operator-preview">
+      <section class="control-panel" aria-labelledby="operator-title">
+        <h2 id="operator-title">Integrações da prévia</h2>
+        <p>Esta tela usa dados de demonstração. Nenhum registro privado é carregado.</p>
+        <button type="button" class="button" data-worker-check>Verificar conexão com o Worker</button>
+        <p role="status" data-worker-status></p>
+      </section>
+    </template>
+  </main>
+</Lab>
+
+<script>
+  import { checkWorker, hasOperatorSession } from '../services/preview';
+
+  const gate = document.querySelector<HTMLElement>('[data-session]')!;
+  const status = gate.querySelector<HTMLElement>('[data-session-status]')!;
+  const preview = document.querySelector<HTMLTemplateElement>('#operator-preview')!;
+
+  async function openPreview() {
+    const { endpoint, project, team, worker } = gate.dataset;
+    if (!endpoint || !project || !team) return;
+
+    try {
+      if (!await hasOperatorSession(endpoint, project, team)) {
+        status.textContent = 'Abra uma sessão autorizada no Appwrite para acessar a prévia.';
+        return;
+      }
+    } catch {
+      status.textContent = 'Não foi possível verificar a sessão do Appwrite.';
+      return;
+    }
+
+    const content = preview.content.cloneNode(true) as DocumentFragment;
+    const check = content.querySelector<HTMLButtonElement>('[data-worker-check]')!;
+    const workerStatus = content.querySelector<HTMLElement>('[data-worker-status]')!;
+    if (!worker) {
+      check.disabled = true;
+      workerStatus.textContent = 'Worker sem URL configurada.';
+    }
+
+    check.addEventListener('click', async () => {
+      check.disabled = true;
+      workerStatus.textContent = 'Verificando conexão…';
+      try {
+        await checkWorker(worker!);
+        workerStatus.textContent = 'Worker acessível.';
+      } catch {
+        workerStatus.textContent = 'O Worker não respondeu à verificação.';
+      } finally {
+        check.disabled = false;
+      }
+    });
+
+    gate.replaceWith(content);
+  }
+
+  void openPreview();
+</script>
