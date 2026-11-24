@@ -1,10 +1,13 @@
 ---
 import '../styles/lab.css';
 
-const { title, description, home = false } = Astro.props;
+const { title, description, home = false, lang = "pt" } = Astro.props;
+const en = lang === "en";
+const homePath = en ? "/" : "/pt/";
+const canonical = new URL(homePath, Astro.site).href;
 ---
 <!doctype html>
-<html lang="pt-BR">
+<html lang={en ? "en" : "pt-BR"}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -14,9 +17,12 @@ const { title, description, home = false } = Astro.props;
     <meta name="description" content={description} />
     {home ? (
       <>
-        <link rel="canonical" href="https://verticelabs.me/" />
+        <link rel="canonical" href={canonical} />
+        <link rel="alternate" hreflang="en" href="https://verticelabs.me/" />
+        <link rel="alternate" hreflang="pt-BR" href="https://verticelabs.me/pt/" />
+        <link rel="alternate" hreflang="x-default" href="https://verticelabs.me/" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://verticelabs.me/" />
+        <meta property="og:url" content={canonical} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <link rel="stylesheet" href="/assets/consent.css" />
@@ -25,22 +31,23 @@ const { title, description, home = false } = Astro.props;
     ) : <meta name="robots" content="noindex,nofollow" />}
   </head>
   <body>
-    <a class="skip" href="#conteudo">Ir para o conteúdo</a>
+    <a class="skip" href="#conteudo">{en ? "Skip to content" : "Ir para o conteúdo"}</a>
     <header class="top">
       <div class="frame top-inner flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
-        <a class="brand" href="/" aria-label="Vértice Labs, início"><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">.</span> LABS</a>
-        <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label="Menu da Vértice">
-          <a href={home ? '#pilares' : '/#pilares'}>Pilares</a>
-          <a href="/observatorio/">Observatório</a>
-          <a href="/solucoes/">Soluções</a>
+        <a class="brand" href={homePath} aria-label={en ? "Vértice Labs, home" : "Vértice Labs, início"}><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">.</span> LABS</a>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label={en ? "Vértice navigation" : "Menu da Vértice"}>
+          <a href={home ? '#pilares' : homePath + '#pilares'}>{en ? "Pillars" : "Pilares"}</a>
+          <a href="/observatorio/">{en ? "Observatory" : "Observatório"}</a>
+          <a href="/solucoes/">{en ? "Solutions" : "Soluções"}</a>
+          <a href={en ? "/pt/" : "/"} lang={en ? "pt-BR" : "en"} hreflang={en ? "pt-BR" : "en"} aria-label={en ? "Português" : "English"}>{en ? "PT" : "EN"}</a>
         </nav>
       </div>
     </header>
     <slot />
     <footer class="foot">
       <div class="frame flex flex-wrap items-center justify-between gap-4">
-        <span>VÉRTICE LABS · LABORATÓRIO INDEPENDENTE</span>
-        <a href="/politica-de-privacidade/">Política de privacidade</a>
+        <span>VÉRTICE LABS · {en ? "INDEPENDENT LABORATORY" : "LABORATÓRIO INDEPENDENTE"}</span>
+        <a href="/politica-de-privacidade/">{en ? "Privacy policy" : "Política de privacidade"}</a>
       </div>
     </footer>
   </body>
