@@ -13,7 +13,7 @@ const shots = [
 ];
 const green = '#B6FF00';
 
-function Shot({shot, title, company, moving}) {
+function Shot({shot, title, company, moving, sourceLabel}) {
   const frame = useCurrentFrame();
   const zoom = interpolate(frame, [0, 10], [shot.zoom + .055, shot.zoom], {
     extrapolateRight: 'clamp',
@@ -37,15 +37,15 @@ function Shot({shot, title, company, moving}) {
       {title}
     </div>
     <div style={{position: 'absolute', left: 94, top: 1405, color: '#fff', fontSize: 26,
-      lineHeight: '30px', fontWeight: 700}}>Fonte: {company}</div>
+      lineHeight: '30px', fontWeight: 700}}>{sourceLabel}: {company}</div>
   </AbsoluteFill>;
 }
 
-function Reel({titles, company, moving}) {
+function Reel({titles, company, moving, sourceLabel = "Source"}) {
   return <>
     {shots.map((shot, index) =>
       <Sequence key={shot.at} from={shot.at} durationInFrames={shot.duration}>
-        <Shot shot={shot} title={titles[index]} company={company} moving={moving} />
+        <Shot shot={shot} title={titles[index]} company={company} moving={moving} sourceLabel={sourceLabel} />
       </Sequence>)}
     <Audio src={staticFile('track.wav')} />
   </>;
