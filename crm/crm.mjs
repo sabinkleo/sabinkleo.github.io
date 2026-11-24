@@ -2,6 +2,11 @@ import {decode, encodeCsv, rowId} from './transfer.mjs';
 
 const $ = id => document.getElementById(id);
 const status = message => { $('status').textContent = message; };
+const currency = new Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'});
+const moneyFields = ['proposal', 'monthly', 'received'];
+for (const option of $('pipeline').elements.namedItem('stage').options) {
+  $('stage-filter').append(option.cloneNode(true));
+}
 let config, rows = [], activeId, busy = false;
 
 async function api(path, method = 'GET', body) {
@@ -20,8 +25,14 @@ function collection() {
 
 function displayList() {
   const term = $('search').value.trim().toLocaleLowerCase('pt-BR');
-  const records = rows.filter(({lead, state}) =>
-    [lead.name, lead.city, lead.segment, state.stage].some(value => value?.toLocaleLowerCase('pt-BR').includes(term)));
+  const stage = $('stage-filter').value;
+  const receivedCents = rows.reduce((total, {state}) => total + Math.round((state.received ?? 0) * 100), 0);
+  $('revenue').textContent = 'Total recebido: ' + currency.format(receivedCents / 100);
+  const records = rows.filter(({lead, state}) => {
+    const currentStage = state.stage || 'Prospecção';
+    return (!stage || stage === currentStage) &&
+      [lead.name, lead.city, lead.segment, currentStage].some(value => value?.toLocaleLowerCase('pt-BR').includes(term));
+  });
   $('leads').replaceChildren(...records.map(({id, lead, state}) => {
     const tr = document.createElement('tr');
     const button = document.createElement('button');
@@ -71,7 +82,7 @@ function openProfile(id, focus = true) {
   $('hypotheses').replaceChildren(...(lead.hypotheses || []).map(h => item(['Hipótese', h.provider, h.text].filter(Boolean).join(' · '))));
   $('history').replaceChildren(...(state.history || []).map(entry => item(entry.at + ' · ' + entry.text)));
   const fields = $('pipeline').elements;
-  for (const name of ['stage', 'nextAction', 'followUp', 'proposal', 'monthly']) fields.namedItem(name).value = state[name] ?? (name === 'stage' ? 'Prospecção' : '');
+  for (const name of ['stage', 'nextAction', 'followUp', ...moneyFields]) fields.namedItem(name).value = state[name] ?? (name === 'stage' ? 'Prospecção' : '');
   fields.namedItem('note').value = '';
   $('profile').hidden = false;
   if (focus) $('company').focus();
@@ -99,6 +110,8 @@ function locked() {
   for (const id of ['company', 'lead-details', 'contacts', 'evidence', 'hypotheses', 'history']) $(id).replaceChildren();
   $('pipeline').reset();
   $('search').value = '';
+  $('stage-filter').value = '';
+  $('revenue').textContent = '';
   $('profile').hidden = true;
   $('workspace').hidden = true;
   $('login').hidden = false;
@@ -148,6 +161,7 @@ $('logout').onclick = run(async () => {
   status('Sessão encerrada.');
 });
 $('search').oninput = displayList;
+$('stage-filter').onchange = displayList;
 
 $('pipeline').onsubmit = run(async event => {
   const input = new FormData(event.currentTarget);
@@ -156,7 +170,7 @@ $('pipeline').onsubmit = run(async event => {
   const persisted = await api(path);
   const state = JSON.parse(persisted.state);
   for (const field of ['stage', 'nextAction', 'followUp']) state[field] = input.get(field);
-  for (const field of ['proposal', 'monthly']) state[field] = input.get(field) === '' ? null : Number(input.get(field));
+  for (const field of moneyFields) state[field] = input.get(field) === '' ? null : Number(input.get(field));
   const note = input.get('note').trim();
   if (note) state.history = [...(state.history || []), {at: new Date().toISOString(), text: note}];
   await api(path, 'PATCH', {data: {state: JSON.stringify(state)}});
@@ -180,8 +194,16 @@ $('import').onchange = run(async event => {
       await api(collection(), 'POST', {rowId: id, data: {lead: JSON.stringify(lead), state: JSON.stringify(state)}});
       created++;
     } catch (error) {
-      if (error.status !== 409) throw error;
-      existing++;
+      if (error.status === 409) {
+        const persisted = await api(collection() + '/' + id);
+        if (JSON.parse(persisted.lead).id === lead.id) {
+          existing++;
+          continue;
+        }
+      }
+      if (error.status === 401 || error.status === 403) throw error;
+      await refresh();
+      throw new Error(`Importação parcial: ${created} novos · ${existing} existentes · ${imported.length - created - existing} pendentes. Reimporte o arquivo para continuar.`);
     }
   }
   await refresh();
