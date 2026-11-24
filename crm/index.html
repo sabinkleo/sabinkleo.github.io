@@ -27,10 +27,20 @@
 </form>
 <section id="workspace" hidden>
 <div class="actions">
+<button id="new-lead">Novo lead</button>
 <button id="logout">Sair</button>
 <button id="export-json">Exportar JSON</button>
 <button id="export-csv">Exportar CSV</button>
 </div>
+<form id="lead-form" hidden>
+<h2 id="lead-form-title">Novo lead</h2>
+<label>Empresa <input name="name" maxlength="200" required></label>
+<label>Segmento <input name="segment" maxlength="100"></label>
+<label>Cidade ou região <input name="city" maxlength="100"></label>
+<label>Telefone <input name="phone" type="tel" maxlength="30"></label>
+<label>WhatsApp <input name="whatsapp" type="tel" maxlength="30"></label>
+<div class="actions"><button>Salvar dados</button><button type="button" id="cancel-lead">Cancelar</button></div>
+</form>
 <label>Importar leads <input id="import" type="file" accept=".json,.csv"></label>
 <label>Buscar lead <input id="search" type="search" placeholder="Empresa, segmento, cidade ou etapa"></label>
 <label>Filtrar por etapa <select id="stage-filter"><option value="">Todas</option></select></label>
@@ -41,6 +51,7 @@
 <section id="profile" hidden>
 <h2 id="company" tabindex="-1"></h2>
 <p id="lead-details"></p>
+<button id="edit-lead">Editar dados</button>
 <div id="contacts" class="actions"></div>
 <h3>Evidências</h3><ul id="evidence"></ul>
 <h3>Hipóteses comerciais</h3><ul id="hypotheses"></ul>
