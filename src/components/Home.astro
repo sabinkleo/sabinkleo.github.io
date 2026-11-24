@@ -1,0 +1,96 @@
+---
+import Lab from '../layouts/Lab.astro';
+const { lang = 'en' } = Astro.props;
+const en = lang === 'en';
+
+const pillars = [
+  {
+    id: 'intelligence', code: '01', name: 'Intelligence', color: '#c6fb72',
+    summary: (en ? "Research, news and market analysis with sources and context." : "Pesquisa, notícias e leituras de mercado com fontes e contexto."),
+    links: [
+      [(en ? "Observatory" : "Observatório"), '/observatorio/'],
+      ['Vértice Drops', '/drops/'],
+      [(en ? "AI + Crypto Radar" : "Radar IA + Cripto"), '/radar-ia-cripto/'],
+    ],
+  },
+  {
+    id: 'business', code: '02', name: 'Business', color: '#82e9c6',
+    summary: (en ? "Sales diagnostics and tools for organizing operations." : "Diagnósticos de vendas e ferramentas para organizar operações."),
+    links: [
+      [(en ? "Sales Diagnostics" : "Raio-X de Vendas"), '/raio-x-vendas/'],
+      [(en ? "Business Implementation" : "Implantação comercial"), '/solucoes/'],
+      [(en ? "N1 Core" : "Núcleo N1"), '/n1/'],
+    ],
+  },
+  {
+    id: 'creative', code: '03', name: 'Creative', color: '#e4aef5',
+    summary: (en ? "Visual analysis, creative portfolio and interactive experiments." : "Análise visual, portfólio de criativos e experimentos interativos."),
+    links: [
+      [(en ? "Visual Analysis · N1 Vision" : "Análise visual · N1 Visão"), '/n1/visao/fotos/'],
+      [(en ? "Portfolio & Creative" : "Portfólio e criativos"), '/klein/'],
+      [(en ? "Astro Lab · Birth Chart" : "Astro Lab · Mapa natal"), '/horoscopo/'],
+    ],
+  },
+  {
+    id: 'engineering', code: '04', name: 'Engineering', color: '#f6c580',
+    summary: (en ? "Technical tools, simulations and laboratory experiments." : "Ferramentas técnicas, simulações e experimentos de bancada."),
+    links: [
+      [(en ? "Mechatronics Bench" : "Bancada de Mecatrônica"), '/estudos/mecatronica/'],
+      [(en ? "Pre-dyno Assessment" : "Triagem pré-dyno"), '/tuning/'],
+      ['OPSEC Lab', '/privacy/'],
+      [(en ? "Duel: Bot vs Hold" : "Duelo: Bot vs Hold"), '/duelo-bot/'],
+      ['Perps Lab', '/perps/'],
+    ],
+  },
+];
+---
+<Lab home lang={lang} title="Vértice Labs / Research" description={en ? "Independent laboratory for research, business diagnostics, visual analysis and engineering." : "Laboratório independente de pesquisa, diagnóstico comercial, análise visual e engenharia."}>
+  <main id="conteudo" class="frame">
+    <section class="hero grid items-center gap-6 lg:grid-cols-[1.25fr_1fr]" aria-labelledby="titulo">
+      <div class="relative z-10">
+        <p class="eyebrow"><span aria-hidden="true">/</span> RESEARCH</p>
+        <h1 id="titulo">{en ? "Investigate." : "Investigue."}<br />{en ? "Analyze." : "Analise."}<br /><em>{en ? "Execute." : "Execute."}</em></h1>
+        <p class="intro">{en ? "Applied research and tools for investigating real-world problems." : "Pesquisa aplicada e ferramentas para investigar problemas reais."}</p>
+        <div class="flex flex-wrap gap-3">
+          <a class="button primary" href="#pilares">{en ? "Explore the lab" : "Explorar o laboratório"}</a>
+          <a class="button" href="/observatorio/">{en ? "Read the Observatory" : "Ler o Observatório"}</a>
+        </div>
+      </div>
+      <div class="lab-grid" aria-hidden="true">
+        <div class="grid-center">
+          <div class="orbit orbit-outer"></div>
+          <div class="orbit orbit-middle"></div>
+          <div class="orbit orbit-inner"></div>
+          <div class="vertex vertex-left"></div>
+          <div class="vertex vertex-right"></div>
+        </div>
+        <div class="point point-top"></div>
+        <div class="point point-right"></div>
+        <div class="point point-bottom"></div>
+      </div>
+    </section>
+
+    <section id="pilares" class="pillars" aria-labelledby="pilares-titulo">
+      <div class="section-bar flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+        <h2 id="pilares-titulo">{en ? "Lab pillars" : "Pilares do laboratório"}</h2>
+        <nav aria-label={en ? "Pillars" : "Pilares"} class="pillar-nav flex flex-wrap gap-3">
+          {pillars.map(({ id, code, name }) => <a href={'#' + id} aria-label={name}>{code}</a>)}
+        </nav>
+      </div>
+      <div class="pillar-grid grid md:grid-cols-2">
+        {pillars.map(({ id, code, name, color, summary, links }) => (
+          <section class="pillar" id={id} aria-labelledby={id + '-title'} style={{ '--pillar-accent': color }}>
+            <div class="pillar-heading flex items-baseline gap-4">
+              <span class="pillar-code">{code}</span>
+              <h3 id={id + '-title'}>{name}</h3>
+            </div>
+            <p>{summary}</p>
+            <ul>
+              {links.map(([label, href]) => <li><a href={href}>{label}</a></li>)}
+            </ul>
+          </section>
+        ))}
+      </div>
+    </section>
+  </main>
+</Lab>
