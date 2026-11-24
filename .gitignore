@@ -1,3 +1,6 @@
 /build/
 __pycache__/
 /editorial/.records-intake.lock
+/scripts/reel/node_modules
+/scripts/reel/.cache/
+/node_modules/
