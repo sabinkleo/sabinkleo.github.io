@@ -20,6 +20,12 @@
 <link rel="stylesheet" href="/assets/site-shell.css">
 <link rel="stylesheet" href="/assets/terminal-design.css">
 <link rel="stylesheet" href="/assets/klein.css">
+<link rel="stylesheet" href="/assets/command-hud.css">
+<script defer src="/assets/command-hud.js"></script>
+<script type="module">
+  import { mountEntry } from '/assets/ai-client.mjs';
+  mountEntry(document.querySelector('.hero [data-ai-entry]'));
+</script>
 </head>
 <body class="vl-site">
 <nav class="vl-nav" aria-label="Menu da Vértice">
@@ -38,6 +44,7 @@
       <span class="vt-eyebrow">Vértice Labs / Laboratório digital</span>
       <h1 id="page-title">Ferramentas para o trabalho técnico.</h1>
       <p>Diagnostique vendas, organize estoque, prepare um acerto ou explore dados de mercado.</p>
+      <div class="ai-entry" data-ai-entry="intent"></div>
       <div class="vt-hero-rail" aria-label="Áreas do catálogo"><span>Recursos</span><span>Negócios</span><span>Engenharia</span><span>Mercados</span></div>
     </section>
     <div class="catalog" id="ferramentas">
