@@ -11,7 +11,10 @@ assert.match(en, /href="\/pt\/"[^>]*hreflang="pt-BR"/);
 assert.match(pt, /href="\/"[^>]*hreflang="en"/);
 for (const html of [en, pt]) {
   assert.ok(html.includes('product-shell'));
-  assert.ok(html.includes('workspace-body'));
+  assert.ok(html.includes('editorial-highlights'));
+  assert.ok(html.includes('highlight-grid'));
+  assert.ok(html.includes('data-ai-entry="intent"'));
+  assert.ok(!html.includes('metric-grid'), 'Decorative metrics returned');
   assert.ok(html.includes('href="/pt/catalogo/"'));
   assert.ok(existsSync('dist/pt/catalogo/index.html'));
   for (const route of ['/observatorio/', '/raio-x-vendas/', '/n1/', '/tuning/', '/privacy/', '/duelo-bot/', '/perps/']) {
