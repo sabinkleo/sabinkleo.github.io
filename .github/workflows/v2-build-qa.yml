@@ -8,6 +8,8 @@ on:
       - 'package-lock.json'
       - 'tests/v2-build-smoke.mjs'
       - 'tests/technical-diagnostics.mjs'
+      - 'tests/teardown-engine.mjs'
+      - 'public/contact-qr.svg'
       - 'infra/triage/**'
       - '.github/workflows/v2-build-qa.yml'
   workflow_dispatch:
@@ -49,3 +51,4 @@ jobs:
           trap 'kill "$preview_pid"' EXIT
           curl --retry 10 --retry-connrefused --retry-delay 1 -fsS http://127.0.0.1:8766/en/ -o /dev/null
           node tests/technical-diagnostics.mjs
+          node tests/teardown-engine.mjs
