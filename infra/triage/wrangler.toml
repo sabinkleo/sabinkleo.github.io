@@ -1,0 +1,5 @@
+name = "vertice-technical-triage"
+main = "worker.ts"
+compatibility_date = "2025-10-01"
+workers_dev = false
+routes = [{ pattern = "verticelabs.me/api/triage", zone_name = "verticelabs.me" }]

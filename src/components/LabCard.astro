@@ -1,0 +1,4 @@
+---
+const { title, when } = Astro.props;
+---
+<article class="lab-card">{when && <small>{when}</small>}<h3>{title}</h3><slot /></article>

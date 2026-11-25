@@ -1,0 +1,4 @@
+---
+const { href, primary = false } = Astro.props;
+---
+<a class:list={['button', { primary }]} {href} data-attribution><slot /></a>

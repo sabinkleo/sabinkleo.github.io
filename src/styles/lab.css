@@ -1,18 +1,22 @@
 @import "tailwindcss";
 
+@import "./tokens.css";
+
 :root {
   color-scheme: dark;
-  --ground: #0c0e0d;
-  --text: #edf1eb;
-  --muted: #aeb8ad;
-  --line: #313b31;
-  --accent: #c6fb72;
-  --mono: "IBM Plex Mono", "Cascadia Mono", monospace;
+  --ground: var(--lab-ground);
+  --text: var(--lab-text);
+  --muted: var(--lab-muted);
+  --line: var(--lab-line);
+  --accent: var(--lab-accent);
+  --surface: var(--lab-surface);
+  --mono: var(--lab-mono);
   font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   background: var(--ground);
   color: var(--text);
   scroll-padding-top: 1rem;
 }
+
 a { text-underline-offset: .25em; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .frame { width: min(100% - 3rem, 75rem); margin-inline: auto; }
@@ -66,19 +70,19 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .pillar-nav a { padding: .4rem .25rem; }
 .pillar-nav a:hover { color: var(--accent); }
 .pillar-grid { background: var(--line); border: 1px solid var(--line); gap: 1px; }
-.pillar { background: #121613; padding: clamp(1.15rem, 3vw, 2rem); }
-.pillar-heading { border-block-start: 2px solid var(--pillar-accent); padding-top: 1rem; text-transform: uppercase; }
-.pillar-code { color: var(--pillar-accent); font: .95rem var(--mono); }
+.pillar { background: var(--surface); padding: clamp(1.15rem, 3vw, 2rem); }
+.pillar-heading { border-block-start: 2px solid var(--accent); padding-top: 1rem; text-transform: uppercase; }
+.pillar-code { color: var(--accent); font: .95rem var(--mono); }
 .pillar h3 { font-size: clamp(1.16rem, 3vw, 2rem); font-weight: 730; letter-spacing: -.035em; }
 .pillar p { margin-block: .55rem 1rem; color: var(--muted); }
 .pillar li { border-block-start: 1px solid var(--line); }
 .pillar li a { display: block; padding-block: .64rem; }
-.pillar li a:hover { color: var(--pillar-accent); text-decoration: underline; }
+.pillar li a:hover { color: var(--accent); text-decoration: underline; }
 .foot { border-block-start: 1px solid var(--line); border-block-end: 0; padding-block: 1.4rem; color: var(--muted); font: .85rem var(--mono); }
 .foot a { margin-inline-end: 2.75rem; }
 .control { min-height: 72vh; padding-block: clamp(2.5rem, 8vw, 6rem); }
 .control h1 { font-size: clamp(2.8rem, 7vw, 5.5rem); }
-.control-panel { margin-block: 2rem; max-width: 42rem; padding: 1.4rem; border: 1px solid var(--line); background: #121613; }
+.control-panel { margin-block: 2rem; max-width: 42rem; padding: 1.4rem; border: 1px solid var(--line); background: var(--surface); }
 .control-panel h2 { font-size: 1.25rem; font-weight: 700; }
 .control-panel p { margin-block: .6rem 1rem; color: var(--muted); }
 
@@ -92,4 +96,35 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   .hero h1 { font-size: clamp(3.25rem, 13vw, 5rem); }
   .lab-grid { min-height: 13rem; }
   .grid-center { max-width: 10rem; }
+}
+
+.button, .section-bar, .pillar-heading { font-family: var(--mono); }
+.lab-section { padding-block: clamp(2rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+.lab-section h2 { font-size: clamp(1.65rem, 4vw, 2.8rem); letter-spacing: -.05em; margin-bottom: 1rem; }
+.lab-cards { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+.lab-card { background: var(--surface); padding: clamp(1.25rem, 3vw, 2.4rem); min-width: 0; }
+.lab-card h3 { font: 600 1.2rem var(--mono); margin-bottom: .8rem; }
+.lab-card p { color: var(--muted); }
+.lab-card a { display: inline-block; margin-top: 1rem; color: var(--accent); }
+.lab-card small, .terminal figcaption { color: var(--accent); font: .8rem var(--mono); }
+.vertical-hero { display: grid; gap: 2rem; align-items: center; padding-block: clamp(3rem, 8vw, 7rem); }
+.vertical-hero h1 { font-size: clamp(2.85rem, 6vw, 5.8rem); font-weight: 720; line-height: .99; letter-spacing: -.065em; max-width: 16ch; }
+.vertical-hero .intro { max-width: 53ch; }
+.terminal { min-width: 0; border: 1px solid var(--line); background: #0a100b; padding: clamp(1rem, 2vw, 2rem); box-shadow: inset 3px 0 var(--accent); }
+.terminal figcaption { margin-bottom: 1.3rem; }
+.terminal pre { overflow-x: auto; font: clamp(.76rem, 2vw, .95rem)/1.85 var(--mono); }
+.terminal pre span { display: block; }
+@media (prefers-reduced-motion: no-preference) {
+  .terminal pre span { animation: trace-in .3s backwards; animation-delay: var(--delay); }
+  @keyframes trace-in { from { opacity: 0; } to { opacity: 1; } }
+}
+.diagnostic label { display: grid; align-items: center; gap: .75rem; padding: 1rem 0; border-top: 1px solid var(--line); }
+.diagnostic select, .diagnostic textarea { background: var(--surface); color: var(--text); border: 1px solid var(--line); padding: .65rem; }
+.diagnostic textarea { width: 100%; min-height: 10rem; font-family: var(--mono); }
+.diagnostic [data-output] { padding-block: 1.5rem; }
+.diagnostic li { padding-block: .5rem; }
+@media (min-width: 48rem) {
+  .lab-cards { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .vertical-hero:has(.terminal) { grid-template-columns: 1.15fr 1fr; }
+  .diagnostic label { grid-template-columns: 1fr 15rem; }
 }
