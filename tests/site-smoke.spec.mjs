@@ -602,3 +602,34 @@ test('an unconfigured container leaves measurement dormant', async ({page}) => {
   await expect(page.locator('.vl-consent')).toHaveCount(0);
   expect(await page.evaluate(() => window.dataLayer)).toBeUndefined();
 });
+
+
+test('CRM recovers from a temporary account request failure without exposing leads', async ({ page }) => {
+  let attempts = 0;
+  await page.route('https://api.verticelabs.me/v1/account', async route => {
+    if (route.request().method() === 'OPTIONS') {
+      return route.fulfill({status: 204, headers: {
+        'access-control-allow-origin': origin, 'access-control-allow-credentials': 'true',
+        'access-control-allow-methods': 'GET, OPTIONS', 'access-control-allow-headers': 'content-type,x-appwrite-project'
+      }});
+    }
+    attempts++;
+    await route.fulfill({status: attempts === 1 ? 503 : 401, contentType: 'application/json',
+      headers: {'access-control-allow-origin': origin, 'access-control-allow-credentials': 'true'},
+      body: '{}'});
+  });
+  await page.goto(origin + '/crm/');
+  await expect(page.locator('#login')).toBeVisible();
+  await expect(page.locator('#status')).toHaveText('Entre com sua conta autorizada.');
+  await expect(page.locator('#workspace')).toBeHidden();
+  expect(attempts).toBe(2);
+});
+
+test('CRM leaves a recovery control available after persistent network failure', async ({ page }) => {
+  await page.route('https://api.verticelabs.me/v1/account', route => route.abort('failed'));
+  await page.goto(origin + '/crm/');
+  await expect(page.locator('#status')).toContainText('Não foi possível verificar a sessão');
+  await expect(page.getByRole('button', {name: 'Tentar novamente'})).toBeVisible();
+  await expect(page.locator('#login')).toBeVisible();
+  await expect(page.locator('#workspace')).toBeHidden();
+});
