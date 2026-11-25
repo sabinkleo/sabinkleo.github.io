@@ -28,9 +28,14 @@ try {
   await page.waitForFunction(()=>document.querySelector('[data-reading]').value!=='—');
   assert.equal(await page.locator('[data-play]').textContent(),'Play');
   assert.ok(await canvas.evaluate(el=>el.getContext('2d').getImageData(6,6,1,1).data[3]===255));
-  await page.locator('#pull-rpm').fill('4880');
+  const slider=page.locator('#pull-rpm');
+  const box=await slider.boundingBox();
+  await slider.click({position:{x:Math.round(box.width * (4880-2000)/(7200-2000)),y:box.height/2}});
+  const scrubbed=Number(await slider.inputValue());
+  assert.ok(scrubbed>4780 && scrubbed<4980);
+  await slider.press('ArrowRight');
   const baseTorque=await page.locator('[data-reading]').first().textContent();
-  assert.match(await page.locator('[data-event]').textContent(),/Knock correction · −4/);
+  assert.match(await page.locator('[data-event]').textContent(),/Knock correction · −[34]/);
   await page.getByRole('button',{name:'Calibrated Map'}).click();
   assert.notEqual(await page.locator('[data-reading]').first().textContent(),baseTorque);
   await page.getByRole('button',{name:'Play',exact:true}).click();
@@ -50,6 +55,12 @@ try {
   await page.waitForFunction(async()=>await navigator.clipboard.readText()==='+5541998844684');
   await input.fill('Linux');await input.press('Enter');await page.waitForURL('**/en/linux-security/');
   assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('vl-scan')));
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.goto(base+'/en/lab/');
+  await page.waitForFunction(()=>Number(document.querySelector('[data-packet]').getAttribute('cx'))>65);
+  await page.getByRole('button',{name:'Inject HTTP 429'}).click();
+  await page.waitForFunction(()=>document.querySelector('svg [data-state=active] text')?.textContent==='Gemini', { }, {timeout:12000});
+  assert.match(await page.locator('[data-trace]').textContent(),/"event":"circuit.closed"/);
   assert.deepEqual(errors,[]);
   console.log('Chromium verified failover, ECU replay, reduced motion, mobile width, PT/EN/legacy HUD, clipboard, grid persistence and keyboard navigation.');
 } finally { await browser.close(); }
