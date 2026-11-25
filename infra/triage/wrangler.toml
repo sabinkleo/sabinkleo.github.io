@@ -9,3 +9,4 @@ routes = [{ pattern = "verticelabs.me/api/triage", zone_name = "verticelabs.me" 
 name = "vertice-technical-triage-pages"
 workers_dev = true
 preview_urls = false
+routes = []
