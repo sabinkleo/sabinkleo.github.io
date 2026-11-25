@@ -42,19 +42,23 @@
 <div class="actions"><button>Salvar dados</button><button type="button" id="cancel-lead">Cancelar</button></div>
 </form>
 <label>Importar leads <input id="import" type="file" accept=".json,.csv"></label>
-<label>Buscar lead <input id="search" type="search" placeholder="Empresa, segmento, cidade ou etapa"></label>
+<div class="command-center"><aside><label>Buscar lead <input id="search" type="search" placeholder="Empresa, segmento, cidade ou etapa"></label>
 <label>Filtrar por etapa <select id="stage-filter"><option value="">Todas</option></select></label>
 <p id="revenue" aria-live="polite"></p>
 <div class="table-region" tabindex="0" aria-label="Lista de leads">
 <table><thead><tr><th>Empresa</th><th>Etapa</th><th>Retorno</th></tr></thead><tbody id="leads"></tbody></table>
 </div>
-<section id="profile" hidden>
+</aside><section id="profile" hidden>
 <h2 id="company" tabindex="-1"></h2>
 <p id="lead-details"></p>
 <button id="edit-lead">Editar dados</button>
 <div id="contacts" class="actions"></div>
 <h3>Evidências</h3><ul id="evidence"></ul>
 <h3>Hipóteses comerciais</h3><ul id="hypotheses"></ul>
+<details id="archive"><summary>Hipóteses revisadas</summary><ul id="reviewed"></ul></details>
+<label>Modo criativo <select id="creativity_mode"><option>Cirúrgico</option><option>Cavalo de Troia</option><option>Contra-Intuitivo</option><option>Modo Caos Controlado</option></select></label>
+<div class="actions"><button id="generate-hook">Gerar Hipótese Anti-Fluff (IA)</button><button id="remix-hook">Remixar ângulo</button><a hidden id="hook-wa">WhatsApp</a><button id="copy-teardown">Copiar link Teardown</button></div>
+<pre id="ai-hypothesis" role="status"></pre>
 <form id="pipeline">
 <label>Etapa <select name="stage"><option>Prospecção</option><option>Contato feito</option><option>Qualificado</option><option>Proposta</option><option>Ganho</option><option>Perdido</option></select></label>
 <label>Próxima ação <input name="nextAction" maxlength="500"></label>
@@ -66,7 +70,7 @@
 <label>Registrar contato <textarea name="note" maxlength="1000"></textarea></label>
 <button>Salvar</button>
 </form>
-</section>
+</section></div>
 </section>
 </main>
 </body>

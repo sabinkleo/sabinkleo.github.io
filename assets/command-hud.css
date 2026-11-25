@@ -15,3 +15,9 @@ dialog.vl-command {box-sizing:border-box;position:fixed;inset:17vh 0 auto;margin
 .vl-command .vl-action[aria-selected=true] {background:#263120;color:#dbff70}
 .vl-command footer {font-size:11px;min-height:30px}
 html.vl-scan body::after {content:"";z-index:2147483000;position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 3px,#8ca88015 3px 4px),repeating-linear-gradient(90deg,transparent 0 47px,#8ca88010 47px 48px)}
+
+.ai-entry { display:grid; gap:.65rem; padding:1rem; margin-block:1rem; border:1px solid #445247; background:#101511; color:#e0eadf; font: .95rem/1.5 ui-monospace,monospace; min-width:0 }
+.ai-entry textarea { background:#080c09; color:inherit; border:1px solid #718376; padding:.7rem; width:100%; box-sizing:border-box }
+.ai-entry button,.ai-entry a { color:#ccff97; border:1px solid #4d6144; background:#162014; padding:.45rem .7rem; text-align:start }
+.ai-entry pre,.ai-readout { white-space:pre-wrap; overflow-wrap:anywhere }
+.ai-entry [hidden] { display:none }
