@@ -2,6 +2,7 @@ name: Observatório editorial
 on:
   pull_request:
     paths:
+      - '_drafts/**'
       - 'editorial/**'
       - 'observatorio/**'
       - '.github/workflows/observatorio.yml'

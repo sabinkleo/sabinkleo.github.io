@@ -591,3 +591,14 @@ test('CRM operator can create, edit, filter and reopen a lead on mobile', async 
   await expect(page.locator('#leads tr')).toHaveCount(0);
   expect(exceptions).toEqual([]);
 });
+
+test('an unconfigured container leaves measurement dormant', async ({page}) => {
+  await page.route('**/assets/measurement.js', async route => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(/var GTM_ID = '[^']*';/, "var GTM_ID = '';");
+    await route.fulfill({response, body});
+  });
+  await page.goto(origin + '/solucoes/');
+  await expect(page.locator('.vl-consent')).toHaveCount(0);
+  expect(await page.evaluate(() => window.dataLayer)).toBeUndefined();
+});
