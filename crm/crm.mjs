@@ -189,6 +189,7 @@ async function showWorkspace() {
   await refresh();
   $('login').hidden = true;
   $('workspace').hidden = false;
+  retryButton.hidden = true;
   status(rows.length + ' leads');
 }
 
