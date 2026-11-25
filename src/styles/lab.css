@@ -141,3 +141,22 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   [data-catalog-hero] .ai-entry { margin-block:.75rem; padding:.75rem; }
   [data-catalog-hero] .ai-entry textarea, [data-catalog-hero] .ai-entry button, [data-catalog-hero] .ai-entry a { min-height:44px; }
 }
+
+/* Product identity: scope to the public bilingual home; technical and private interfaces stay independent. */
+body.product-shell {
+  --accent:#b6f3a3; --line:#30453b; --muted:#a4b8a8;
+  background:radial-gradient(ellipse at 80% 5%,#20392a 0%,transparent 46rem),#0e1712;
+  min-height:100vh;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.product-shell .top { background:#101a15d9; border-color:#30453b; }
+.product-shell .brand { font:750 .92rem/1.3 system-ui,sans-serif; letter-spacing:.105em; }
+.product-shell .brand-mark { clip-path:polygon(0 0,100% 0,50% 100%,0 0,25% 20%,50% 70%,75% 20%,25% 20%); width:1.1rem; height:.95rem; vertical-align:middle; margin-right:.3rem; }
+.product-shell .top nav { font-size:.85rem; align-items:center; }
+.product-shell .top nav a[aria-current=page] { color:var(--accent); font-weight:700; }
+.product-shell .vl-key { border-radius:.45rem; color:var(--accent); border-color:#405848; }
+.product-shell .foot { font-family:inherit; }
+@media(max-width:36rem) {
+  .product-shell .top nav { gap:.15rem .7rem; }
+  .product-shell .top nav a { min-height:44px; }
+}
