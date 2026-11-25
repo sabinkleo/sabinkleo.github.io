@@ -67,3 +67,26 @@ test('HTTP entry points cap bytes, gate each IP and preserve triage',async()=>{
     assert.equal((await post({},'/unknown')).status,404);
   }finally{await server.close();}
 });
+
+test('article AI accepts only fixed public context, fails closed and calls a real provider',async()=>{
+  const {validArticle,articleAnswer}=await import('../infra/triage/article.mjs');
+  const p={action:'article',slug:'google-workspace-mcp-cli',mode:'risks',lang:'en'};
+  assert.ok(validArticle(p));
+  for(const bad of [{...p,slug:'../crm'},{...p,text:'private'},{...p,mode:'arbitrary'},{...p,slug:'https://example.com'}])assert.ok(!validArticle(bad));
+  const seen=[];
+  const context={slug:p.slug,summary:'Published evidence',sources:[],updated_at:'2026-11-25'};
+  const send=async(url,options)=>{
+    seen.push(url);
+    if(seen.length===1)return Response.json(context);
+    const body=JSON.parse(options.body);
+    assert.deepEqual(JSON.parse(body.messages[1].content),context);
+    return Response.json({choices:[{message:{content:'Only the announced scope is established.'}}]});
+  };
+  const result=await articleAnswer(p,{GEMINI_API_KEY:'fixture'},send);
+  assert.equal(result.source,'gateway');
+  assert.equal(seen[0],'https://verticelabs.me/observatorio/google-workspace-mcp-cli/context.json');
+  assert.match(seen[1],/generativelanguage.googleapis.com/);
+  assert.equal((await articleAnswer(p,{},async()=>Response.json(context))).status,503);
+  assert.equal((await articleAnswer(p,{},async()=>new Response(null,{status:404}))).status,404);
+  assert.equal((await articleAnswer(p,{GEMINI_API_KEY:'fixture'},async(url)=>url.includes('verticelabs.me')?Response.json(context):Response.json({choices:[{message:{content:'<img onerror=alert(1)>'}}]}))).status,503);
+});
