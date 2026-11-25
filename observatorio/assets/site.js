@@ -25,6 +25,37 @@
       tool.href = destination.href;
     }
   }
+  // Build contextual article navigation from the published sections, without
+  // sending article contents or visitor input to a remote service.
+  const article = document.querySelector("main article");
+  const sidebar = article?.querySelector(".file");
+  const sections = [...(article?.querySelectorAll(".prose > section") || [])];
+  if (sidebar && sections.length) {
+    const nav = document.createElement("nav");
+    nav.className = "article-navigation";
+    nav.setAttribute("aria-label", "Nesta matéria");
+    const title = document.createElement("h2");
+    title.textContent = "Nesta matéria";
+    const list = document.createElement("ol");
+    for (const [index, section] of sections.entries()) {
+      const heading = section.querySelector("h2");
+      if (!heading) continue;
+      if (!section.id) {
+        let id = "materia-secao-" + (index + 1);
+        while (document.getElementById(id)) id += "-x";
+        section.id = id;
+      }
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = "#" + section.id;
+      link.textContent = heading.textContent;
+      item.append(link);
+      list.append(item);
+    }
+    nav.append(title, list);
+    sidebar.append(nav);
+  }
+
   let favorites = restore();
   const buttons = [...document.querySelectorAll("[data-save]")];
   const form = document.querySelector("#filtros");
