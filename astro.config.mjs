@@ -11,14 +11,32 @@ const legacyPaths = [
   'radar-ia-cripto', 'raio-x-vendas', 'signal-lab', 'solucoes', 'tuning', 'tunning',
 ];
 
+// Export only explicitly published editorial fields; no review notes, internal data or credentials.
+async function buildArticleContexts(dir) {
+  const manifest = JSON.parse(await readFile(new URL('observatorio/edicoes.json', dir), 'utf8'));
+  for (const slug of Object.keys(manifest)) {
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw Error('Invalid article slug');
+    const record = JSON.parse(await readFile(new URL('editorial/records/' + slug + '.json', import.meta.url), 'utf8'));
+    if (record.slug !== slug || !['approved','published','updated'].includes(record.content_status)) throw Error('Non-public article');
+    const fields = ['slug','title','summary','what_changed','who_is_affected','how_to_adapt','brazil_note','limitations','business_opportunity','opportunity_status','updated_at'];
+    const context = Object.fromEntries(fields.map(key => [key, record[key]]));
+    context.sources = record.sources.map(({title,url}) => ({title,url}));
+    await writeFile(new URL('observatorio/' + slug + '/context.json', dir), JSON.stringify(context));
+  }
+}
+
 // Attach the shared HUD to the public legacy HTML produced by the static build.
-async function attachPublicHud(dir) {
+async function attachPublicHud(dir, prefix = '') {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
     if (['crm', '_astro', 'teardown'].includes(entry.name)) continue;
     const url = new URL(encodeURIComponent(entry.name) + (entry.isDirectory() ? '/' : ''), dir);
-    if (entry.isDirectory()) await attachPublicHud(url);
+    if (entry.isDirectory()) await attachPublicHud(url, prefix + entry.name + '/');
     else if (entry.name.endsWith('.html')) {
-      const html = await readFile(url, 'utf8');
+      let html = await readFile(url, 'utf8');
+      if (/^(?:n1|drops|tuning|tunning|raio-x-vendas|estudos|horoscopo|klein)\//.test(prefix) && !html.includes('/assets/product-tools.css')) {
+        html = html.replace(/<\/head>/i, '<link rel="stylesheet" href="/assets/product-tools.css"></head>');
+        await writeFile(url, html);
+      }
       if (!html.includes('/assets/command-hud.js')) {
         const assets = '<link rel="stylesheet" href="/assets/command-hud.css"><script defer src="/assets/command-hud.js"></script>';
         await writeFile(url, html.replace(/<\/head>/i, assets + '</head>'));
@@ -45,6 +63,7 @@ export default defineConfig({
           { recursive: true, filter: (source) => !source.endsWith('/vision-worker') },
         )));
         await cp(new URL('index.html', import.meta.url), new URL('pt/catalogo/index.html', dir), { recursive: true });
+        await buildArticleContexts(dir);
         await attachPublicHud(dir);
       },
     },
