@@ -1,0 +1,43 @@
+---
+import Lab from '../layouts/Lab.astro';
+const { lang = 'en' } = Astro.props;
+const en = lang === 'en';
+const t = (a: string,b: string) => en ? a : b;
+const title = t('GEO — AI search visibility | Vértice Labs','GEO — Visibilidade em buscas por IA | Vértice Labs');
+const description = t('Manual AI visibility audit and technical improvements for businesses in Brazil.','Auditoria manual de visibilidade em IA e melhorias técnicas para empresas brasileiras.');
+const items = [
+[t('AI visibility baseline','Visibilidade em IA'),t('Test agreed queries in ChatGPT, Gemini and Perplexity; record dates, citations and limitations.','Teste de consultas acordadas no ChatGPT, Gemini e Perplexity, com datas, citações e limitações.')],
+[t('Technical discovery','Descoberta técnica'),t('Review indexability, canonical URLs, structured data and accessible content.','Revisão de indexabilidade, URLs canônicas, dados estruturados e conteúdo acessível.')],
+[t('Competitive comparison','Comparação competitiva'),t('Compare public evidence for up to three competitors.','Comparação de evidências públicas de até três concorrentes.')],
+[t('Implementation and retest','Implementação e reteste'),t('Apply agreed fixes and document the before-and-after results.','Aplicação das correções acordadas e documentação dos resultados antes e depois.')]
+];
+const contact = 'https://wa.me/5541998844684?text=' + encodeURIComponent(t('Hello, I would like a GEO assessment for my business. Website: ','Olá, gostaria de um diagnóstico GEO para minha empresa. Site: '));
+---
+<Lab lang={lang} publicService title={title} description={description}>
+<main id="conteudo" class="frame geo">
+  <section class="geo-hero">
+    <div><p class="kicker">BUSINESS / 01 — GEO</p>
+    <h1>{t('Can AI find your business?','A inteligência artificial encontra sua empresa?')}</h1>
+    <p class="lead">{description}</p>
+    <a class="cta" href={contact}>{t('Request an assessment','Solicitar diagnóstico')} ↗</a>
+    <p class="muted">{t('Manual assessment · Curitiba, Brazil · Remote delivery','Diagnóstico manual · Curitiba, PR · Atendimento remoto')}</p></div>
+    <aside class="panel"><p class="kicker">{t('IMPLEMENTATION','IMPLEMENTAÇÃO')}</p><strong class="price">{t('From R$3,000','A partir de R$ 3.000')}</strong><p>{t('One website, up to five priority pages, ten agreed queries and one retest. Final scope agreed before payment.','Um site, até cinco páginas prioritárias, dez consultas acordadas e um reteste. Escopo final definido antes do pagamento.')}</p><p class="muted">{t('No guaranteed rankings, citations or sales.','Sem garantia de posicionamento, citações ou vendas.')}</p></aside>
+  </section>
+  <section aria-labelledby="scope"><h2 id="scope">{t('What we deliver','O que entregamos')}</h2><div class="geo-grid">{items.map(([name,detail],i)=><article class="panel"><p class="kicker">0{i+1}</p><h3>{name}</h3><p>{detail}</p></article>)}</div></section>
+  <section class="panel next"><h2>{t('Start with your website','Comece pelo seu site')}</h2><p>{t('Send your website, target market and priority products or services. We will assess fit before proposing implementation.','Envie seu site, mercado-alvo e produtos ou serviços prioritários. Avaliamos a adequação antes de propor a implementação.')}</p><a class="cta" href={contact}>{t('Talk on WhatsApp','Conversar pelo WhatsApp')} ↗</a></section>
+</main>
+</Lab>
+<style>
+.geo{--mint:#b6f3a3;--edge:#30453b;--soft:#a4b8a8;padding-block:clamp(2rem,6vw,5rem)}
+.geo-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(1rem,5vw,4rem);align-items:center;margin-bottom:3rem}
+.kicker{color:var(--mint);font-size:.75rem;letter-spacing:.13em;font-weight:650;margin-bottom:.8rem}
+h1{font-size:clamp(2.4rem,5.8vw,4.8rem);line-height:1.06;letter-spacing:-.055em;font-weight:720}
+h2{font-size:1.65rem;font-weight:700;margin-bottom:1rem}h3{font-size:1.15rem;font-weight:650;margin-bottom:.5rem}
+.lead{font-size:1.15rem;color:var(--soft);margin:1.2rem 0;max-width:44ch}
+.panel{background:#182720;border:1px solid var(--edge);border-radius:1.1rem;padding:clamp(1rem,3vw,1.8rem);min-width:0}
+.panel p{line-height:1.65}.price{font-size:clamp(1.6rem,3vw,2.5rem);color:var(--mint);display:block;margin-bottom:.8rem}
+.cta{display:inline-flex;align-items:center;background:var(--mint);color:#102015;padding:.8rem 1rem;border-radius:.7rem;font-weight:700;min-height:44px;text-decoration:none}
+.cta:focus-visible{outline:2px solid white;outline-offset:4px}.muted{font-size:.85rem;color:var(--soft);margin-top:.9rem}
+.geo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.next{margin-top:2rem}.next .cta{margin-top:1rem}
+@media(max-width:760px){.geo-hero,.geo-grid{grid-template-columns:1fr}}
+</style>
