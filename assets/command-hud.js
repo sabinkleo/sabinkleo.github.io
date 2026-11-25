@@ -74,7 +74,14 @@
       feedback=node('footer');feedback.setAttribute('role','status');
       dialog.append(header,label,list,feedback);document.body.append(dialog);
       dialog.addEventListener('close',()=>previous?.focus?.({preventScroll:true}));
-      dialog.addEventListener('click',e=>{if(e.target===dialog && !dialog.contains(document.elementFromPoint(e.clientX,e.clientY)?.closest('.vl-command header,.vl-query,li,footer'))) dialog.close();});
+      dialog.addEventListener('keydown',e=>{
+        if(e.key==='Escape'){e.preventDefault();dialog.close();}
+      });
+      dialog.addEventListener('click',e=>{
+        if(e.target!==dialog) return;
+        const rect=dialog.getBoundingClientRect();
+        if(e.clientX<rect.left || e.clientX>rect.right || e.clientY<rect.top || e.clientY>rect.bottom) dialog.close();
+      });
       input.onkeydown=e=>{
         if(e.key==='Enter'){e.preventDefault();run(active);}
         else if(matches.length && ['ArrowUp','ArrowDown'].includes(e.key)){
