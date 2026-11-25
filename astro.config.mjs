@@ -44,6 +44,7 @@ export default defineConfig({
           new URL(path, import.meta.url), new URL(path, dir),
           { recursive: true, filter: (source) => !source.endsWith('/vision-worker') },
         )));
+        await cp(new URL('index.html', import.meta.url), new URL('pt/catalogo/index.html', dir), { recursive: true });
         await attachPublicHud(dir);
       },
     },
