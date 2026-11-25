@@ -332,23 +332,61 @@ function download(format) {
 $('export-json').onclick = () => download('json');
 $('export-csv').onclick = () => download('csv');
 
-try {
-  const response = await fetch('./config.json', {cache: 'no-store'});
-  config = await response.json();
-  const endpoint = new URL(config.endpoint);
-  if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password || endpoint.search || endpoint.hash ||
-      endpoint.pathname !== '/v1' || !endpoint.hostname.endsWith('.verticelabs.me') ||
-      ![config.project, config.database, config.table].every(value => typeof value === 'string' && value.trim())) {
-    throw new Error('Configuração pendente.');
-  }
+// Keep transient transport failures separate from invalid sessions and config.
+const retryStartup = async action => {
   try {
-    await api('/account');
-    await showWorkspace();
+    return await action();
   } catch (error) {
-    if (error.status !== 401 && error.status !== 403) throw error;
-    locked();
-    status('Entre com sua conta autorizada.');
+    if (!(error instanceof TypeError || error.status === 408 || error.status >= 500)) throw error;
+    await new Promise(resolve => setTimeout(resolve, 600));
+    return action();
   }
-} catch {
-  status('CRM indisponível. Confira a configuração do serviço.');
+};
+
+const retryButton = document.createElement('button');
+retryButton.type = 'button';
+retryButton.textContent = 'Tentar novamente';
+retryButton.hidden = true;
+retryButton.onclick = () => location.reload();
+$('status').after(retryButton);
+
+async function initialize() {
+  let phase = 'config';
+  try {
+    const response = await retryStartup(async () => {
+      const result = await fetch('./config.json', {cache: 'no-store'});
+      if (!result.ok) throw Object.assign(new Error('Configuração indisponível.'), {status: result.status});
+      return result.json();
+    });
+    const endpoint = new URL(response.endpoint);
+    if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password || endpoint.search || endpoint.hash ||
+        endpoint.pathname !== '/v1' || !endpoint.hostname.endsWith('.verticelabs.me') ||
+        ![response.project, response.database, response.table].every(value => typeof value === 'string' && value.trim())) {
+      throw new Error('Configuração pendente.');
+    }
+    config = response;
+    phase = 'session';
+    try {
+      await retryStartup(() => api('/account'));
+    } catch (error) {
+      if (error.status !== 401 && error.status !== 403) throw error;
+      locked();
+      status('Entre com sua conta autorizada.');
+      return;
+    }
+    phase = 'leads';
+    await retryStartup(showWorkspace);
+  } catch (error) {
+    console.warn('CRM startup', phase, error.status ?? error.name);
+    if (phase === 'session' || (phase === 'leads' && [401, 403].includes(error.status))) locked();
+    retryButton.hidden = false;
+    const detail = Number.isInteger(error.status) ? ' (HTTP ' + error.status + ')' : '';
+    status(({
+      config: 'Não foi possível carregar a configuração do CRM.',
+      session: 'Não foi possível verificar a sessão. Tente novamente ou entre com sua conta.',
+      leads: 'Sessão verificada, mas não foi possível carregar os leads.',
+    })[phase] + detail);
+  }
 }
+
+await initialize();
