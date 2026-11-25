@@ -1,0 +1,106 @@
+{
+  "google-workspace-mcp-cli": {
+    "revision": "2026-11-25T22:30:00Z",
+    "title": "Google Workspace releases MCP and CLI for AI agents",
+    "category": "Automation",
+    "sector": "Software",
+    "summary": "Google has introduced two official ways to connect agents to Workspace and announced new access and control requirements for 2027.",
+    "what_changed": "On November 24, 2026, Google announced general availability of Workspace MCP servers and its command-line interface. The announcement calls for AI agents to use these official interfaces instead of traditional REST APIs, with technical enforcement beginning February 1, 2027. It also describes quota-related charges starting April 1, 2027, and administrative controls for permissions, auditing and higher-impact actions.",
+    "who_is_affected": "Agent developers, IT teams and businesses integrating Gmail, Drive, Docs, Sheets and other Workspace services into automation.",
+    "how_to_adapt": [
+      "Identify agents that access Gmail, Drive and other services through REST APIs, and inventory their permissions.",
+      "Test MCP for cloud agents and CLI for local automation, using test accounts and least-privilege access.",
+      "Assign responsibility for approving sensitive actions and prepare the migration before February 1, 2027."
+    ],
+    "brazil_note": "The announcement is general in scope. Availability for specific Brazilian accounts or plans has not been verified.",
+    "limitations": "These are Google's announced timelines. Some controls are still forthcoming. Charges and access conditions need to be checked for each integration; the announcement does not mean REST APIs are being discontinued for traditional applications.",
+    "business_opportunity": "Businesses with existing integrations can assess migration needs and commission a review of permissions, compatibility and cost. Demand for that service has not been measured.",
+    "source_titles": [
+      "Built for trust and control: New AI agent protections and developer tools in Google Workspace"
+    ],
+    "history_notes": [
+      "Official announcement selected.",
+      "Date, general availability and timelines checked against the official source.",
+      "Analysis and social package prepared.",
+      "Editorial review completed for the requested publication."
+    ]
+  },
+  "shirudo-protecao-linux": {
+    "revision": "2026-11-24T15:57:25Z",
+    "title": "OpenAI and Cisco announce temporary protection for Linux services",
+    "category": "Infrastructure",
+    "sector": "Software",
+    "summary": "Shirudo is an open-source project for applying temporary protections to Linux services while a permanent fix is prepared and distributed.",
+    "what_changed": "On November 23, 2026, OpenAI and Cisco announced Shirudo. It uses eBPF to apply service-specific protections to running services after operator approval. The companies reported a controlled test in which a protection blocked an exploitation attempt without restarting the service.",
+    "who_is_affected": "Teams responsible for Linux services that need time to test and distribute fixes.",
+    "how_to_adapt": [
+      "Identify services that cannot be interrupted during an update.",
+      "In staging, measure availability and check whether normal operations continue with the temporary protection enabled.",
+      "Define who approves the protection, when it must be removed and the deadline for applying the permanent fix."
+    ],
+    "brazil_note": "The announcement describes an open project. Compatibility, support and terms of use must be assessed in each team's environment.",
+    "limitations": "The reported result came from a controlled test conducted by the project team. Effectiveness in other services and environments needs separate evaluation.",
+    "business_opportunity": "Teams with long update windows can measure how long their services remain exposed while a fix is prepared.",
+    "source_titles": [
+      "OpenAI and Cisco introduce Shirudo"
+    ],
+    "history_notes": [
+      "Announcement selected.",
+      "Date, scope and limitations checked against the official announcement.",
+      "Article and social package prepared.",
+      "Material reviewed for submission as a pull request."
+    ]
+  },
+  "github-cli-eventos-pr": {
+    "revision": "2026-11-20T05:53:43Z",
+    "title": "How to wait for pull request events without polling GitHub",
+    "category": "Automation",
+    "sector": "Software",
+    "summary": "GitHub CLI now offers a way to wait for pull request events. Small teams can test whether review or CI waits can be removed from scripts that repeatedly query the same PR.",
+    "what_changed": "On November 18, 2026, GitHub announced CLI support for Event Streams starting with version 2.105.0. On accounts with access, gh event listen monitors selected PR events and emits each event as a JSON line. The command can stop after the first event.",
+    "who_is_affected": "Teams using scripts to monitor reviews, PR changes or completed checks. If existing GitHub notifications already work well, change is worthwhile only when measurable rework exists.",
+    "how_to_adapt": [
+      "Check the installed version using gh --version and confirm preview access for the test account.",
+      "Choose a test PR and one event, such as completed checks. Compare the current polling approach with event listening and set a wait limit.",
+      "Measure reaction latency and missed events. Keep the existing workflow available during evaluation."
+    ],
+    "brazil_note": "The announcement describes a GitHub.com preview with a waitlist. Check account eligibility before relying on the feature in Brazil.",
+    "limitations": "This is a proposed test, not a measured result. The announcement was verified; preview access, event delivery and time savings must be confirmed in the test account.",
+    "business_opportunity": "If the delay between an event and the next action affects operations, pilot a single workflow. In sales, the equivalent question is who takes responsibility for an incoming conversation. The sales diagnostic helps estimate the impact of unanswered conversations.",
+    "source_titles": [
+      "GitHub Changelog · Wait for pull request events with GitHub CLI"
+    ],
+    "history_notes": [
+      "Announcement selected for editorial analysis.",
+      "Date, minimum version and preview conditions checked against the official source.",
+      "Article and proposed test prepared with explicit limitations.",
+      "Material reviewed for submission as a pull request."
+    ]
+  },
+  "frete-search-console": {
+    "revision": "2026-11-19T22:49:22Z",
+    "title": "What shipping estimate does your store report to Google?",
+    "category": "Search and commerce",
+    "sector": "Retail",
+    "summary": "Imagine a product page promising delivery in two days while checkout shows five for the same postal code. This guide explains how to check what your store also reports to Google.",
+    "what_changed": "On November 12, 2025, Google announced that Search Console would accept shipping and return policies for websites it recognizes as stores, including those without a configured Merchant Center account. According to the announcement, settings entered in Search Console take precedence over structured data on the website. This changes where to look for discrepancies before modifying code.",
+    "who_is_affected": "Operators of online stores with separate catalog, logistics and customer service teams. If customers ask about delivery times on WhatsApp, staff can repeat the lookup with the same product and destination before replying.",
+    "how_to_adapt": [
+      "Choose an in-stock product and a test postal code. Record delivery time, cost and shipping method on the product page and at checkout for the same quantity. Use the same destination in both.",
+      "Open the correct Search Console property and look for shipping and return settings. If present, compare them with the test order. If absent, record that and ask the site maintainer to check shipping markup.",
+      "Confirm the achievable delivery promise with fulfillment staff. Correct the discrepancy and repeat the lookup. For seven days, separately count delivery-time questions and conversations that lead to paid orders."
+    ],
+    "brazil_note": "Google announced a gradual rollout across countries and languages. Availability for an individual Brazilian property needs to be checked by someone with access.",
+    "limitations": "Vértice checked the public announcement. The two- and five-day delivery times are fictional examples. Store settings, search display and effects on orders require separate checks. The announcement provides no sales estimate.",
+    "business_opportunity": "Stores receiving repeated shipping questions can test whether staff can track those conversations through to a paid order. Use the sales diagnostic to identify service gaps. A commercial review is justified only if discrepancies or untracked opportunities are found.",
+    "source_titles": [
+      "Google Search Central · Announcement on shipping and return settings"
+    ],
+    "history_notes": [
+      "Archived announcement selected for a shipping verification guide.",
+      "Primary announcement dated November 12, 2025 checked for eligibility and settings precedence.",
+      "Fictional example and three-step verification guide prepared.",
+      "Demonstration edition approved for generating project review files."
+    ]
+  }
+}

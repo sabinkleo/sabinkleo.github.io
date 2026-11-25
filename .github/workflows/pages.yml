@@ -38,6 +38,8 @@ jobs:
           grep -q 'lang="pt-BR"' _site/pt/index.html
           grep -q 'lang="pt-BR"' _site/pt/catalogo/index.html
           cmp crm/crm.mjs _site/crm/crm.mjs
+      - name: Build bilingual Observatory
+        run: python3 -m editorial.bilingual --output _site
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
@@ -55,7 +57,7 @@ jobs:
         id: publish
       - name: Verify production routes
         run: |
-          for route in / /pt/ /pt/catalogo/ /en/ /en/lab /en/teardown /crm/; do
+          for route in / /pt/ /pt/catalogo/ /en/ /en/lab /en/teardown /crm/ /observatorio/ /en/observatory/; do
             status=$(curl --retry 4 --retry-all-errors --max-time 20 -sSL -o /dev/null -w '%{http_code}' "https://verticelabs.me$route")
             echo "$route $status"
             test "$status" = 200
