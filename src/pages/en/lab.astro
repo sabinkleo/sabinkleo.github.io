@@ -1,4 +1,5 @@
 ---
+import EngineeringGuide from '../../components/EngineeringGuide.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Router from '../../components/lab/router';
 import Dyno from '../../components/lab/dyno';
@@ -30,6 +31,7 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
       <pre class="trace" aria-label="Structured routing events" data-trace tabindex="0"></pre>
     </Router>
   </section>
+  <EngineeringGuide project="routing" />
   <section aria-labelledby="dyno-title">
     <div class="instrument-title"><h2 id="dyno-title">Dyno telemetry</h2><span>ECU / PULL REPLAY</span></div>
     <Dyno client:visible>
@@ -39,5 +41,6 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
       <div class="metrics dyno-metrics">{['Torque · Nm','Δ Nm · cal − base','Δ AFR · cal − base',...tracks].map(key=><div><small>{key}</small><output data-reading>—</output></div>)}</div>
     </Dyno>
   </section>
+  <EngineeringGuide project="dyno" />
 </main>
 </BaseLayout>

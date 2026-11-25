@@ -52,7 +52,7 @@ function DiagnosticTerminal(root: HTMLElement, { spec }: { spec: Diagnostic }) {
     status.textContent = 'Preparing review note…';
     let note = assess(spec, answers).priorities[0].fix;
     try {
-      const response = await fetch('/api/triage', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(import.meta.env.PUBLIC_TRIAGE_ENDPOINT || '/api/triage', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ vertical: spec.slug, answers }), signal: AbortSignal.timeout(5000) });
       if (response.ok) {
         const body = await response.json();

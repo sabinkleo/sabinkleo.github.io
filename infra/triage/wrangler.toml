@@ -3,3 +3,10 @@ main = "worker.ts"
 compatibility_date = "2025-10-01"
 workers_dev = false
 routes = [{ pattern = "verticelabs.me/api/triage", zone_name = "verticelabs.me" }]
+
+# GitHub Pages uses an HTTPS endpoint on workers.dev when the apex is outside Cloudflare.
+[env.pages]
+name = "vertice-technical-triage-pages"
+workers_dev = true
+preview_urls = false
+routes = []

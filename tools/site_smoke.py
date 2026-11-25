@@ -70,13 +70,16 @@ def local_target(page: Path, href: str) -> Path | None:
         raise ValueError(f"Link escapes repository: {href}")
     if path.endswith("/") or not target.suffix:
         target = target / "index.html"
+        astro_index = ROOT / "src" / "pages" / target.relative_to(ROOT).with_suffix(".astro")
+        if not target.exists() and astro_index.is_file():
+            return astro_index
     return target
 
 
 def main() -> int:
     errors: list[str] = []
     pages = sorted(page for page in ROOT.rglob("index.html")
-                   if not {"build", "node_modules"}.intersection(page.relative_to(ROOT).parts[:-1]))
+                   if not {"build", "node_modules", "dist", "_site"}.intersection(page.relative_to(ROOT).parts[:-1]))
     if (ROOT / "CNAME").read_text(encoding="utf-8").strip() != "verticelabs.me":
         errors.append("CNAME: expected verticelabs.me")
     if len(pages) < 10:

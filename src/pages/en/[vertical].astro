@@ -1,4 +1,5 @@
 ---
+import EngineeringGuide from '../../components/EngineeringGuide.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LabSection from '../../components/LabSection.astro';
 import LabCard from '../../components/LabCard.astro';
@@ -37,6 +38,7 @@ const { spec } = Astro.props;
       </DiagnosticTerminal>
       <noscript>Enable JavaScript to calculate a score, or use the contact link below.</noscript>
     </LabSection>
+    <EngineeringGuide project={spec.slug as "ai-ops" | "linux-security" | "auto-telemetry"} />
     <LabSection id="handoff" title="Review your setup">
       <p class="mb-4">Open a draft with the Vértice team. Add the artifact you want reviewed before sending.</p>
       <a class="button" data-contact={spec.slug} href={'https://wa.me/5541998844684?text=' + encodeURIComponent('Technical review: ' + spec.name)}>Continue to WhatsApp →</a>
