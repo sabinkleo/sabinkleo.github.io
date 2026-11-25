@@ -51,7 +51,7 @@ test('Home places Recursos e pesquisa first without losing commercial tools', as
   }
 });
 
-test('Terminal visual layer is scoped, responsive and keeps the commercial links reachable', async ({ page }) => {
+test('Product visual layer is scoped, responsive and keeps the commercial links reachable', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 900 });
@@ -65,9 +65,9 @@ test('Terminal visual layer is scoped, responsive and keeps the commercial links
       headingFont: getComputedStyle(document.querySelector('.vl-home h1')).fontFamily,
       scrollWidth: document.documentElement.scrollWidth
     }));
-    expect(homeStyles.grid).toBe('52px 52px');
-    expect(homeStyles.cardRadius).toBe('2px');
-    expect(homeStyles.headingFont).toContain('Space Grotesk');
+    expect(homeStyles.grid).toBe('auto');
+    expect(homeStyles.cardRadius).toBe('16px');
+    expect(homeStyles.headingFont).toContain('system-ui');
     expect(homeStyles.scrollWidth).toBeLessThanOrEqual(width);
 
     await page.goto(origin + '/solucoes/');
@@ -78,8 +78,8 @@ test('Terminal visual layer is scoped, responsive and keeps the commercial links
       headingFont: getComputedStyle(document.querySelector('main h1')).fontFamily,
       scrollWidth: document.documentElement.scrollWidth
     }));
-    expect(marketingStyles.cardRadius).toBe('2px');
-    expect(marketingStyles.headingFont).toContain('Space Grotesk');
+    expect(marketingStyles.cardRadius).toBe('16px');
+    expect(marketingStyles.headingFont).toContain('system-ui');
     expect(marketingStyles.scrollWidth).toBeLessThanOrEqual(width);
   }
 
