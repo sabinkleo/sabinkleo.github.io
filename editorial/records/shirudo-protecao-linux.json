@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "id": "shirudo-openai-cisco-2026-11-23",
+  "slug": "shirudo-protecao-linux",
+  "title": "OpenAI e Cisco anunciam proteção temporária para serviços Linux",
+  "event_date": "2026-11-23",
+  "published_at": "2026-11-24T15:57:25Z",
+  "verified_at": "2026-11-24T15:57:25Z",
+  "updated_at": "2026-11-24T15:57:25Z",
+  "event_type": "release",
+  "category": "Infraestrutura",
+  "sector": "Software",
+  "country": "Global",
+  "evidence_level": "high",
+  "summary": "O Shirudo é um projeto de código aberto para aplicar proteções temporárias a serviços Linux enquanto uma correção definitiva é preparada e distribuída.",
+  "what_changed": "Em 23 de novembro de 2026, OpenAI e Cisco anunciaram o Shirudo. O projeto usa eBPF para aplicar proteções específicas a um serviço em execução, depois da aprovação de um operador. As empresas divulgaram um teste controlado em que uma proteção bloqueou uma tentativa de exploração sem reiniciar o serviço.",
+  "who_is_affected": "Equipes responsáveis por serviços Linux que precisam ganhar tempo para testar e distribuir correções.",
+  "how_to_adapt": [
+    "Identifique quais serviços não podem parar durante uma atualização.",
+    "Em homologação, meça a disponibilidade e verifique se as operações normais continuam funcionando com a proteção temporária.",
+    "Defina quem aprova a proteção, quando ela deve ser removida e a data para aplicar a correção definitiva."
+  ],
+  "brazil_status": "unconfirmed",
+  "brazil_note": "O anúncio apresenta um projeto aberto. Compatibilidade, suporte e condições de uso devem ser avaliados no ambiente de cada equipe.",
+  "limitations": "O resultado divulgado veio de um teste controlado dos responsáveis pelo projeto. A eficácia em outros serviços e ambientes precisa de avaliação própria.",
+  "business_opportunity": "Uma equipe com janela longa de atualização pode medir quanto tempo seus serviços passam expostos enquanto uma correção é preparada.",
+  "opportunity_status": "hypothesis",
+  "related_tool": "/solucoes/",
+  "sources": [
+    {
+      "url": "https://openai.com/index/introducing-shirudo/",
+      "title": "OpenAI and Cisco introduce Shirudo",
+      "publisher": "OpenAI",
+      "date": "2026-11-23",
+      "kind": "primary",
+      "anchor": "protect Linux systems while they roll out patches"
+    }
+  ],
+  "rubric": {
+    "relevance": 4,
+    "adaptation": 4,
+    "urgency": 4,
+    "evidence": 5,
+    "novelty": 5
+  },
+  "risk": "standard",
+  "review": {
+    "by": "Revisão editorial para PR",
+    "claim": true,
+    "privacy": true,
+    "rights": true
+  },
+  "content_status": "approved",
+  "history": [
+    {
+      "status": "candidate",
+      "at": "2026-11-24T15:57:25Z",
+      "note": "Anúncio selecionado."
+    },
+    {
+      "status": "verified",
+      "at": "2026-11-24T15:57:25Z",
+      "note": "Data, escopo e limites conferidos no anúncio oficial."
+    },
+    {
+      "status": "draft",
+      "at": "2026-11-24T15:57:25Z",
+      "note": "Texto e pacote social preparados."
+    },
+    {
+      "status": "approved",
+      "at": "2026-11-24T15:57:25Z",
+      "note": "Material conferido para apresentação em pull request."
+    }
+  ],
+  "social_package": {
+    "reel": [
+      {
+        "title": "Linux em produção",
+        "voice": "Uma correção pode levar tempo para chegar a todos os serviços."
+      },
+      {
+        "title": "O que é o Shirudo",
+        "voice": "OpenAI e Cisco anunciaram um projeto aberto de proteção temporária."
+      },
+      {
+        "title": "Proteção em execução",
+        "voice": "O projeto usa eBPF e prevê aprovação por um operador."
+      },
+      {
+        "title": "O que foi demonstrado",
+        "voice": "As empresas divulgaram um resultado em ambiente controlado."
+      },
+      {
+        "title": "Como avaliar",
+        "voice": "Confira em homologação se as operações normais continuam funcionando."
+      }
+    ],
+    "carousel": [
+      {
+        "title": "Linux em produção",
+        "body": "Uma correção pode levar tempo para chegar a todos os serviços.",
+        "alt": "Linux em produção. Uma correção pode levar tempo para chegar a todos os serviços."
+      },
+      {
+        "title": "O que é o Shirudo",
+        "body": "OpenAI e Cisco anunciaram um projeto aberto de proteção temporária.",
+        "alt": "O que é o Shirudo. OpenAI e Cisco anunciaram um projeto aberto de proteção temporária."
+      },
+      {
+        "title": "Proteção em execução",
+        "body": "O projeto usa eBPF e prevê aprovação por um operador.",
+        "alt": "Proteção em execução. O projeto usa eBPF e prevê aprovação por um operador."
+      },
+      {
+        "title": "O que foi demonstrado",
+        "body": "As empresas divulgaram um resultado em ambiente controlado.",
+        "alt": "O que foi demonstrado. As empresas divulgaram um resultado em ambiente controlado."
+      },
+      {
+        "title": "Como avaliar",
+        "body": "Confira em homologação se as operações normais continuam funcionando.",
+        "alt": "Como avaliar. Confira em homologação se as operações normais continuam funcionando."
+      },
+      {
+        "title": "Planeje a correção",
+        "body": "Defina prazo para corrigir o serviço e retirar a proteção temporária.",
+        "alt": "Planeje a correção. Defina prazo para corrigir o serviço e retirar a proteção temporária."
+      }
+    ],
+    "stories": [
+      {
+        "title": "Linux em produção",
+        "body": "Uma correção pode levar tempo para chegar a todos os serviços.",
+        "alt": "Linux em produção. Uma correção pode levar tempo para chegar a todos os serviços."
+      },
+      {
+        "title": "O que foi demonstrado",
+        "body": "As empresas divulgaram um resultado em ambiente controlado.",
+        "alt": "O que foi demonstrado. As empresas divulgaram um resultado em ambiente controlado."
+      },
+      {
+        "title": "Planeje a correção",
+        "body": "Defina prazo para corrigir o serviço e retirar a proteção temporária.",
+        "alt": "Planeje a correção. Defina prazo para corrigir o serviço e retirar a proteção temporária."
+      }
+    ],
+    "captions": {
+      "instagram": "OpenAI e Cisco anunciaram o Shirudo em 23 de novembro. Veja como o projeto propõe proteger serviços Linux durante a distribuição de correções e o que foi demonstrado em teste controlado.",
+      "linkedin": "OpenAI e Cisco anunciaram o Shirudo em 23 de novembro. Veja como o projeto propõe proteger serviços Linux durante a distribuição de correções e o que foi demonstrado em teste controlado.",
+      "shorts": "OpenAI e Cisco anunciaram o Shirudo em 23 de novembro. Veja como o projeto propõe proteger serviços Linux durante a distribuição de correções e o que foi demonstrado em teste controlado.",
+      "whatsapp": "OpenAI e Cisco anunciaram o Shirudo em 23 de novembro. Veja como o projeto propõe proteger serviços Linux durante a distribuição de correções e o que foi demonstrado em teste controlado."
+    },
+    "rss": {
+      "title": "OpenAI e Cisco anunciam proteção temporária para serviços Linux",
+      "summary": "O Shirudo é um projeto de código aberto para aplicar proteções temporárias a serviços Linux enquanto uma correção definitiva é preparada e distribuída."
+    }
+  }
+}

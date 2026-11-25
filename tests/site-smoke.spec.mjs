@@ -4,6 +4,7 @@ const origin = process.env.SITE_TEST_ORIGIN || 'http://127.0.0.1:8765';
 const routes = [
   '/',
   '/klein/',
+  '/horoscopo/',
   '/n1/',
   '/n1/equipe/',
   '/n1/etiquetas/',
@@ -42,9 +43,10 @@ test('Home places Recursos e pesquisa first without losing commercial tools', as
     ]);
     await expect(groups.first().getByRole('link', { name: 'Abrir Vértice Drops' })).toBeVisible();
     await expect(groups.first().getByRole('link', { name: 'Abrir Observatório' })).toBeVisible();
+    await expect(groups.first().getByRole('link', { name: 'Abrir Astro Lab' })).toBeVisible();
     await expect(groups.nth(1).getByRole('link', { name: 'Abrir Raio-X de Vendas' })).toBeVisible();
     await expect(groups.nth(1).getByRole('link', { name: 'Abrir Núcleo N1' })).toBeVisible();
-    await expect(page.locator('.vl-home .card')).toHaveCount(10);
+    await expect(page.locator('.vl-home .card')).toHaveCount(11);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   }
 });
@@ -425,7 +427,7 @@ test('Homepage prioritizes Drops and Observatório while preserving featured bus
   await page.goto(origin + '/');
   const groups = page.locator('.catalog > .tool-group');
   await expect(groups.first().locator('h2')).toHaveText('Recursos e pesquisa');
-  await expect(groups.first().locator('.card h3')).toHaveText(['Vértice Drops', 'Observatório']);
+  await expect(groups.first().locator('.card h3')).toHaveText(['Vértice Drops', 'Observatório', 'Astro Lab — mapa natal']);
   await expect(groups.first().locator('a[href="/drops/"]')).toHaveCount(1);
   await expect(groups.first().locator('a[href="/observatorio/"]')).toHaveCount(1);
   await expect(groups.nth(1).locator('h2')).toHaveText('Negócios e operação');
@@ -453,4 +455,139 @@ test('Leo Klein portfolio keeps its own styles, honest proof and responsive layo
   await founder.getByRole('link', { name: /Ver portfólio e serviços/i }).click();
   await expect(page).toHaveURL(origin + '/klein/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Criativos para vender');
+});
+
+
+test('Astro Lab creates a natal reading without sending birth data', async ({ page }) => {
+  const outbound = [];
+  await page.route('https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/+esm', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      headers: { 'access-control-allow-origin': '*' },
+      body: [
+        'export const Body = { Moon: "Moon", Mercury: "Mercury", Venus: "Venus", Mars: "Mars", Jupiter: "Jupiter", Saturn: "Saturn", Uranus: "Uranus", Neptune: "Neptune", Pluto: "Pluto" };',
+        'export function SunPosition() { return { elon: 290 }; }',
+        'export function EclipticLongitude() { throw Error("Heliocentric API must not be called"); }',
+        'export function EclipticGeoMoon() { return { lon: 263.47 }; }',
+        'export function GeoVector(body) { return { body }; }',
+        'export function Ecliptic(vector) { return { elon: ({ Mercury: 225.3, Venus: 221.24, Mars: 314.56, Jupiter: 105.32, Saturn: 72.76, Uranus: 321.04, Neptune: 306.25, Pluto: 254.36 })[vector.body] }; }',
+        'export function SiderealTime() { return 10; }'
+      ].join('\n')
+    }));
+  page.on('request', req => {
+    if (req.method() !== 'GET') outbound.push(req.url());
+  });
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(origin + '/horoscopo/');
+  await expect(page.getByRole('heading', { name: /O céu tem coordenadas/ })).toBeVisible();
+  await page.locator('#person').fill('Teste Privado');
+  await page.locator('#birth-date').fill('2000-01-01');
+  await page.locator('#birth-time').fill('12:00');
+  await page.locator('#place').selectOption('-25.4284,-49.2733');
+  await expect(page.locator('#utc-offset')).toHaveValue('-2');
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#big-three .sign-card')).toHaveCount(3);
+  await expect(page.locator('#map-title')).toHaveText('Mapa natal de Teste Privado');
+  await expect(page.locator('#reading-title')).toHaveText('Seu céu de hoje');
+  await expect(page.locator('#wheel text')).not.toHaveCount(0);
+  expect(outbound).toEqual([]);
+  expect(await page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).toBeNull();
+  await page.locator('#save').click();
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).not.toBeNull();
+  await page.reload();
+  await expect(page.locator('#person')).toHaveValue('Teste Privado');
+  await page.locator('#unknown-time').check();
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#time-caveat')).toContainText('Ascendente e casas omitidos');
+  await page.locator('#clear').click();
+  expect(await page.evaluate(() => localStorage.getItem('vertice-astro-birth-v1'))).toBeNull();
+  await expect(page.locator('#result')).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+});
+
+
+test('Astro Lab matches independent geocentric positions and historical DST with a public date fixture', async ({ page }) => {
+  await page.goto(origin + '/horoscopo/');
+  // Public astronomical reference day, distinct from any personal birth record.
+  await page.locator('#birth-date').fill('2001-11-16');
+  await page.locator('#birth-time').fill('09:00');
+  await page.locator('#place').selectOption('-25.4284,-49.2733');
+  await expect(page.locator('#utc-offset')).toHaveValue('-2');
+  await expect(page.locator('#utc-offset')).toHaveAttribute('readonly');
+  await page.getByRole('button', { name: /Calcular meu mapa/ }).click();
+  await expect(page.locator('#result')).toBeVisible({ timeout: 45000 });
+  await expect(page.locator('#big-three .sign')).toHaveText(['Escorpião', 'Sagitário', 'Capricórnio']);
+  const placements = page.locator('#planets .planet-row');
+  await expect(placements.nth(2)).toContainText('Mercúrio');
+  await expect(placements.nth(2)).toContainText('Escorpião');
+  await expect(placements.nth(4)).toContainText('Aquário');
+  await expect(page.locator('#planets')).not.toContainText('Touro 25.2°');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
+});
+
+test('CRM operator can create, edit, filter and reopen a lead on mobile', async ({ page }) => {
+  test.skip(process.env.SITE_TEST_ORIGIN && !process.env.SITE_TEST_ORIGIN.includes('127.0.0.1'), 'Uses synthetic data on the local site');
+  await page.setViewportSize({ width: 375, height: 812 });
+  const rows = new Map();
+  const exceptions = [];
+  page.on('pageerror', error => exceptions.push(error.message));
+  let signedIn = false;
+  await page.route('https://api.verticelabs.me/v1/**', async route => {
+    const request = route.request();
+    const path = new URL(request.url()).pathname.slice(3);
+    const method = request.method();
+    if (path === '/account/sessions/email') {
+      expect(request.postDataJSON().email).toBe('admin@verticelabs.me');
+      signedIn = true;
+      return route.fulfill({ status: 201, json: {} });
+    }
+    if (!signedIn) return route.fulfill({ status: 401, json: {} });
+    if (path === '/account/sessions/current') {
+      signedIn = false;
+      return route.fulfill({ status: 204 });
+    }
+    if (path === '/account') return route.fulfill({ json: {} });
+    if (method === 'POST') {
+      const { rowId, data } = request.postDataJSON();
+      rows.set(rowId, { $id: rowId, ...data });
+      return route.fulfill({ status: 201, json: rows.get(rowId) });
+    }
+    const id = path.split('/').at(-1);
+    if (id === 'rows') return route.fulfill({ json: { rows: [...rows.values()] } });
+    if (method === 'PATCH') Object.assign(rows.get(id), request.postDataJSON().data);
+    return route.fulfill({ json: rows.get(id) });
+  });
+  await page.goto(origin + '/crm/');
+  await expect(page.locator('#workspace')).toBeHidden();
+  await page.getByLabel('Usuário ou e-mail').fill('admin');
+  await page.getByLabel('Senha').fill('synthetic-test-password');
+  await page.getByRole('button', { name: 'Entrar' }).click();
+  await page.getByRole('button', { name: 'Novo lead' }).click();
+  await page.getByLabel('Empresa').fill('Empresa de teste');
+  await page.getByLabel('WhatsApp').fill('41 99999-0000');
+  await page.getByRole('button', { name: 'Salvar dados' }).click();
+  await expect(page.getByRole('link', { name: 'WhatsApp' })).toHaveAttribute('href', 'https://wa.me/5541999990000');
+  await page.getByRole('button', { name: 'Editar dados' }).click();
+  await page.getByLabel('Empresa').fill('Empresa revisada');
+  await page.getByRole('button', { name: 'Salvar dados' }).click();
+  await expect(page.locator('#company')).toHaveText('Empresa revisada');
+  await page.locator('#pipeline [name="stage"]').selectOption('Qualificado');
+  await page.getByLabel('Retorno').fill('2026-12-01');
+  await page.getByLabel('Registrar contato').fill('Contato de teste');
+  await page.getByRole('button', { name: 'Salvar', exact: true }).click();
+  await expect(page.locator('#history')).toContainText('Contato de teste');
+  await page.reload();
+  await page.getByLabel('Buscar lead').fill('revisada');
+  await page.locator('#stage-filter').selectOption('Perdido');
+  await expect(page.locator('#leads tr')).toHaveCount(0);
+  await page.locator('#stage-filter').selectOption('Qualificado');
+  await page.getByRole('button', { name: 'Empresa revisada' }).click();
+  await expect(page.getByLabel('Retorno')).toHaveValue('2026-12-01');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
+  await page.getByRole('button', { name: 'Sair' }).click();
+  await expect(page.locator('#login')).toBeVisible();
+  await expect(page.locator('#leads tr')).toHaveCount(0);
+  expect(exceptions).toEqual([]);
 });

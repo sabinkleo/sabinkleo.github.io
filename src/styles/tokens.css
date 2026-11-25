@@ -1,0 +1,9 @@
+:root {
+  --lab-ground: #0c0e0d;
+  --lab-text: #edf1eb;
+  --lab-muted: #aeb8ad;
+  --lab-line: #313b31;
+  --lab-accent: #d3fa43;
+  --lab-surface: #121613;
+  --lab-mono: "IBM Plex Mono", "Cascadia Mono", monospace;
+}

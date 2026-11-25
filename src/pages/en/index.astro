@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LabSection from '../../components/LabSection.astro';
+import LabCard from '../../components/LabCard.astro';
+import { verticals } from '../../data/diagnostics';
+---
+<BaseLayout technical lang="en" title="Technical tracks | Vértice Labs" description="Assess inference routing, Linux host controls or dyno telemetry with evidence-based diagnostics and a concrete delivery plan.">
+  <main id="conteudo" class="frame">
+    <header class="vertical-hero"><div><p class="eyebrow">VÉRTICE / ENGINEERING</p><h1>Technical tracks<span class="accent">.</span></h1>
+      <p class="intro">Choose the system you work on. Review a sample trace, inspect the deliverables and score your current setup.</p></div></header>
+    <a class="button" href="/en/lab/">Open interactive lab →</a>
+    <LabSection id="tracks" title="Choose a diagnostic">
+      <div class="lab-cards">{verticals.map(v => <LabCard title={v.name}><p>{v.description}</p><a data-attribution href={'/en/' + v.slug + '/'}>Explore {v.name} →</a></LabCard>)}</div>
+    </LabSection>
+    <LabSection id="teardown" title="Executive teardown"><p>Model a 90-day savings scenario and inspect your own usage logs, SSH policy or dyno traces locally.</p><a class="button" data-attribution href="/en/teardown/">Open the teardown</a></LabSection>
+  </main>
+</BaseLayout>

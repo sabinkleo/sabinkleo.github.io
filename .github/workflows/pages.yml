@@ -1,0 +1,51 @@
+name: Publish Vértice Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-production
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+        env:
+          PUBLIC_TRIAGE_ENDPOINT: ${{ vars.PUBLIC_TRIAGE_ENDPOINT }}
+      - run: node tests/v2-build-smoke.mjs
+      - name: Combine the static routes and preserve the Portuguese homepage
+        run: |
+          rsync -a --exclude=/index.html dist/ _site/
+          test -s _site/en/teardown/index.html
+          test -s _site/en/lab/index.html
+          test -s _site/pt/index.html
+          grep -q 'lang="pt-BR"' _site/index.html
+          cmp crm/crm.mjs _site/crm/crm.mjs
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.publish.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: publish

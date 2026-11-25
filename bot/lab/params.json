@@ -1,0 +1,11 @@
+{
+  "atr_periodo": 14,
+  "risco_por_trade": 0.01,
+  "exposicao_maxima": 0.65,
+  "stop_atr": 2,
+  "alvo_atr": 3.5,
+  "adicional_atr": 0.7,
+  "trailing_atr": 2.5,
+  "cooldown_barras": 6,
+  "custo_minimo_extra": 0.002
+}

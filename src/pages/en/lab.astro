@@ -1,0 +1,46 @@
+---
+import EngineeringGuide from '../../components/EngineeringGuide.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Router from '../../components/lab/router';
+import Dyno from '../../components/lab/dyno';
+import '../../styles/instruments.css';
+const providers = ['Gemini','NVIDIA NIM','OpenRouter','FreeLLMAPI'];
+const ys = [38,96,154,212];
+const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock retard · °'];
+---
+<BaseLayout technical lang="en" title="Interactive engineering lab | Vértice Labs" description="Simulate inference failover and compare two ECU maps on a synthetic dyno pull.">
+<main class="frame instruments" id="conteudo">
+  <header class="instrument-head"><p class="eyebrow">VÉRTICE / ENGINEERING</p><h1>Interactive lab<span class="accent">.</span></h1>
+  <p>Trip an inference circuit or replay a dyno pull. Both instruments run locally on simulated data.</p></header>
+  <section aria-labelledby="routing-title">
+    <div class="instrument-title"><h2 id="routing-title">Inference routing</h2><span>HTTP / EVENT TRACE</span></div>
+    <Router client:visible>
+      <div class="scope scroll-scope" tabindex="0" aria-label="Scrollable routing diagram">
+        <svg viewBox="0 0 760 250" role="img" aria-label="Request travels through edge triage and the key pool, then one of four providers and finally Appwrite CRM">
+          <path class="wire" d="M64 125H339"/>
+          {providers.map((p,i)=><g data-provider={i}>
+            <path class="wire" d={`M339 125 C410 125 392 ${ys[i]} 464 ${ys[i]} H532 C618 ${ys[i]} 607 125 691 125`}/>
+            <rect x="460" y={ys[i]-16} width="108" height="32"/><text x="514" y={ys[i]+5}>{p}</text>
+          </g>)}
+          {[[64,'Client Request'],[201,'Edge Triage Worker'],[339,'Key Pool Router'],[691,'Appwrite CRM']].map(([x,label])=><g><rect x={Number(x)-61} y="109" width="122" height="32"/><text x={x} y="130">{label}</text></g>)}
+          <circle data-packet r="5" cx="64" cy="125"/>
+        </svg>
+      </div>
+      <div class="metrics">{['Route','Latency','Tokens','Cost'].map((key,i)=><div><small>{key}</small><output data-metric>{['Gemini','—','0','$0.00'][i]}</output></div>)}</div>
+      <div class="instrument-controls"><button type="button" data-rate>Inject HTTP 429</button><button type="button" data-kill>Kill Primary Provider</button><span data-breaker role="status">All circuits closed</span></div>
+      <pre class="trace" aria-label="Structured routing events" data-trace tabindex="0"></pre>
+    </Router>
+  </section>
+  <EngineeringGuide project="routing" />
+  <section aria-labelledby="dyno-title">
+    <div class="instrument-title"><h2 id="dyno-title">Dyno telemetry</h2><span>ECU / PULL REPLAY</span></div>
+    <Dyno client:visible>
+      <div class="instrument-controls"><button data-map="base" aria-pressed="true">Base Map</button><button data-map="cal" aria-pressed="false">Calibrated Map</button><span data-event>Monitoring knock correction</span></div>
+      <canvas aria-label="Four synchronized traces of boost pressure, air-fuel ratio, ignition timing and knock correction against RPM">Use the RPM slider to inspect the numeric telemetry below.</canvas>
+      <div class="instrument-controls"><button data-play>Play</button><label for="pull-rpm">RPM</label><input id="pull-rpm" type="range" min="2000" max="7200" step="10" value="2000"/><output data-rpm>2000</output></div>
+      <div class="metrics dyno-metrics">{['Torque · Nm','Δ Nm · cal − base','Δ AFR · cal − base',...tracks].map(key=><div><small>{key}</small><output data-reading>—</output></div>)}</div>
+    </Dyno>
+  </section>
+  <EngineeringGuide project="dyno" />
+</main>
+</BaseLayout>
