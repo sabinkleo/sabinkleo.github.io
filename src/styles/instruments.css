@@ -1,0 +1,28 @@
+.instruments {padding-bottom:4rem}
+.instrument-head {padding:clamp(2.8rem,6vw,6rem) 0 2.5rem;max-width:58rem}
+.instrument-head h1 {font-size:clamp(3.1rem,8vw,7rem);font-weight:740;letter-spacing:-.08em;line-height:.96}
+.instrument-head>p:last-child {max-width:54ch;color:var(--muted);margin-top:1rem}
+.instruments section {margin:1rem 0 3rem;border:1px solid var(--line);background:var(--surface)}
+.instrument-title,.instrument-controls {display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:.85rem 1.1rem}
+.instrument-title {justify-content:space-between;border-bottom:1px solid var(--line)}
+.instrument-title h2 {font-size:clamp(1.4rem,3vw,2rem);font-weight:650;letter-spacing:-.045em}
+.instrument-title span,.instrument-controls,.trace,.metrics {font: .78rem/1.5 var(--mono)}
+.instrument-title span,.metrics small,.instrument-controls span {color:var(--muted)}
+.scope, .instruments canvas {background-color:#0c100f}
+.scope {background-image:radial-gradient(#344236 1px,transparent 1px);background-size:15px 15px;overflow-x:auto}
+.scope svg {min-width:555px;width:100%;max-height:330px}
+.scope text {fill:var(--text);font:11px var(--mono);text-anchor:middle}
+.scope rect {fill:#141c16;stroke:#455346;rx:2}
+.wire {fill:none;stroke:#354336;stroke-width:2}
+.scope [data-state=active] :is(path,rect) {stroke:var(--accent)}
+.scope [data-state=open] rect {stroke:#ff9479;stroke-dasharray:4 2}
+.scope circle {fill:var(--accent);stroke:#10160a;stroke-width:2}
+.metrics {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--line)}
+.metrics div {padding:.7rem 1rem;min-width:0}.metrics small {display:block}.metrics output {font-size:clamp(.9rem,2vw,1.35rem);font-variant-numeric:tabular-nums}
+.instrument-controls button {padding:.5rem .75rem;cursor:pointer;border:1px solid #53614f;color:var(--text);background:#181f18}
+.instrument-controls button:hover,.instrument-controls button[aria-pressed=true] {color:var(--accent);border-color:var(--accent)}
+.trace {height:8rem;overflow:auto;padding:.6rem 1rem;color:#bfd1b6;background:#090c0a;white-space:pre}
+.instruments canvas {display:block;width:100%;height:clamp(265px,36vw,340px)}
+.instrument-controls input {accent-color:var(--accent);flex:1;min-width:5rem}
+.dyno-metrics {grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+@media(max-width:520px){.metrics div{padding:.5rem}.frame.instruments{width:calc(100% - 1.25rem)}}
