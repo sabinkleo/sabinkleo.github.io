@@ -8,7 +8,7 @@ assert.match(pt, /<html lang="pt-BR"/);
 assert.match(en, /Investigate\./);
 assert.match(pt, /Investigue\./);
 assert.match(en, /href="\/pt\/"[^>]*hreflang="pt-BR"/);
-assert.match(pt, /href="\/en\/catalog\/"[^>]*hreflang="en"/);
+assert.match(pt, /href="\/"[^>]*hreflang="en"/);
 for (const html of [en, pt]) {
   for (const route of ['/observatorio/', '/raio-x-vendas/', '/n1/', '/tuning/', '/privacy/', '/duelo-bot/', '/perps/']) {
     assert.ok(html.includes('href="' + route + '"'), route);
