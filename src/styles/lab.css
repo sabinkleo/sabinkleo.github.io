@@ -128,3 +128,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
   .vertical-hero:has(.terminal) { grid-template-columns: 1.15fr 1fr; }
   .diagnostic label { grid-template-columns: 1fr 15rem; }
 }
+
+/* Keep public home navigation and useful content above decorative elements. */
+@media (max-width: 36rem) {
+  body:has([data-catalog-hero]) .top-inner { padding-block:.65rem; gap:.25rem; }
+  body:has([data-catalog-hero]) .top nav { width:100%; gap:.25rem .75rem; font-size:.78rem; align-items:center; }
+  body:has([data-catalog-hero]) .top nav a { display:inline-flex; align-items:center; min-height:44px; }
+  [data-catalog-hero] { min-height:0; padding-block:1.6rem; grid-template-columns:minmax(0,1fr); }
+  [data-catalog-hero] h1 { font-size:clamp(2.8rem,12vw,4rem); }
+  [data-catalog-hero] .intro { margin-block:1rem; font-size:1rem; }
+  [data-catalog-hero] .lab-grid { display:none; }
+  [data-catalog-hero] .ai-entry { margin-block:.75rem; padding:.75rem; }
+  [data-catalog-hero] .ai-entry textarea, [data-catalog-hero] .ai-entry button, [data-catalog-hero] .ai-entry a { min-height:44px; }
+}
