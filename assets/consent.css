@@ -1,0 +1,213 @@
+.vl-consent {
+  --vl-lime: #d3fa43;
+  color-scheme: dark;
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  display: grid;
+  justify-items: center;
+  padding: 0 12px max(10px, env(safe-area-inset-bottom));
+  pointer-events: none;
+  font: 14px/1.45 system-ui, sans-serif;
+}
+
+html:has(.vl-consent section:not([hidden])) {
+  scroll-padding-bottom: 220px;
+}
+
+.vl-consent-card {
+  box-sizing: border-box;
+  width: min(100%, 720px);
+  margin: 0;
+  padding: 16px 20px;
+  color: #f4f4ef;
+  background: #191b19;
+  border: 1px solid #444a3d;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px #0009;
+  pointer-events: auto;
+}
+
+.vl-consent-card h2 {
+  margin: 0;
+  color: inherit;
+  font: 750 18px/1.25 system-ui, sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.vl-consent-card p {
+  margin: 6px 0 12px;
+  color: #d0d4c9;
+}
+
+.vl-consent a {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 0;
+  color: var(--vl-lime);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vl-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vl-consent button {
+  appearance: none;
+  min-height: 44px;
+  margin: 0;
+  padding: 0 12px;
+  color: var(--vl-lime);
+  background: #21261d;
+  border: 1px solid #7a8b52;
+  border-radius: 7px;
+  cursor: pointer;
+  font: 650 13px/1.2 system-ui, sans-serif;
+}
+
+.vl-consent button:hover {
+  background: #303924;
+}
+
+.vl-consent button[data-open],
+.vl-consent button[data-close] {
+  background: #191b19;
+  border-color: #52594b;
+  color: #f4f4ef;
+}
+
+.vl-consent :focus-visible {
+  outline: 2px solid var(--vl-lime);
+  outline-offset: 3px;
+}
+
+.vl-consent button.vl-consent-settings {
+  justify-self: start;
+  pointer-events: auto;
+  font-size: 12px;
+}
+
+.vl-consent dialog {
+  position: fixed;
+  inset: 0;
+  width: min(calc(100% - 24px), 460px);
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  overflow: auto;
+}
+
+.vl-consent dialog::backdrop {
+  background: #090b09b8;
+  pointer-events: auto;
+}
+
+.vl-consent-heading,
+.vl-consent-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.vl-consent-heading button {
+  width: 44px;
+  padding: 0;
+  font-size: 22px;
+}
+
+.vl-consent-option {
+  min-height: 56px;
+  padding: 8px 0;
+  border-bottom: 1px solid #444a3d;
+}
+
+.vl-consent-option small {
+  display: block;
+  color: #d0d4c9;
+}
+
+.vl-consent-option input {
+  appearance: auto;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: 0 8px;
+  accent-color: var(--vl-lime);
+}
+
+.vl-consent dialog .vl-consent-actions {
+  margin-top: 14px;
+}
+
+.vl-consent [hidden] {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .vl-consent-card {
+    padding: 12px;
+  }
+
+  .vl-consent-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .vl-consent-actions > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vl-consent *,
+  .vl-consent *::backdrop {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+.vl-consent:has(dialog[open]) > :not(dialog) {
+  visibility: hidden;
+}
+
+footer .vl-consent {
+  position: static;
+  justify-items: start;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: 0;
+}
+
+footer .vl-consent button.vl-consent-settings {
+  min-height: 44px;
+  padding: 0 4px;
+  color: #a1aaa8;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vl-consent {
+  --vl-lime: #91d6bd;
+}
+
+@media (max-width: 480px) {
+  .vl-consent section .vl-consent-actions {
+    display: flex;
+    gap: 4px;
+  }
+
+  .vl-consent section .vl-consent-actions button {
+    flex: 1;
+    padding: 0 4px;
+    font-size: 12px;
+  }
+}

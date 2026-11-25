@@ -1,0 +1,21 @@
+name: Reel language and audio QA
+on:
+  pull_request:
+    paths:
+      - 'scripts/run_reel.py'
+      - 'scripts/reel/**'
+      - 'tests/test_reel_language.py'
+      - '.github/workflows/reel-qa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  language:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p test_reel_language.py -v
+      - run: python scripts/run_reel.py --help

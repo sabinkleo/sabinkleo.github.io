@@ -32,6 +32,27 @@ approval.
 ## Vértice Intelligence
 
 [`/observatorio/`](https://verticelabs.me/observatorio/) reúne guias e matérias com fontes, histórico editorial e ferramentas relacionadas. A [operação editorial](editorial/README.md) descreve a entrada do radar, a geração local, as verificações e a revisão dos pacotes de mídia.
-## Measurement (opt-in; disabled until configured)
 
-Marketing routes are wired to the consent-gated GTM loader in `assets/measurement.js`. No real GTM ID has been configured. Read [the setup and verification runbook](ops/MEASUREMENT_SETUP.md) before enabling tracking. `/privacy/` and the stockroom modules remain excluded.
+## Mensuração opcional
+
+O [guia de configuração e teste](ops/MEASUREMENT_SETUP.md) descreve o contêiner GTM, os eventos permitidos e a validação antes da publicação.
+
+## Prévia V2
+
+Na branch `feat/vertice-v2`, use `npm ci`, `npm run build` e `npm run preview`.
+Abra a URL local exibida pelo preview. A pasta `dist/` combina a nova home
+Astro/Tailwind com as páginas e os arquivos estáticos existentes. A home HTML
+da raiz continua sendo a entrada usada pelo fluxo legado do GitHub Pages.
+Esta branch não configura publicação.
+
+Para verificar a integração opcional em `/control/`, copie `.env.example`
+para `.env` antes de executar o build. O acesso requer uma sessão existente
+no Appwrite e acesso à equipe indicada pelo ID em `PUBLIC_APPWRITE_OPERATOR_TEAM_ID`.
+Registre a origem da prévia no Appwrite para permitir essa consulta. A interface
+é estática e contém apenas dados de demonstração. Permissões de dados reais
+devem continuar no backend.
+
+`PUBLIC_VERTICE_AI_URL` recebe a URL base pública do Worker. A verificação
+manual da prévia usa `GET /health` relativo a essa base, com CORS para a origem
+da prévia. Sem a variável, o botão fica desativado. As integrações próprias dos
+módulos legados, incluindo o verificador N1, mantêm a configuração existente.

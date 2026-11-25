@@ -1,65 +1,30 @@
-# Vértice Labs — mensuração de campanhas (configuração pendente)
+# Mensuração opcional no verticelabs.me
 
-Status: **código preparado em branch; nenhuma tag de marketing ativada**. Há um ID existente informado pelo proprietário. A versão publicada do contêiner, seus destinos e seus dados precisam de verificação no painel antes de usar esse ID.
-Não inserir IDs fictícios. Não fazer merge como "instalado" até testar o contêiner real.
+O código usa o contêiner Web `GTM-MPTCNSL9` nas rotas `/`, `/solucoes/`, `/raio-x-vendas/` e `/tuning/`. O modo básico bloqueia o download do GTM até haver autorização aplicável à página. Não há iframe sem JavaScript. As preferências de estatísticas e publicidade são independentes. A página `/privacy/`, a família `/n1/` e o aviso de privacidade ficam fora da integração.
 
-## Arquitetura
+Após um aceite aplicável, o módulo reduz a URL à rota canônica e a valores cadastrados de `utm_source`, `utm_medium` e `utm_campaign`. A campanha inicial cadastrada é `revenue-os-piloto-cwb`. Em `campaignValues`, acrescente somente identificadores públicos e fixos, sem dados de clientes. Parâmetros repetidos, fragmentos e identificadores de clique são descartados. O endereço na barra do navegador também é limpo antes do GTM. Os fluxos comerciais podem usar o endereço original antes do aceite.
 
-- Código: `assets/measurement.js`. Único ponto de entrada para o contêiner Web do Google Tag Manager.
-- Escopo: `/`, `/solucoes/`, `/raio-x-vendas/`, `/tuning/`.
-- Exclusões: `/privacy/` (compromisso de ausência de scripts externos); N1, módulos de estudos e demais ferramentas também não foram instrumentados.
-- Modo de consentimento: **básico**. GTM não é baixado antes do aceite explícito.
-- Consent Mode v2: `ad_storage`, `ad_user_data`, `ad_personalization` e `analytics_storage` iniciam negados, passam a concedidos somente após autorização. Rejeitar não carrega scripts. Retirada provoca recarregamento quando necessário.
-- Nenhum campo livre, valores de diagnóstico, mensagem, telefone, parâmetros de URL ou identificadores pessoais são passados pelo nosso `dataLayer`.
-- A página `/politica-de-privacidade/` descreve a integração. Revisar o aviso e a configuração efetiva das plataformas antes do lançamento.
+Para o GA4, a origem de entrada é vazia ou um domínio conhecido sem caminho nem parâmetros. Quando o navegador contém uma referência detalhada ou desconhecida, o módulo abre a página limpa sem enviar a referência e só então carrega o GTM. Se a decisão não puder ser recuperada nessa navegação, o contêiner fica bloqueado.
 
-## Ativar as contas e as tags
+## Configurar o contêiner antes de publicar
 
-1. Em <https://tagmanager.google.com/>, crie contêiner do tipo **Web**, selecione o domínio `verticelabs.me` e copie o ID `GTM-...`.
-2. No arquivo `assets/measurement.js`, preencha **apenas** `GTM_ID` com o ID real. Não incluir scripts de GA4, Ads ou Meta diretamente nos HTMLs: todas essas tags ficam no contêiner, para evitar duplicação.
-3. Configure uma única Google tag de GA4. Se usar o evento explícito `vl_page_view`, desative o envio automático de `page_view` para evitar duplicação e confirme um evento por visita consentida.
-4. No Google Ads, crie conta e ação de conversão apropriada em **Metas > Conversões** (menus podem variar). Implemente pelo GTM o **Vinculador de conversões** e, se for usar envio direto do Google Ads, a tag de conversão com o ID `AW-...` e rótulo obtidos do painel. Não configure como conversões primárias tanto o evento importado do GA4 quanto a mesma conversão via tag direta.
-5. No Gerenciador de Eventos da Meta, crie/seleciona um **conjunto de dados/Pixel** e obtenha o ID real. Configure a tag base de Pixel no GTM (script oficial) e eventos de clique mapeados; a tag deve exigir consentimento e **não** disparar antes do aceite. Na Meta, `PageView` e `Contact` podem ser eventos úteis, mas `Contact` é apenas intenção de contato aqui.
-6. No GTM, crie gatilhos de **Evento personalizado** conforme a tabela abaixo e tags do GA4 (com os mesmos nomes). Ative Google Ads e Meta somente após verificar que seus eventos não duplicam.
-7. Publique a versão revisada do GTM e faça deploy do código apenas quando todos os testes abaixo estiverem aprovados. Não é necessário Google Ads pago para começar a medir com GA4.
+1. Revise as tags da versão publicada e do workspace do contêiner **GTM-MPTCNSL9**. Confira destinos e gatilhos e remova duplicações na configuração proposta. Não use gatilhos automáticos de cliques, formulários, histórico ou All Pages para estas tags.
+2. No GA4, obtenha o ID real `G-…` do fluxo Web. No GTM, crie uma única **Google tag** com esse ID. Use o evento personalizado `vl_page_view` como gatilho e exija `analytics_storage` em **Verificações adicionais de consentimento**. Defina `page_location` a partir da variável de camada de dados de mesmo nome e `page_referrer` pela variável sanitizada de mesmo nome, inclusive quando vazia. Deixe a própria Google tag enviar um `page_view` na inicialização, com disparo uma vez por página. Não crie uma segunda tag para esse evento.
+3. Para os demais eventos GA4, use os gatilhos personalizados da tabela e a mesma exigência de consentimento. Defina `page_location` e `page_referrer` com os valores sanitizados da camada de dados. No fluxo GA4, desative a medição otimizada automática e recursos de dados fornecidos pelo usuário. Deixe desativados Google Signals, personalização de anúncios, vinculação entre domínios e envio de dados a destinos publicitários.
+4. No Gerenciador de Eventos da Meta, copie o ID real do Pixel. Configure uma tag independente no GTM com o gatilho **somente** `vl_ads_page_view` e a verificação adicional obrigatória de `ad_storage`. Limite a um `PageView` por página. Desative correspondência avançada, eventos automáticos e captura de campos. Não mapeie cliques, conteúdo de formulários, mensagens ou dados de navegação adicionais para o Pixel. A integração mantém `ad_user_data` e `ad_personalization` do Google negados.
+5. Use **Preview** no GTM com uma cópia de teste do código. Teste rejeição, estatísticas isoladas, publicidade isolada, as duas categorias e revogação. Inspecione os pedidos de rede e os payloads usando apenas dados fictícios. Confirme os recebimentos no **DebugView** do GA4 e em **Test Events** da Meta. Valide também as rotas excluídas, URLs com parâmetros e o funcionamento do WhatsApp e das ferramentas.
+6. Solicite aprovação para publicar a versão do GTM e para o merge que publica via GitHub Pages. Aceite a categoria correspondente ao testar o domínio depois da publicação. O aviso **No Recent Data** pode continuar enquanto o contêiner não estiver acessível no site, antes do primeiro aceite ou antes que os dados apareçam no painel.
 
-## Eventos já emitidos pelo site
+## Eventos do site
 
-| Evento dataLayer | Origem | Interpretação |
+| Evento | Campos definidos pelo site além de `event` | Finalidade |
 | --- | --- | --- |
-| `vl_page_view` | Primeira visualização consentida por carregamento de página | Visita, sem qualificação |
-| `vl_funnel_navigation` | Links internos para /solucoes/ ou /raio-x-vendas/ | Interesse em oferta |
-| `vl_tool_interaction` | Análise manual/cópia nas ferramentas | Engajamento; não é lead |
-| `vl_contact_intent` | Clique para abrir WhatsApp | Tentativa de contato; **não** é mensagem enviada, lead qualificado ou venda |
+| `vl_page_view` | `route`, `page_location`, `page_referrer` | Uma visualização para GA4 |
+| `vl_funnel_navigation` | `route`, `destination` | Navegação para Soluções ou Raio-X |
+| `vl_tool_interaction` | `route`, `tool`, `action` | Solicitação de análise ou cópia |
+| `vl_contact_intent` | `route`, `channel`, `cta` | Clique de intenção de contato pelo WhatsApp |
+| `vl_ads_page_view` | `route` | Gatilho reservado ao Meta Pixel |
 
-Parâmetros categóricos: `route`, `destination`, `channel`, `cta`, `tool`, `action`. Não mapear número de leads simulados, ticket, margem ou texto livre. Mapeie `vl_page_view` para `page_view` uma só vez no GTM.
+Mapeie apenas os campos listados. Mapeie `vl_contact_intent` para um único evento GA4 `whatsapp_click`, com gatilho condicionado a `channel=whatsapp`. O clique indica intenção antes de eventual envio de mensagem. Mantenha esse evento fora das conversões de venda.
 
-**Conversões reais** devem ser registradas após confirmação de mensagem, qualificação e eventual venda em CRM/planilha. Antes de fazer upload de conversões offline ou ativar conversões otimizadas, validar identificadores, consentimento e regras do serviço.
-
-## Matriz de verificação
-
-1. Sem ID GTM: site funciona normalmente; nenhum request para `googletagmanager.com/gtm.js` ou Pixel deve surgir por este módulo.
-2. Com ID e consentimento **não decidido**: aparece banner; ainda não há download de GTM/GA4/Meta.
-3. Rejeitar: navegar entre páginas; não há download das tags por este módulo. O botão **Privacidade** permite rever.
-4. Aceitar: GTM carrega **uma vez**. No <https://tagassistant.google.com/> e no Preview do GTM, conferir consentimento concedido antes das tags e um `page_view` por visita.
-5. Clicar em WhatsApp: verificar no Preview `vl_contact_intent` com somente `route`, `channel` e `cta`. Não chamar esse evento de `purchase` ou `generate_lead`.
-6. Usar botão Analisar em /tuning/: verificar `vl_tool_interaction`. Digitar ou executar rotina automática não deve emitir evento de lead.
-7. Reabrir Privacidade e rejeitar: recarregamento e ausência de novos downloads de tags na visita seguinte.
-8. Abrir /privacy/: nenhuma tag do novo módulo, nenhum popup de consentimento. Inspecionar rede no DevTools.
-9. GA4: confirmar eventos no **DebugView** e em **Tempo real**. Meta: testar em **Test Events** e **Meta Pixel Helper**. Google Ads: verificar diagnóstico da ação de conversão (propagação pode não ser imediata).
-10. Repetir teste em janela privada, mobile e com consentimento persistido.
-
-## Mensuração de resultado e mídia
-
-Antes de R$ 1 em anúncios: página de oferta com `page_view`, evento `vl_contact_intent`, UTMs coerentes, sistema de registro do contato efetivo e teste de atribuição. Uma boa primeira meta é conseguir reconciliar manualmente 100% dos contatos de teste, sem contar cliques como vendas. Caso a Meta ou Google usem `vl_contact_intent` como conversão, configurá-la inicialmente como microconversão/indicador secundário, não como venda.
-
-Google Search Console é separado do GA4 e Google Ads: verificar o domínio em <https://search.google.com/search-console> para monitorar indexação e pesquisa orgânica.
-
-## Referências oficiais
-
-- <https://developers.google.com/tag-platform/security/concepts/consent-mode>
-- <https://developers.google.com/tag-platform/security/guides/consent>
-- <https://developers.google.com/tag-platform/security/guides/consent-debugging>
-- <https://developers.google.com/google-ads/api/docs/conversions/getting-started>
-
-**Pendências que não podem ser resolvidas apenas editando GitHub:** posse das contas GTM, GA4, Google Ads e Meta; IDs oficiais; publicação do contêiner; consentimento/revisão de políticas e testes nos painéis reais.
+[Consent Mode básico](https://developers.google.com/tag-platform/security/guides/consent?consentmode=basic) · [Validação no Tag Assistant](https://developers.google.com/tag-platform/security/guides/consent-debugging)

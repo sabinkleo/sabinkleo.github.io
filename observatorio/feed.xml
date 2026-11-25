@@ -7,6 +7,22 @@
     <language>pt-BR</language>
     <atom:link href="https://verticelabs.me/observatorio/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>OpenAI e Cisco anunciam proteção temporária para serviços Linux</title>
+      <link>https://verticelabs.me/observatorio/shirudo-protecao-linux/</link>
+      <guid>https://verticelabs.me/observatorio/shirudo-protecao-linux/</guid>
+      <description>O Shirudo é um projeto de código aberto para aplicar proteções temporárias a serviços Linux enquanto uma correção definitiva é preparada e distribuída.</description>
+      <category>Infraestrutura</category>
+      <pubDate>Tue, 24 Nov 2026 15:57:25 +0000</pubDate>
+    </item>
+    <item>
+      <title>Como esperar o resultado de um PR sem consultar o GitHub em loop</title>
+      <link>https://verticelabs.me/observatorio/github-cli-eventos-pr/</link>
+      <guid>https://verticelabs.me/observatorio/github-cli-eventos-pr/</guid>
+      <description>O GitHub CLI ganhou uma forma de aguardar eventos de pull requests. Para uma equipe pequena, vale testar se a espera por revisão ou CI pode sair do script que consulta o mesmo PR repetidamente.</description>
+      <category>Automação</category>
+      <pubDate>Fri, 20 Nov 2026 05:53:43 +0000</pubDate>
+    </item>
+    <item>
       <title>Como conferir o frete que sua loja informa ao Google</title>
       <link>https://verticelabs.me/observatorio/frete-search-console/</link>
       <guid>https://verticelabs.me/observatorio/frete-search-console/</guid>

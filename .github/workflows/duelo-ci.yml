@@ -1,0 +1,54 @@
+name: Duelo engine CI (sem paper nem commits)
+on:
+  pull_request:
+    paths:
+      - 'radar-ia-cripto/js/indicadores.js'
+      - 'bot/**'
+      - 'duelo-bot/**'
+      - '.github/workflows/duelo-paper.yml'
+      - '.github/workflows/duelo-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'bot/**'
+      - 'duelo-bot/**'
+      - '.github/workflows/duelo-paper.yml'
+      - '.github/workflows/duelo-ci.yml'
+permissions:
+  contents: read
+jobs:
+  test-duelo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: bot/package-lock.json
+      - name: Install locked dependencies
+        run: npm ci --prefix bot --ignore-scripts --no-audit --no-fund
+      - name: Test trading simulator
+        run: npm --prefix bot test
+      - name: Test paper publication against an isolated Git remote
+        run: bash bot/tests/paper-publisher.integration.sh
+      - name: Validate browser JS syntax
+        run: |
+          node --check duelo-bot/painel.js
+          node --check bot/cli.mjs
+          node --check bot/lib/paper.mjs
+          node --check bot/lib/motor.mjs
+      - name: Check scheduler safety (one run/hour, no duplicate cron)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s = Path('.github/workflows/duelo-paper.yml').read_text(encoding='utf-8')
+          assert s.count("cron: '17 * * * *'") == 1, 'Expected single hourly schedule'
+          assert s.count('cron:') == 1, 'No duplicate cron expressions'
+          assert 'npm --prefix bot test' not in s and 'pull_request:' not in s
+          assert 'cancel-in-progress: false' in s
+          script = Path('bot/paper-runtime.sh').read_text(encoding='utf-8')
+          assert 'branch=refs/heads/duelo-runtime' in script and '--force' not in script
+          print('PASS: single hourly scheduler with independent runtime branch')
+          PY

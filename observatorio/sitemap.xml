@@ -2,7 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://verticelabs.me/observatorio/</loc>
-    <lastmod>2026-11-19</lastmod>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://verticelabs.me/observatorio/shirudo-protecao-linux/</loc>
+    <lastmod>2026-11-24</lastmod>
+  </url>
+  <url>
+    <loc>https://verticelabs.me/observatorio/github-cli-eventos-pr/</loc>
+    <lastmod>2026-11-20</lastmod>
   </url>
   <url>
     <loc>https://verticelabs.me/observatorio/frete-search-console/</loc>

@@ -1,0 +1,32 @@
+name: Duelo storage audit
+on:
+  pull_request:
+    paths: ['.github/workflows/duelo-storage-audit.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  measure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Measure local full clone and sample legacy incremental transfer
+        run: |
+          set -euo pipefail
+          git count-objects -v
+          git rev-list --count origin/main
+          git rev-list --disk-usage --objects origin/main
+          if git show-ref --verify --quiet refs/remotes/origin/duelo-runtime; then
+            git rev-list --count origin/duelo-runtime
+            git rev-list --disk-usage --objects origin/duelo-runtime
+          fi
+          sample=6777bba8dd451d0e4704d2c27a348e7223873c6f
+          git diff-tree --no-commit-id --numstat -r "$sample"
+          git ls-tree -r -l "$sample" bot/data bot/history
+          bytes=$(printf '%s\n^%s\n' "$sample" "$(git rev-parse "$sample^")" |
+            git pack-objects --delta-base-offset --revs --thin --stdout | wc -c)
+          printf 'Legacy sample: %s bytes in locally generated thin pack\n' "$bytes"

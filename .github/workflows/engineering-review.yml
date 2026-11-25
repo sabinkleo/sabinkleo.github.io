@@ -1,0 +1,51 @@
+name: Engineering update levels
+on:
+  pull_request:
+    paths:
+      - 'src/components/lab/**'
+      - 'src/pages/en/lab.astro'
+      - 'src/components/DiagnosticTerminal.ts'
+      - 'src/data/diagnostics/**'
+      - 'src/data/lab-guides.json'
+      - 'tools/engineering_update.py'
+      - '.github/workflows/engineering-review.yml'
+  workflow_dispatch:
+    inputs:
+      level:
+        description: '1 verify, 2 draft with FreeLLM, 3 prepare Astra review'
+        type: choice
+        options: ['1','2','3']
+        default: '1'
+      project:
+        type: choice
+        options: ['all','routing','dyno','ai-ops','linux-security','auto-telemetry']
+        default: 'all'
+permissions:
+  contents: read
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the published guide against its sources
+        if: github.event_name == 'pull_request' || inputs.level == '1'
+        run: python3 tools/engineering_update.py --level 1
+      - name: Draft reviewed-source experiments
+        if: github.event_name == 'workflow_dispatch' && inputs.level == '2' && github.ref == 'refs/heads/main'
+        env:
+          FREELLM_API_KEY: ${{ secrets.FREELLM_API_KEY }}
+          FREELLM_BASE_URL: ${{ vars.FREELLM_BASE_URL }}
+          FREELLM_MODEL: ${{ vars.FREELLM_MODEL || 'auto' }}
+          PROJECT: ${{ inputs.project }}
+        run: python3 tools/engineering_update.py --level 2 --project "$PROJECT"
+      - name: Prepare focused review
+        if: failure() || inputs.level == '3'
+        env:
+          PROJECT: ${{ inputs.project || 'all' }}
+        run: python3 tools/engineering_update.py --level 3 --project "$PROJECT"
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('build/engineering/*') != ''
+        with:
+          name: engineering-review
+          path: build/engineering/

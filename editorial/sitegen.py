@@ -98,14 +98,25 @@ def page(title, description, canonical_url, data, body, article=None):
 <meta name="twitter:card" content="summary_large_image">
 {extra}
 <link rel="stylesheet" href="{up}assets/site.css">
+<link rel="stylesheet" href="/assets/site-shell.css">
 <script type="application/ld+json">{safe_json(data)}</script>
 <script src="{up}assets/site.js" defer></script>
 </head>
-<body>
+<body class="vl-site">
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+<nav class="vl-nav" aria-label="Menu da Vértice">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="/">Ferramentas</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/observatorio/" aria-current="page">Observatório</a>
+    </div>
+  </div>
+</nav>
 <header class="bar"><div class="shell top">
 <a class="brand" href="/"><i aria-hidden="true"></i>Vértice Labs</a>
-<nav aria-label="Navegação principal"><a href="{up}#arquivo">Arquivo</a><a class="rss" href="{up}feed.xml">RSS <span aria-hidden="true">↗</span></a></nav>
+<nav aria-label="Navegação editorial"><a href="{up}#arquivo">Arquivo</a><a class="rss" href="{up}feed.xml">RSS <span aria-hidden="true">↗</span></a></nav>
 </div></header>
 <main class="shell" id="conteudo">{body}</main>
 <footer><div class="shell foot"><a href="{up}">{NAME}</a><a href="/">Ferramentas Vértice Labs <span aria-hidden="true">↗</span></a></div></footer>

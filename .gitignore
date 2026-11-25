@@ -1,3 +1,11 @@
 /build/
 __pycache__/
 /editorial/.records-intake.lock
+/.astro/
+/dist/
+/node_modules/
+.env
+.env.*
+!.env.example
+/scripts/reel/node_modules
+/scripts/reel/.cache/

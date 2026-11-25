@@ -1,0 +1,23 @@
+.vl-key,.vl-command {font:13px/1.5 "IBM Plex Mono","Cascadia Mono",monospace;color:#edf1eb}
+button.vl-key {display:inline-flex;align-items:center;justify-content:center;padding:2px 8px;border:1px solid #54614f;color:#d3fa43;background:#121613;border-radius:2px;cursor:pointer;letter-spacing:.06em}
+.vl-key.vl-floating {position:fixed;right:14px;bottom:14px;z-index:90}
+dialog.vl-command {box-sizing:border-box;position:fixed;inset:17vh 0 auto;margin:auto;width:min(92vw,530px);max-height:72vh;padding:0;overflow:auto;background:#101511;border:1px solid #64734d;box-shadow:0 18px 80px #000a}
+.vl-command::backdrop {background:#050706bd}
+.vl-command header,.vl-command .vl-query,.vl-command footer {display:flex;align-items:center;gap:12px;padding:12px 16px;position:static;background:#121713;color:#b7c3b2}
+.vl-command header {justify-content:space-between;border-bottom:1px solid #394233}
+.vl-command header strong {font:700 15px monospace;letter-spacing:.04em;color:#d3fa43}
+.vl-command button {font:inherit;color:inherit;background:none;cursor:pointer}
+.vl-command .vl-close {border:1px solid #45523f;padding:2px 6px}
+.vl-command input {box-sizing:border-box;width:100%;font:inherit;padding:7px;color:#eff4e9;border:0;border-bottom:1px solid #60734f;background:#121713}
+.vl-command ul {display:grid;margin:0;padding:4px 8px;list-style:none}
+.vl-command li {margin:0;padding:0}
+.vl-command .vl-action {width:100%;display:flex;justify-content:space-between;align-items:center;border:0;text-align:left;padding:8px 10px}
+.vl-command .vl-action[aria-selected=true] {background:#263120;color:#dbff70}
+.vl-command footer {font-size:11px;min-height:30px}
+html.vl-scan body::after {content:"";z-index:2147483000;position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(transparent 0 3px,#8ca88015 3px 4px),repeating-linear-gradient(90deg,transparent 0 47px,#8ca88010 47px 48px)}
+
+.ai-entry { display:grid; gap:.65rem; padding:1rem; margin-block:1rem; border:1px solid #445247; background:#101511; color:#e0eadf; font: .95rem/1.5 ui-monospace,monospace; min-width:0 }
+.ai-entry textarea { background:#080c09; color:inherit; border:1px solid #718376; padding:.7rem; width:100%; box-sizing:border-box }
+.ai-entry button,.ai-entry a { color:#ccff97; border:1px solid #4d6144; background:#162014; padding:.45rem .7rem; text-align:start }
+.ai-entry pre,.ai-readout { white-space:pre-wrap; overflow-wrap:anywhere }
+.ai-entry [hidden] { display:none }

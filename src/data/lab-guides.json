@@ -1,0 +1,37 @@
+{
+  "routing": {
+    "source_sha256": "b6edd20b7bd5db00ac520e7ab843efd343e1746987f99db6b3227088c687d4eb",
+    "model": "gpt-oss-20b",
+    "question": "Which route takes over when the primary provider fails?",
+    "action": "Click Kill Primary Provider. Read Route and the breaker countdown while the primary circuit is open.",
+    "observe": "Follow the fallback in the trace, then watch the primary become eligible again when the cooldown ends."
+  },
+  "dyno": {
+    "source_sha256": "7aae4119a98f786ce67c56027273484052ab235cadfe364922147bcfd6c4ccd7",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b",
+    "question": "How do the two maps compare at the same RPM?",
+    "action": "Pause the replay. Set one RPM with the slider, then switch between Base Map and Calibrated Map.",
+    "observe": "Compare simulated torque, AFR and knock retard at that fixed RPM. Move the slider to see whether the difference persists."
+  },
+  "ai-ops": {
+    "source_sha256": "7d5ff52209268a7b1be602547bfb3f2800d998338abaa1440579d08b27c9176b",
+    "model": "openai/gpt-oss-20b",
+    "question": "Which part of your inference pipeline has the least evidence?",
+    "action": "Rate all four controls and calculate readiness. Find the first priority and check its proposed fix against your usage ledger or replay logs.",
+    "observe": "Verify one missing control, then change only that answer and recalculate. Compare the score and the order of the priorities."
+  },
+  "linux-security": {
+    "source_sha256": "5c5e16c5f46c9d402be2dcb7e91c8ac31d551027dba0f03577430857f0f0f6bf",
+    "model": "openai/gpt-oss-20b",
+    "question": "Which host control should you verify first?",
+    "action": "Rate each control using evidence from the host. Calculate readiness and compare the first priority with the last access or recovery review.",
+    "observe": "A partial control earns less than a verified one. Copy the report to record which evidence you still need."
+  },
+  "auto-telemetry": {
+    "source_sha256": "5043edbbd8fdfb17e03ecb13d38a53cd71558889c3e408e19c532a9467666863",
+    "model": "openai/gpt-oss-20b",
+    "question": "Can you align both logs before comparing two pulls?",
+    "action": "Review the time-reference question against the RPM landmarks in your two logs. Rate all four controls, then calculate readiness.",
+    "observe": "Look for trace alignment in the priorities. Use the suggested fix to record the time offset before reviewing the overlays."
+  }
+}

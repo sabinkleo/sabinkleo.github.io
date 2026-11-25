@@ -1,0 +1,388 @@
+@import url("/src/styles/tokens.css");
+
+/* Vértice Labs / Terminal industrial — scoped marketing surfaces only.
+   Keep trading, editorial and tool-specific interfaces independent. */
+.vl-site:has(.vl-home),
+.vl-site.vl-marketing {
+  --vt-void: var(--lab-ground);
+  --vt-deep: var(--lab-surface);
+  --vt-featured: #13231f;
+  --vt-ink: var(--lab-text);
+  --vt-muted: var(--lab-muted);
+  --vt-edge: var(--lab-line);
+  --vt-signal: var(--lab-accent);
+  --vt-head: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --vt-mono: var(--lab-mono);
+  --vl-accent: var(--vt-signal);
+  --vl-paper: var(--vt-ink);
+  --vl-muted: var(--vt-muted);
+  --vl-edge: #344541;
+  --vl-surface: var(--vt-deep);
+  color-scheme: dark;
+  color: var(--vt-ink);
+  background-color: var(--vt-void);
+  background-image:
+    linear-gradient(rgba(145, 214, 189, .023) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(145, 214, 189, .023) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+
+/* Shared commercial navigation; tools and Observatório retain their CSS. */
+.vl-site:has(.vl-home) .vl-nav,
+.vl-site.vl-marketing .vl-nav {
+  background: rgba(11, 15, 14, .96);
+  border-bottom-color: var(--vt-edge);
+}
+
+.vl-site:has(.vl-home) .vl-nav .vl-wordmark,
+.vl-site.vl-marketing .vl-nav .vl-wordmark {
+  font-family: var(--vt-head);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -.055em;
+}
+
+.vl-site:has(.vl-home) .vl-nav .vl-nav-links a,
+.vl-site.vl-marketing .vl-nav .vl-nav-links a {
+  border-radius: 2px;
+  font-family: var(--vt-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .025em;
+}
+
+.vl-site:has(.vl-home) .vl-nav .vl-nav-links a:hover,
+.vl-site:has(.vl-home) .vl-nav .vl-nav-links a[aria-current],
+.vl-site.vl-marketing .vl-nav .vl-nav-links a:hover,
+.vl-site.vl-marketing .vl-nav .vl-nav-links a[aria-current] {
+  background: #192923;
+  border-color: #355b4c;
+  color: var(--vt-signal);
+}
+
+.vl-site:has(.vl-home) a:focus-visible,
+.vl-site.vl-marketing a:focus-visible,
+.vl-site.vl-marketing summary:focus-visible {
+  outline: 2px solid var(--vt-signal);
+  outline-offset: 3px;
+}
+
+/* Homepage: an actual tool index, not an undifferentiated card wall. */
+.vl-home {
+  font-family: var(--vt-head);
+}
+
+.vl-home .hero {
+  padding-top: clamp(24px, 5vw, 64px);
+  padding-bottom: clamp(28px, 4vw, 48px);
+  border-bottom-color: var(--vt-edge);
+}
+
+.vl-home .vt-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: clamp(16px, 2.5vw, 27px);
+  color: var(--vt-signal);
+  font: 600 11px/1.4 var(--vt-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.vl-home .vt-eyebrow::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.vl-home .hero h1 {
+  max-width: 17ch;
+  color: var(--vt-ink);
+  font: 700 clamp(38px, 6.4vw, 78px)/1.02 var(--vt-head);
+  letter-spacing: -.06em;
+  overflow-wrap: normal;
+}
+
+.vl-home .hero p {
+  max-width: 58ch;
+  font: 400 clamp(16px, 2.1vw, 19px)/1.65 var(--vt-head);
+  color: var(--vt-muted);
+}
+
+.vl-home .vt-hero-rail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 20px;
+  margin-top: clamp(24px, 3vw, 38px);
+  color: #849a91;
+  font: 500 10px/1.5 var(--vt-mono);
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+.vl-home .vt-hero-rail span::before {
+  content: "/";
+  margin-right: 9px;
+  color: var(--vt-signal);
+}
+
+.vl-home .tool-group {
+  scroll-margin-top: 24px;
+}
+
+.vl-home .tool-group + .tool-group {
+  padding-top: clamp(12px, 2vw, 24px);
+  border-top: 1px solid var(--vt-edge);
+}
+
+.vl-home .tool-group > h2 {
+  color: var(--vt-ink);
+  font: 600 clamp(19px, 2.3vw, 26px)/1.2 var(--vt-head);
+  letter-spacing: -.04em;
+  margin-bottom: 18px;
+}
+
+.vl-home .tool-group > h2::before {
+  content: "//";
+  margin-right: 12px;
+  color: var(--vt-signal);
+  font: 500 12px var(--vt-mono);
+  letter-spacing: -.05em;
+}
+
+.vl-home .card,
+.vl-home .offer {
+  border: 1px solid var(--vt-edge);
+  border-radius: 2px;
+  background: var(--vt-deep);
+}
+
+.vl-home .card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 205px;
+  padding: clamp(18px, 2.5vw, 27px);
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.vl-home .card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 2px;
+  height: 0;
+  background: var(--vt-signal);
+  transition: height .25s ease;
+}
+
+.vl-home .card:is(:hover, :focus-within) {
+  border-color: rgba(145, 214, 189, .53);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+}
+
+.vl-home .card:is(:hover, :focus-within)::before {
+  height: 100%;
+}
+
+.vl-home .featured .card {
+  background: linear-gradient(120deg, var(--vt-featured), #111b1a 80%);
+  border-top-color: #52796b;
+  min-height: 230px;
+}
+
+.vl-home .tool-meta {
+  color: var(--vt-signal);
+  font-family: var(--vt-mono);
+  font-size: 10px;
+  letter-spacing: .12em;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.vl-home .tool-meta svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--vt-signal);
+}
+
+.vl-home .card h3 {
+  color: var(--vt-ink);
+  font: 650 clamp(19px, 2vw, 24px)/1.18 var(--vt-head);
+  letter-spacing: -.045em;
+  margin-bottom: 9px;
+}
+
+.vl-home .card p {
+  color: var(--vt-muted);
+  font: 400 13px/1.65 var(--vt-head);
+  margin-bottom: 16px;
+}
+
+.vl-home .card > a,
+.vl-home .offer > a {
+  min-height: 44px;
+  font: 600 11px/1.25 var(--vt-mono);
+  letter-spacing: .065em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--vt-signal);
+}
+
+.vl-home .card > a span {
+  transition: transform .2s ease;
+}
+
+.vl-home .card > a:is(:hover, :focus-visible) span {
+  transform: translateX(3px);
+}
+
+.vl-home .tool-diagram {
+  stroke: #699c8c;
+  fill: #1c3731;
+}
+
+.vl-home .offer {
+  padding: clamp(22px, 4vw, 38px);
+  background: linear-gradient(125deg, #14221e, #111716 80%);
+}
+
+.vl-home .offer h2 {
+  max-width: 22ch;
+  font: 650 clamp(25px, 3.1vw, 39px)/1.12 var(--vt-head);
+  letter-spacing: -.045em;
+}
+
+.vl-home .offer p {
+  max-width: 70ch;
+  color: var(--vt-muted);
+  font: 400 14px/1.7 var(--vt-head);
+}
+
+.vl-site:has(.vl-home) > .footer {
+  border-top-color: var(--vt-edge);
+  font-family: var(--vt-mono);
+  font-size: 11px;
+  letter-spacing: .025em;
+}
+
+/* Revenue OS /solucoes/: upgrade visual without touching attribution JS. */
+.vl-site.vl-marketing {
+  --bg: var(--vt-void);
+  --fg: var(--vt-ink);
+  --muted: var(--vt-muted);
+  --line: #344541;
+  --accent: var(--vt-signal);
+  --panel: var(--vt-deep);
+  --mono: var(--vt-mono);
+  font-family: var(--vt-head);
+}
+
+.vl-marketing .stripe {
+  height: 2px;
+  background: var(--vt-signal);
+}
+
+.vl-site.vl-marketing main h1 {
+  max-width: 15ch;
+  font: 700 clamp(42px, 7.5vw, 92px)/1.01 var(--vt-head);
+  letter-spacing: -.06em;
+  text-transform: none;
+  overflow-wrap: normal;
+}
+
+.vl-marketing main h2,
+.vl-marketing main h3 {
+  font-family: var(--vt-head);
+  letter-spacing: -.045em;
+}
+
+.vl-marketing main h2 {
+  font-size: clamp(25px, 3vw, 38px);
+}
+
+.vl-marketing .tag {
+  font: 600 10px/1.4 var(--vt-mono);
+  color: var(--vt-signal);
+  letter-spacing: .1em;
+}
+
+.vl-marketing .lead {
+  color: var(--vt-muted);
+  line-height: 1.65;
+}
+
+.vl-marketing .box,
+.vl-site.vl-marketing main .box,
+.vl-marketing .end {
+  border-radius: 2px;
+  border-color: var(--vt-edge);
+  background: var(--vt-deep);
+}
+
+.vl-marketing .end {
+  background: linear-gradient(125deg, #14231e, #111716 80%);
+}
+
+.vl-marketing .box {
+  transition: border-color .2s ease;
+}
+
+.vl-marketing .box:hover {
+  border-color: rgba(145, 214, 189, .38);
+}
+
+.vl-marketing .button {
+  border-radius: 2px;
+  font: 650 12px/1.3 var(--vt-head);
+  letter-spacing: .025em;
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.vl-marketing .button:hover {
+  transform: translateY(-1px);
+  filter: none;
+  background: #b4e7d4;
+}
+
+.vl-marketing .button.alt {
+  color: var(--vt-ink);
+  border-color: #60766d;
+}
+
+.vl-marketing .button.alt:hover {
+  background: #1d2925;
+  border-color: var(--vt-signal);
+}
+
+.vl-marketing .money {
+  font-family: var(--vt-head);
+  font-weight: 700;
+  letter-spacing: -.055em;
+}
+
+.vl-marketing footer {
+  border-top-color: var(--vt-edge);
+  font: 11px/1.6 var(--vt-mono);
+}
+
+@media (max-width: 520px) {
+  .vl-home .hero h1 { font-size: clamp(34px, 10vw, 49px); }
+  .vl-home .vt-hero-rail { gap: 8px 14px; font-size: 9px; }
+  .vl-home .card { min-height: 190px; }
+  .vl-home .featured .card { min-height: 210px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vl-home .card,
+  .vl-home .card::before,
+  .vl-home .card > a span,
+  .vl-marketing .button,
+  .vl-marketing .box {
+    transition: none;
+    transform: none;
+  }
+}

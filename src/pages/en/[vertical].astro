@@ -1,0 +1,59 @@
+---
+import EngineeringGuide from '../../components/EngineeringGuide.astro';
+import AiEntry from '../../components/AiEntry';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LabSection from '../../components/LabSection.astro';
+import LabCard from '../../components/LabCard.astro';
+import LabButton from '../../components/LabButton.astro';
+import DiagnosticTerminal from '../../components/DiagnosticTerminal';
+import { verticals } from '../../data/diagnostics';
+
+export function getStaticPaths() {
+  return verticals.map(spec => ({ params: { vertical: spec.slug }, props: { spec } }));
+}
+const { spec } = Astro.props;
+---
+<BaseLayout technical lang="en" title={spec.title + ' | Vértice Labs'} description={spec.description}>
+  <main id="conteudo" class="frame">
+    <header class="vertical-hero"><div><p class="eyebrow">ENGINEERING / {spec.slug.toUpperCase()}</p>
+      <h1>{spec.title}<span class="accent">.</span></h1><p class="intro">{spec.description}</p>
+      <LabButton primary href="#diagnostic">Check readiness ↓</LabButton></div>
+      <figure class="terminal"><figcaption>Sample session · {spec.slug}</figcaption>
+        <pre><code><span class="accent">$ {spec.command}</span>{spec.lines.map((line, i) => <span style={'--delay:' + (i * 110) + 'ms'}>{line}</span>)}</code></pre>
+      </figure>
+    </header>
+    <LabSection id="delivery" title="Architecture & delivery"><div class="lab-cards">
+      {spec.stages.map(stage => <LabCard title={stage.artifact} when={stage.when}><p>{stage.detail}</p></LabCard>)}
+    </div></LabSection>
+    <LabSection id="intake" title="Describe your setup"><AiEntry client:visible><div class="ai-entry" data-ai-entry="intake" data-vertical={spec.slug}></div></AiEntry></LabSection>
+    <LabSection id="diagnostic" title="Readiness diagnostic">
+      <DiagnosticTerminal client:visible spec={spec}>
+        <form class="diagnostic"><p>Rate each control against evidence from your last run.</p>
+          {spec.questions.map((q, i) => <label>{q.label}<select required name={'q' + i}><option value="">Choose evidence level</option><option value="0">Missing</option><option value="1">Partial evidence</option><option value="2">Verified</option></select></label>)}
+          <button type="submit" disabled class="button primary">Calculate readiness</button>
+          <div data-output hidden><h3 data-score tabindex="-1"></h3><ul data-priorities></ul>
+            <div class="flex flex-wrap gap-3"><button type="button" class="button" data-copy>Copy Markdown</button>
+            <button type="button" class="button" data-brief>Request review note</button><a class="button primary" data-review href="#handoff">Discuss this score →</a></div>
+            <textarea hidden readonly aria-label="Markdown report"></textarea><p role="status"></p>
+          </div>
+        </form>
+      </DiagnosticTerminal>
+      <noscript>Enable JavaScript to calculate a score, or use the contact link below.</noscript>
+    </LabSection>
+    <EngineeringGuide project={spec.slug as "ai-ops" | "linux-security" | "auto-telemetry"} />
+    <LabSection id="handoff" title="Review your setup">
+      <p class="mb-4">Open a draft with the Vértice team. Add the artifact you want reviewed before sending.</p>
+      <a class="button" data-contact={spec.slug} href={'https://wa.me/5541998844684?text=' + encodeURIComponent('Technical review: ' + spec.name)}>Continue to WhatsApp →</a>
+    </LabSection>
+  </main>
+</BaseLayout>
+<script>
+  import { reviewUrl } from '../../services/attribution';
+  const link = document.querySelector<HTMLAnchorElement>('[data-contact]')!;
+  const url = reviewUrl(link.dataset.contact!);
+  const score = new URLSearchParams(location.search).get('score');
+  if (score && /^(100|[1-9]?[0-9])$/.test(score)) url.searchParams.set('score', score);
+  const contact = new URL(link.href);
+  contact.searchParams.set('text', 'Technical review: ' + link.dataset.contact + '\n' + url.href);
+  link.href = contact.href;
+</script>
