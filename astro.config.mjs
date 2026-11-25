@@ -14,7 +14,7 @@ const legacyPaths = [
 // Attach the shared HUD to the public legacy HTML produced by the static build.
 async function attachPublicHud(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
-    if (entry.name === 'crm' || entry.name === '_astro') continue;
+    if (['crm', '_astro', 'teardown'].includes(entry.name)) continue;
     const url = new URL(encodeURIComponent(entry.name) + (entry.isDirectory() ? '/' : ''), dir);
     if (entry.isDirectory()) await attachPublicHud(url);
     else if (entry.name.endsWith('.html')) {
