@@ -58,6 +58,17 @@ export function localResult(p) {
   }:{stack:setup,symptoms:match(['root','429','retry','senha','password','quota','latency','latência'])};
   if(p.action==='intake') return {detected_setup:setup,fields,risk_score:Math.min(100,25*p.entities.filter(e=>['knock','429','root','password','senha','quota','retry'].includes(e)).length),priorities,plan:priorities.map((s,i)=>['01–07','08–20','21–30'][i]+' · '+s),whatsapp_summary:[setup,...priorities].join('\n')};
   const signal=(p.findings?.length?p.findings:p.entities).join(', ') || (pt?'trajeto até o contato':'handoff path');
+  const changes={
+    'single-key':'One active provider → replay the same batch against a standby and time recovery.',
+    'no-cache':'Repeated request → compare scoped cache hits, stale answers and billed tokens on the same batch.',
+    'paid-routing':'Paid default → benchmark one eligible batch on free quota and compare quality.',
+    'root-login':'Direct root access → verify a named administrator and recovery path in staging.',
+    'password-auth':'Password login → test key coverage and recovery before changing the staged policy.',
+    'public-ingress':'Public listener → compare its allowed source range with the service owner’s requirement.',
+    'lean-boost':'AFR above target → align logged target, measured AFR and gauge pressure on one pull.',
+    'knock-events':'Knock indication → correlate flagged samples with RPM, sensor health and timing.',
+    'boost-peak':'Pressure peak → overlay calibrated gauge pressure and its logged target.'
+  };
   const variants=pt?[
     ['Quantos passos existem em '+signal+'?','Cronometrar o fluxo e testar uma mudança em 20 minutos.','Posso te mostrar onde o cronômetro para em '+signal+'?'],
     ['O atrito em '+signal+' precisa ficar visível.','Gravar 12 segundos de uma tentativa real.','Te mando uma gravação de 12 segundos percorrendo '+signal+'?'],
@@ -71,7 +82,15 @@ export function localResult(p) {
   const choice=Math.max(0,modes.indexOf(p.mode))+(p.remix||0);
   const selected=angles[choice%3];
   if(p.action==='crm_hypothesis') return {...selected,angles};
-  return {executive_narrative:signal+' · '+selected.observable_friction,remediation_diff:[selected.concrete_offer,...priorities],roi_justification:'Compare elapsed time and cost on equal volumes before assigning savings.',angles};
+  const findings=p.findings||[];
+  const roi={
+    'ai-ops':'Price the same accepted batch before and after the change. Subtract the cost of retries and cache misses from any projected savings.',
+    'linux-security':'Track exposed services and hours spent reviewing access exceptions. Multiply hours saved by the actual hourly cost.',
+    'auto-telemetry':'Count repeat dyno hours on comparable sessions. Multiply avoided hours by the booked hourly rate and subtract review time.'
+  };
+  return {executive_narrative:findings.length+' flagged signals across '+p.checks+' checks. '+selected.observable_friction,
+    remediation_diff:findings.length?findings.map(g=>changes[g]):['Record a representative baseline before assigning a remediation.'],
+    roi_justification:roi[p.vertical],angles};
 }
 const ban=/simplifica o primeiro contato|otimizar presença|peça focada|impacto desconhecido/i;
 export function accepted(p,v) {

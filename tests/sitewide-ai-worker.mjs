@@ -42,3 +42,28 @@ test('rejects free text, external routes, unrecognized findings and unsafe outpu
   assert.ok(!accepted(p,{...reply,recommended_route:'https://example.test'}));
   assert.ok(!accepted(p,{...reply,quick_reply:'<img onerror=alert(1)>'}));
 });
+
+test('HTTP entry points cap bytes, gate each IP and preserve triage',async()=>{
+  const {createServer}=await import('vite');
+  const server=await createServer({configFile:false,server:{middlewareMode:true},appType:'custom'});
+  try{
+    const worker=(await server.ssrLoadModule('/infra/triage/worker.ts')).default;
+    const env={AI_RATE_LIMITER:{limit:async({key})=>({success:key==='allowed'})}};
+    const post=(data,path='/api/ai',ip='allowed',accept='application/json')=>worker.fetch(new Request('https://example.test'+path,{
+      method:'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip,Accept:accept},body:JSON.stringify(data)
+    }),env);
+    for(const p of [{...base,action:'intent'},{...base,action:'intake'},{...base,action:'crm_hypothesis'},{...base,action:'teardown_audit',entities:[],checks:1,findings:['no-cache']}]){
+      assert.equal((await post(p)).status,200);
+      assert.equal((await post(p,'/api/ai','blocked')).status,429);
+    }
+    const intent=await (await post({action:'intent',lang:'pt',text:'FT550 turbo private-example'})).json();
+    assert.equal(intent.result.vertical,'auto-telemetry');
+    assert.doesNotMatch(JSON.stringify(intent),/private-example/);
+    assert.equal((await post({...base,action:'intent',text:'x'.repeat(5000)})).status,400);
+    const stream=await post({...base,action:'intent',event:'quota'},'/api/ai','allowed','application/x-ndjson');
+    assert.equal(stream.headers.get('content-type'),'application/x-ndjson');
+    assert.match((await stream.text()).trim().split('\n').map(s=>JSON.parse(s).text).join(''),/quota/);
+    assert.equal((await post({vertical:'invalid'},'/api/triage')).status,400);
+    assert.equal((await post({},'/unknown')).status,404);
+  }finally{await server.close();}
+});

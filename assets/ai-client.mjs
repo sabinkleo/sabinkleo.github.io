@@ -29,9 +29,13 @@ export function mountEntry(root){
   copy.onclick=async()=>{try{await navigator.clipboard.writeText(markdown);}catch{const range=document.createRange();range.selectNodeContents(out);getSelection()?.removeAllRanges();getSelection()?.addRange(range);}};
   if(action==='intake') input.value=extract(new URLSearchParams(location.search).get('context')||'',root.dataset.vertical).entities.join(' ');
   function clear(){ticket++;out.textContent='';link.hidden=copy.hidden=true;}
-  input.oninput=clear;
+  let debounce;
+  input.oninput=()=>{
+    clear();clearTimeout(debounce);
+    if(action==='intake' && input.value.trim().length>=8) debounce=setTimeout(()=>button.click(),700);
+  };
   button.onclick=()=>{
-    clear();if(!input.value.trim()){input.focus();return;}
+    clearTimeout(debounce);clear();if(!input.value.trim()){input.focus();return;}
     const token=ticket, signals=extract(input.value,root.dataset.vertical);
     ask({action,lang,...signals},(v,source)=>{
       if(token!==ticket)return;
