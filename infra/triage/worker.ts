@@ -1,6 +1,9 @@
 import { verticals } from '../../src/data/diagnostics';
 import { assess } from '../../src/data/diagnostics/score';
 
+import {generate, quota} from './gateway.mjs';
+import {valid} from '../../assets/ai-contract.mjs';
+
 interface Env {
   TRIAGE_GATEWAY_URL?: string;
   TRIAGE_GATEWAY_KEY?: string;
@@ -10,7 +13,7 @@ interface Env {
 const reply = (data: unknown, status = 200) =>
   Response.json(data, { status, headers: { 'Cache-Control': 'no-store' } });
 
-async function readPayload(request: Request) {
+async function readPayload(request: Request, limit: number) {
   const reader = request.body?.getReader();
   if (!reader) throw new Error('Missing body');
   let bytes = 0;
@@ -20,7 +23,7 @@ async function readPayload(request: Request) {
     const chunk = await reader.read();
     if (chunk.done) break;
     bytes += chunk.value.length;
-    if (bytes > 1024) {
+    if (bytes > limit) {
       await reader.cancel();
       throw new Error('Request too large');
     }
@@ -31,19 +34,25 @@ async function readPayload(request: Request) {
 
 export default {
   async fetch(request: Request, env: Env) {
-    if (new URL(request.url).pathname !== '/api/triage') return reply({ error: 'Unknown route' }, 404);
+    const path = new URL(request.url).pathname;
+    if (!['/api/triage','/api/ai'].includes(path)) return reply({ error: 'Unknown route' }, 404);
     if (request.method !== 'POST') return new Response(null, { status: 405, headers: { Allow: 'POST' } });
     if (request.headers.get('content-type')?.split(';')[0] !== 'application/json') return reply({ error: 'Expected JSON' }, 415);
     let payload;
-    try { payload = await readPayload(request); }
+    try { payload = await readPayload(request, path === '/api/ai' ? 4096 : 1024); }
     catch { return reply({ error: 'Invalid or oversized JSON' }, 400); }
+    if (path === '/api/ai') {
+      if (!valid(payload)) return reply({error:'Invalid action payload'}, 400);
+      if (!await quota(request, env)) return reply({error:'Rate limited'}, 429);
+      return reply(await generate(payload, env));
+    }
     const spec = verticals.find(v => v.slug === payload?.vertical);
     if (!spec) return reply({ error: 'Unknown vertical' }, 400);
     let result;
     try { result = assess(spec, payload.answers); }
     catch { return reply({ error: 'Invalid evidence levels' }, 400); }
     const fallback = { score: result.score, note: result.priorities[0].fix, source: 'local' };
-    if (!env.TRIAGE_GATEWAY_URL || !env.TRIAGE_GATEWAY_KEY || !env.TRIAGE_MODEL) return reply(fallback);
+    if (!await quota(request, env) || !env.TRIAGE_GATEWAY_URL || !env.TRIAGE_GATEWAY_KEY || !env.TRIAGE_MODEL) return reply(fallback);
     try {
       const endpoint = new URL(env.TRIAGE_GATEWAY_URL);
       if (endpoint.protocol !== 'https:') return reply(fallback);
