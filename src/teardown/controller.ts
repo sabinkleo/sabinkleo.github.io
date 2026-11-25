@@ -65,7 +65,7 @@ function mount(root: HTMLElement) {
   function audit(){
     if(!report) return;
     const ticket=++auditTicket;
-    void ask({action:'teardown_audit',lang:'en',vertical:brief.vertical,entities:[],findings:report.findings.map(f=>f.gap),checks:report.checks,remix},(v:any)=>{
+    void ask({action:'teardown_audit',lang:'en',vertical:brief.vertical,entities:[],findings:report.findings.map(f=>f.gap),checks:report.checks,mode:get<HTMLSelectElement>('audit-mode').value,remix},(v:any)=>{
       if(ticket!==auditTicket) return;
       put('audit-result',[v.executive_narrative,...v.remediation_diff,v.roi_justification,anglesText(v)].join('\n\n'));
       again.hidden=false;

@@ -7,7 +7,7 @@
     "observe": "Follow the fallback in the trace, then watch the primary become eligible again when the cooldown ends."
   },
   "dyno": {
-    "source_sha256": "49430b88fb5ce962900c337a145fc9f7b86de5ca11f80606e3fcf2b9e3380b83",
+    "source_sha256": "7aae4119a98f786ce67c56027273484052ab235cadfe364922147bcfd6c4ccd7",
     "model": "nvidia/nemotron-3-ultra-550b-a55b",
     "question": "How do the two maps compare at the same RPM?",
     "action": "Pause the replay. Set one RPM with the slider, then switch between Base Map and Calibrated Map.",

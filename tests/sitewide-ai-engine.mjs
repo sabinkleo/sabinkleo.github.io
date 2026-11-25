@@ -36,13 +36,16 @@ for(const status of [200,429]){
       await expect(page.locator('#narration')).toContainText('quota');await page.locator('#pull-rpm').scrollIntoViewIfNeeded();
       await expect(page.locator('[data-reading]').first()).not.toHaveText('—');
       await page.locator('#pull-rpm').evaluate(el=>{el.value='4880';el.dispatchEvent(new Event('input',{bubbles:true}));});await expect(page.locator('#narration')).toContainText('knock');
-      await page.locator('#lab-remix').click();await expect.poll(()=>calls.length).toBe(3);
+      await page.locator('#lab-remix').click();await expect.poll(()=>calls.filter(p=>p.action==='intent').length).toBe(3);
+      await expect(page.locator('#lab-angles')).toContainText('Contra-Intuitivo');
+      await page.locator('#lab-mode').selectOption('Modo Caos Controlado');
+      await expect.poll(()=>calls.filter(p=>p.action==='teardown_audit').at(-1)?.mode).toBe('Modo Caos Controlado');
     });
     test('local teardown, opt-in audit and print safety',async({page})=>{
       await page.goto(base+'/en/teardown/?c=%3Cscript%3Eprivate-example');await page.locator('#sample').click();
       await expect(page.locator('#status')).toHaveText('Analysis complete.');expect(calls).toHaveLength(0);
       await page.locator('#deep-audit').click();await expect(page.locator('#audit-result')).toContainText('Contra-Intuitivo');
-      await expect.poll(()=>calls.length).toBe(1);expect(Object.keys(calls[0]).sort()).toEqual(['action','checks','entities','findings','lang','remix','vertical']);
+      await expect.poll(()=>calls.length).toBe(1);expect(Object.keys(calls[0]).sort()).toEqual(['action','checks','entities','findings','lang','mode','remix','vertical']);
       expect(JSON.stringify(calls)).not.toContain('private-example');
       unsafe=true;await page.locator('#audit-remix').click();await expect.poll(()=>calls.length).toBe(2);await expect(page.locator('#audit-result img')).toHaveCount(0);expect(await page.evaluate(()=>window.xss)).toBeUndefined();
       await page.emulateMedia({media:'print'});await expect(page.locator('#audit-result')).toBeVisible();
