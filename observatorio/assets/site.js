@@ -33,9 +33,9 @@
   if (sidebar && sections.length) {
     const nav = document.createElement("nav");
     nav.className = "article-navigation";
-    nav.setAttribute("aria-label", "Nesta matéria");
+    nav.setAttribute("aria-label", document.documentElement.lang === "en" ? "In this article" : "Nesta matéria");
     const title = document.createElement("h2");
-    title.textContent = "Nesta matéria";
+    title.textContent = document.documentElement.lang === "en" ? "In this article" : "Nesta matéria";
     const list = document.createElement("ol");
     for (const [index, section] of sections.entries()) {
       const heading = section.querySelector("h2");
@@ -54,6 +54,77 @@
     }
     nav.append(title, list);
     sidebar.append(nav);
+  }
+
+  // Contextual AI sends only the article identifier and a fixed question.
+  const slug = location.pathname.match(/^\/(?:observatorio|en\/observatory)\/([a-z0-9]+(?:-[a-z0-9]+)*)\/$/)?.[1];
+  const en = document.documentElement.lang === 'en';
+  const tr = (english, portuguese) => en ? english : portuguese;
+  if (article && slug && article.querySelector(".storyhead") && article.querySelector(".prose")) {
+    const panel = document.createElement("section");
+    panel.className = "article-assistant";
+    panel.setAttribute("aria-labelledby", "article-assistant-title");
+    const title = document.createElement("h2");
+    title.id = "article-assistant-title";
+    title.textContent = tr("Ask Vértice","Pergunte à Vértice");
+    const note = document.createElement("p");
+    note.textContent = tr("Explore this article with AI. Answers use its published evidence, not live web research.","Explore esta matéria com IA. As respostas usam as evidências publicadas, sem pesquisa em tempo real.");
+    const actions = document.createElement("div");
+    actions.className = "article-questions";
+    const output = document.createElement("div");
+    output.className = "article-answer";
+    output.setAttribute("role","status");
+    output.setAttribute("aria-live","polite");
+    output.hidden = true;
+    const modes = [
+      ["summary",tr("Summarize in 30 seconds","Resuma em 30 segundos")],
+      ["explain",tr("Explain simply","Explique de forma simples")],
+      ["risks",tr("What are the limitations?","Quais são as limitações?")],
+      ["actions",tr("What should I do next?","O que fazer agora?")]
+    ];
+    let controller, sequence = 0;
+    const endpoint = ["verticelabs.me","www.verticelabs.me"].includes(location.hostname)
+      ? "https://vertice-technical-triage-pages.sabino-fabio.workers.dev/api/ai" : "/api/ai";
+    async function ask(mode, button) {
+      controller?.abort();
+      controller = new AbortController();
+      const current = ++sequence;
+      const timeout = setTimeout(() => controller.abort(), 14000);
+      for (const b of actions.querySelectorAll("button")) b.setAttribute("aria-pressed", String(b === button));
+      output.hidden = false;
+      output.dataset.source = "loading";
+      output.textContent = tr("Reading the published article…","Consultando a matéria publicada…");
+      try {
+        const response = await fetch(endpoint,{method:"POST",credentials:"omit",redirect:"error",referrerPolicy:"no-referrer",
+          headers:{"Content-Type":"application/json"},signal:controller.signal,
+          body:JSON.stringify({action:"article",slug,mode,lang:en?"en":"pt"})});
+        if (!response.ok) throw Error("Unavailable");
+        const data = await response.json();
+        if (data.source !== "gateway" || typeof data.answer !== "string" || !data.answer.trim() || data.answer.length > 2400) throw Error("Invalid answer");
+        if (current !== sequence) return;
+        output.dataset.source = "gateway";
+        output.textContent = data.answer;
+      } catch {
+        if (current !== sequence) return;
+        output.dataset.source = "editorial";
+        const prose = article.querySelector(".prose");
+        const headings = {summary:0,explain:0,risks:3,actions:2};
+        const selected = [...prose.querySelectorAll(":scope > section")][headings[mode]];
+        const excerpt = mode === "summary" ? article.querySelector(".storyhead .intro")?.textContent : selected?.innerText;
+        output.textContent = tr("AI unavailable. Editorial excerpt:","IA indisponível. Trecho editorial:") + "\n\n" + (excerpt?.trim() || tr("Read the published article below.","Leia a matéria publicada abaixo."));
+      } finally { clearTimeout(timeout); }
+    }
+    for (const [mode,label] of modes) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = label;
+      button.setAttribute("aria-pressed","false");
+      button.dataset.articleMode = mode;
+      button.addEventListener("click",()=>ask(mode,button));
+      actions.append(button);
+    }
+    panel.append(title,note,actions,output);
+    article.querySelector(".storyhead").after(panel);
   }
 
   let favorites = restore();
