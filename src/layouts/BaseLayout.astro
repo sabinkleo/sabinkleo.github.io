@@ -15,6 +15,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="referrer" content="no-referrer" />
     {privateBrief && <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23d3fa43' d='M1 4h8l7 15 7-15h8L16 32z'/%3E%3C/svg%3E" />}
     {privateBrief && <meta http-equiv="Content-Security-Policy" content="connect-src 'none'; form-action 'none'; object-src 'none'; base-uri 'self'" />}
+    {!privateBrief && <>
+    <link rel="stylesheet" href="/assets/command-hud.css" />
+    <script is:inline defer src="/assets/command-hud.js"></script>
+    {import.meta.env.PUBLIC_CONTACT_EMAIL && <meta name="vl-contact-email" content={import.meta.env.PUBLIC_CONTACT_EMAIL} />}
+    </>}
     <title>{title}</title>
     <meta name="description" content={description} />
     {home || technical ? (
@@ -53,6 +58,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           <a href="/observatorio/">{en ? "Observatory" : "Observatório"}</a>
           <a href="/solucoes/">{en ? "Solutions" : "Soluções"}</a>
           <a data-attribution={!privateBrief || undefined} href="/en/">{en ? "Technical tracks" : "Trilhas técnicas"}</a>
+          {!privateBrief && <span data-hud-trigger></span>}
           <span class="flex gap-2" aria-label={en ? "Site languages" : "Idiomas do site"}>
             <a href="/pt/" lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
             <span aria-hidden="true">/</span>
