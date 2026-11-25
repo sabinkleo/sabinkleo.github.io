@@ -8,3 +8,14 @@ routes = [{ pattern = "verticelabs.me/api/triage", zone_name = "verticelabs.me" 
 name = "AI_RATE_LIMITER"
 namespace_id = "1001"
 simple = { limit = 20, period = 60 }
+
+[env.pages]
+name = "vertice-technical-triage-pages"
+workers_dev = true
+preview_urls = false
+routes = []
+
+[[env.pages.ratelimits]]
+name = "AI_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 20, period = 60 }

@@ -1,0 +1,15 @@
+---
+import guides from '../data/lab-guides.json';
+interface Props { project: keyof typeof guides }
+const guide = guides[Astro.props.project];
+---
+<details class="engineering-guide" data-engineering-guide={Astro.props.project}>
+  <summary>{guide.question}</summary>
+  <dl><dt>Try it</dt><dd>{guide.action}</dd><dt>Check the result</dt><dd>{guide.observe}</dd></dl>
+</details>
+<style>
+  details { margin-block:1rem 2rem; padding:1rem 1.25rem; border-left:2px solid var(--accent); background:var(--surface); }
+  summary { cursor:pointer; font-weight:650; }
+  dt { margin-top:.9rem; color:var(--accent); font: .85rem var(--mono); }
+  dd { margin-top:.2rem; }
+</style>

@@ -1,4 +1,5 @@
 ---
+import EngineeringGuide from '../../components/EngineeringGuide.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Router from '../../components/lab/router';
 import Dyno from '../../components/lab/dyno';
@@ -11,7 +12,7 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
 <main class="frame instruments" id="conteudo">
   <header class="instrument-head"><p class="eyebrow">VÉRTICE / ENGINEERING</p><h1>Interactive lab<span class="accent">.</span></h1>
   <p>Trip an inference circuit or replay a dyno pull. Both instruments run locally on simulated data.</p></header>
-  <section class="ai-entry" aria-label="AI telemetry narrator"><label><input id="narrate" type="checkbox"/> AI Telemetry Narrator</label><button id="lab-remix" disabled>Remix Angle</button><pre id="narration" role="status"></pre></section>
+  <section class="ai-entry" aria-label="AI telemetry narrator"><label><input id="narrate" type="checkbox"/> AI Telemetry Narrator</label><label>Creative mode <select id="lab-mode"><option>Cirúrgico</option><option>Cavalo de Troia</option><option>Contra-Intuitivo</option><option>Modo Caos Controlado</option></select></label><button id="lab-remix" disabled>Remix Angle</button><pre id="lab-angles" aria-live="polite"></pre><pre id="narration" role="status"></pre></section>
   <section aria-labelledby="routing-title">
     <div class="instrument-title"><h2 id="routing-title">Inference routing</h2><span>HTTP / EVENT TRACE</span></div>
     <Router client:visible>
@@ -31,6 +32,7 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
       <pre class="trace" aria-label="Structured routing events" data-trace tabindex="0"></pre>
     </Router>
   </section>
+  <EngineeringGuide project="routing" />
   <section aria-labelledby="dyno-title">
     <div class="instrument-title"><h2 id="dyno-title">Dyno telemetry</h2><span>ECU / PULL REPLAY</span></div>
     <Dyno client:visible>
@@ -40,27 +42,34 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
       <div class="metrics dyno-metrics">{['Torque · Nm','Δ Nm · cal − base','Δ AFR · cal − base',...tracks].map(key=><div><small>{key}</small><output data-reading>—</output></div>)}</div>
     </Dyno>
   </section>
+  <EngineeringGuide project="dyno" />
 </main>
 </BaseLayout>
 
 <script>
-  import {narrateEvent} from '../../../assets/ai-client.mjs';
+  import {ask, anglesText, narrateEvent} from '../../../assets/ai-client.mjs';
   const toggle=document.querySelector<HTMLInputElement>('#narrate')!, again=document.querySelector<HTMLButtonElement>('#lab-remix')!, out=document.querySelector<HTMLElement>('#narration')!;
+  const mode=document.querySelector<HTMLSelectElement>('#lab-mode')!, angles=document.querySelector<HTMLElement>('#lab-angles')!;
   let last='',ticket=0,remix=0;
   function narrate(event:string){
     if(!toggle.checked)return;
     last=event;again.disabled=false;
     const current=++ticket;
-    void narrateEvent({action:'intent',lang:'en',vertical:event==='knock'?'auto-telemetry':'ai-ops',entities:[],event,remix},(line:string)=>{
+    const vertical=event==='knock'?'auto-telemetry':'ai-ops';
+    void ask({action:'teardown_audit',lang:'en',vertical,entities:[],findings:event==='knock'?['knock-events']:['single-key'],checks:1,mode:mode.value,remix},(v:unknown)=>{
+      if(current===ticket)angles.textContent=anglesText(v);
+    });
+    void narrateEvent({action:'intent',lang:'en',vertical:event==='knock'?'auto-telemetry':'ai-ops',entities:[],event,mode:mode.value,remix},(line:string)=>{
       if(current===ticket)out.textContent=line;
     });
   }
-  toggle.onchange=()=>{ticket++;out.textContent='';again.disabled=true;last='';};
+  toggle.onchange=()=>{ticket++;angles.textContent='';out.textContent='';again.disabled=true;last='';};
   document.addEventListener('click',e=>{
     const el=e.target as Element;
     if(el.closest('[data-rate]'))narrate('quota');
     if(el.closest('[data-kill]'))narrate('outage');
   });
   document.addEventListener('dyno-warning',()=>narrate('knock'));
+  mode.onchange=()=>{if(last)narrate(last);};
   again.onclick=()=>{remix=(remix+1)%1000;narrate(last);};
 </script>

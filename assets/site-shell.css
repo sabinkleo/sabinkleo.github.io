@@ -325,6 +325,8 @@
 
   .vl-site .vl-nav-links {
     flex: 1 0 100%;
+    min-width: 0;
+    flex-wrap: wrap;
   }
 
   .vl-site .vl-nav-links a {

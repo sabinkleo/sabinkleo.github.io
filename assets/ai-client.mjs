@@ -1,11 +1,14 @@
 import {accepted, extract, localResult, valid} from './ai-contract.mjs';
 export {extract};
+const endpoint = typeof location !== "undefined" && ['verticelabs.me', 'www.verticelabs.me'].includes(location.hostname)
+  ? 'https://vertice-technical-triage-pages.sabino-fabio.workers.dev/api/ai'
+  : '/api/ai';
 export async function ask(p,display){
   if(!valid(p)) throw new Error('Unsupported diagnostic signals');
   const fallback=localResult(p);
   display(fallback,'local');
   try{
-    const response=await fetch('/api/ai',{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
+    const response=await fetch(endpoint,{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
       headers:{'Content-Type':'application/json'},signal:AbortSignal.timeout(9500),body:JSON.stringify(p)});
     if(!response.ok) return;
     const {result,source}=await response.json();
@@ -56,7 +59,7 @@ export async function narrateEvent(p,display){
   const fallback=localResult(p);
   display(fallback.quick_reply);
   try{
-    const response=await fetch('/api/ai',{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
+    const response=await fetch(endpoint,{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
       headers:{Accept:'application/x-ndjson','Content-Type':'application/json'},body:JSON.stringify(p),signal:AbortSignal.timeout(9500)});
     if(!response.ok)return;
     if(!response.headers.get('content-type')?.startsWith('application/x-ndjson')){

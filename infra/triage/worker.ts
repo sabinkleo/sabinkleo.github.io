@@ -4,6 +4,8 @@ import { assess } from '../../src/data/diagnostics/score';
 import {generate, quota, eventStream} from './gateway.mjs';
 import {valid,extract} from '../../assets/ai-contract.mjs';
 
+import guides from '../../src/data/lab-guides.json';
+
 interface Env {
   TRIAGE_GATEWAY_URL?: string;
   TRIAGE_GATEWAY_KEY?: string;
@@ -32,8 +34,7 @@ async function readPayload(request: Request, limit: number) {
   return JSON.parse(text + decoder.decode());
 }
 
-export default {
-  async fetch(request: Request, env: Env) {
+async function dispatch(request: Request, env: Env) {
     const path = new URL(request.url).pathname;
     if (!['/api/triage','/api/ai'].includes(path)) return reply({ error: 'Unknown route' }, 404);
     if (request.method !== 'POST') return new Response(null, { status: 405, headers: { Allow: 'POST' } });
@@ -57,7 +58,8 @@ export default {
     let result;
     try { result = assess(spec, payload.answers); }
     catch { return reply({ error: 'Invalid evidence levels' }, 400); }
-    const fallback = { score: result.score, note: result.priorities[0].fix, source: 'local' };
+    const guide = guides[spec.slug as keyof typeof guides];
+    const fallback = { score: result.score, note: result.priorities[0].fix + ' ' + guide.action, source: 'reviewed-guide' };
     if (!await quota(request, env) || !env.TRIAGE_GATEWAY_URL || !env.TRIAGE_GATEWAY_KEY || !env.TRIAGE_MODEL) return reply(fallback);
     try {
       const endpoint = new URL(env.TRIAGE_GATEWAY_URL);
@@ -75,5 +77,23 @@ export default {
       return typeof note === 'string' && note.trim()
         ? reply({ score: result.score, note: note.trim().slice(0, 600), source: 'gateway' }) : reply(fallback);
     } catch { return reply(fallback); }
+}
+
+export default {
+  async fetch(request: Request, env: Env) {
+    const origin = request.headers.get('Origin');
+    if (origin && !['https://verticelabs.me','https://www.verticelabs.me'].includes(origin)) {
+      return reply({ error: 'Origin unavailable' }, 403);
+    }
+    const response = request.method === 'OPTIONS' && ['/api/triage', '/api/ai'].includes(new URL(request.url).pathname)
+      ? new Response(null, { status: 204 })
+      : await dispatch(request, env);
+    if (origin) {
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+      response.headers.set('Vary', 'Origin');
+    }
+    return response;
   },
 };
