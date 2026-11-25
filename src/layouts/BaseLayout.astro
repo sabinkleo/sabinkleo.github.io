@@ -1,7 +1,7 @@
 ---
 import '../styles/lab.css';
 
-const { title, description, home = false, technical = false, privateBrief = false, lang = "pt" } = Astro.props;
+const { title, description, home = false, technical = false, privateBrief = false, publicService = false, lang = "pt" } = Astro.props;
 const en = lang === "en";
 const homePath = en ? "/" : "/pt/";
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -22,9 +22,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     </>}
     <title>{title}</title>
     <meta name="description" content={description} />
-    {home || technical ? (
+    {home || technical || publicService ? (
       <>
         <link rel="canonical" href={canonical} />
+        {publicService && <><link rel="alternate" hreflang="en" href="https://verticelabs.me/geo/" /><link rel="alternate" hreflang="pt-BR" href="https://verticelabs.me/pt/geo/" /><link rel="alternate" hreflang="x-default" href="https://verticelabs.me/geo/" /></>}
         {home && <>
         <link rel="alternate" hreflang="en" href="https://verticelabs.me/" />
         <link rel="alternate" hreflang="pt-BR" href="https://verticelabs.me/pt/" />
@@ -60,9 +61,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           <a data-attribution={!privateBrief || undefined} href="/en/">{home ? (en ? "Engineering" : "Engenharia") : (en ? "Technical tracks" : "Trilhas técnicas")}</a>
           {!privateBrief && <span data-hud-trigger></span>}
           <span class="flex gap-2" aria-label={en ? "Site languages" : "Idiomas do site"}>
-            <a href="/pt/" lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
+            <a href={publicService ? "/pt/geo/" : "/pt/"} lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
             <span aria-hidden="true">/</span>
-            <a href={technical ? '/en/' : '/'} lang="en" hreflang="en" aria-current={en && home ? 'page' : undefined}>EN</a>
+            <a href={publicService ? '/geo/' : technical ? '/en/' : '/'} lang="en" hreflang="en" aria-current={en && home ? 'page' : undefined}>EN</a>
           </span>
         </nav>
       </div>
