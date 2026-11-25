@@ -1,6 +1,22 @@
 @import "tailwindcss";
 
 @import "./tokens.css";
+
+:root {
+  color-scheme: dark;
+  --ground: var(--lab-ground);
+  --text: var(--lab-text);
+  --muted: var(--lab-muted);
+  --line: var(--lab-line);
+  --accent: var(--lab-accent);
+  --surface: var(--lab-surface);
+  --mono: var(--lab-mono);
+  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  background: var(--ground);
+  color: var(--text);
+  scroll-padding-top: 1rem;
+}
+
 a { text-underline-offset: .25em; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .frame { width: min(100% - 3rem, 75rem); margin-inline: auto; }

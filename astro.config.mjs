@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 const legacyPaths = [
-  'CNAME', 'robots.txt', 'analise-cripto', 'assets', 'bot/data', 'bot/history',
+  'src/styles/tokens.css', 'CNAME', 'robots.txt', 'analise-cripto', 'assets', 'bot/data', 'bot/history',
   'bot/results', 'bot/state', 'crm/config.json', 'crm/crm.mjs', 'crm/index.html',
   'crm/style.css', 'crm/transfer.mjs', 'drops', 'duelo-bot', 'estudos', 'horoscopo', 'klein',
   'n1', 'observatorio', 'perps', 'politica-de-privacidade', 'privacy',

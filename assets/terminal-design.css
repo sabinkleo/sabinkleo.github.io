@@ -1,16 +1,18 @@
+@import url("/src/styles/tokens.css");
+
 /* Vértice Labs / Terminal industrial — scoped marketing surfaces only.
    Keep trading, editorial and tool-specific interfaces independent. */
 .vl-site:has(.vl-home),
 .vl-site.vl-marketing {
-  --vt-void: #0b0e0e;
-  --vt-deep: #111716;
+  --vt-void: var(--lab-ground);
+  --vt-deep: var(--lab-surface);
   --vt-featured: #13231f;
-  --vt-ink: #edf2ed;
-  --vt-muted: #aab9b4;
-  --vt-edge: rgba(173, 195, 186, .19);
-  --vt-signal: #d3fa43;
+  --vt-ink: var(--lab-text);
+  --vt-muted: var(--lab-muted);
+  --vt-edge: var(--lab-line);
+  --vt-signal: var(--lab-accent);
   --vt-head: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-  --vt-mono: "IBM Plex Mono", Consolas, "Liberation Mono", monospace;
+  --vt-mono: var(--lab-mono);
   --vl-accent: var(--vt-signal);
   --vl-paper: var(--vt-ink);
   --vl-muted: var(--vt-muted);
