@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python tools/site_smoke.py
+      - run: python -m editorial.bilingual --check
 
   browser-smoke:
     runs-on: ubuntu-latest
