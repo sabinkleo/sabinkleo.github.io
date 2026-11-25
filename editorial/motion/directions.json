@@ -1,0 +1,24 @@
+{
+  "github-cli-eventos-pr": {
+    "record_sha256": "ed249df3d715cdefdec14af9244aa7e6b97f428cee47f05aa6c91ee177324d8b",
+    "palette": "signal",
+    "scenes": [
+      ["Seu script ainda\npergunta pelo PR?", "Consultar o status repetidamente é uma forma de esperar o fim dos checks.", "loop", ["Script", "Consulta", "PR"]],
+      ["O PR manda\num sinal.", "A partir do GitHub CLI 2.105.0, gh event listen entrega os eventos escolhidos como linhas JSON.", "signal", ["PR", "Evento", "Linha JSON"]],
+      ["Acesso em\nprévia limitada.", "Event Streams tem lista de espera. Confirme o acesso da conta antes de depender do recurso.", "gate", ["Event Streams", "Lista de espera"]],
+      ["Teste o fim\ndos checks.", "Em um PR de teste, limite a espera. Compare o tempo até reagir e registre eventos perdidos.", "sequence", ["Checks terminam", "Script reage", "Compare a espera"]],
+      ["Compare antes\nde migrar.", "Mantenha o fluxo atual disponível durante o piloto.", "source", []]
+    ]
+  },
+  "frete-search-console": {
+    "record_sha256": "b9c86c243d56fae8a1bbfae7d090d2fa00b6e1d940e00b4c558fd5e56d24a055",
+    "palette": "parcel",
+    "scenes": [
+      ["Dois dias\nou cinco?", "Mesmo produto, mesmo CEP. O exemplo é fictício.", "comparison", []],
+      ["Onde o prazo\nmudou?", "A página mostra dois dias. No checkout aparecem cinco.", "comparison", []],
+      ["O painel vem\nprimeiro.", "Se a opção aparecer, o frete cadastrado no Search Console tem prioridade sobre os dados estruturados.", "stack", ["Search Console", "Dados estruturados do site"]],
+      ["Repita para\no mesmo CEP.", "Compare página, checkout e painel. Confirme o prazo com a expedição e repita a consulta após corrigir.", "sequence", ["Página", "Checkout", "Painel"]],
+      ["Confira o prazo\nque você promete.", "Guia baseado no anúncio de 12/11/2025 do Google Search Central.", "source", []]
+    ]
+  }
+}
