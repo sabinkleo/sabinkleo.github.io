@@ -1,4 +1,5 @@
 ---
+import AiEntry from './AiEntry';
 import Lab from '../layouts/Lab.astro';
 import LabButton from './LabButton.astro';
 const { lang = 'en' } = Astro.props;
@@ -52,6 +53,8 @@ const pillars = [
         <p class="eyebrow"><span aria-hidden="true">/</span> RESEARCH</p>
         <h1 id="titulo">{en ? "Investigate." : "Investigue."}<br />{en ? "Analyze." : "Analise."}<br /><em>{en ? "Execute." : "Execute."}</em></h1>
         <p class="intro">{en ? "Applied research and tools for investigating real-world problems." : "Pesquisa aplicada e ferramentas para investigar problemas reais."}</p>
+        <AiEntry client:visible><div class="ai-entry" data-ai-entry="intent" ></div></AiEntry>
+        {!en && <AiEntry client:visible><div class="ai-entry" data-ai-entry="intake" ></div></AiEntry>}
         <div class="flex flex-wrap gap-3">
           <LabButton primary href="#pilares">{en ? "Explore the lab" : "Explorar o laboratório"}</LabButton>
           <a class="button" href="/observatorio/">{en ? "Read the Observatory" : "Ler o Observatório"}</a>

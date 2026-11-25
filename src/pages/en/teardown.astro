@@ -50,6 +50,7 @@ const options = Object.entries(tracks);
         </div>
         <article id="evidence" aria-live="polite"><h3>Evidence summary</h3><strong id="score">Awaiting evidence</strong>
           <p id="summary">Load a sample or analyze an export to score the checks that can be evaluated.</p><ul id="findings"></ul><pre id="diff" hidden></pre></article>
+        <div class="actions screen-only"><button id="deep-audit" disabled>Run Deep AI Audit (Anonymized Findings Only)</button><button id="audit-remix" hidden>Remix Angle</button></div><pre class="ai-readout" id="audit-result" role="status"></pre>
       </section>
       <section class="panel" aria-labelledby="plan-title"><h2 id="plan-title">30-day remediation roadmap</h2><p id="basis"></p>
         <ol class="roadmap">{['Days 1–7 · Establish evidence','Days 8–20 · Test the change','Days 21–30 · Verify impact'].map((phase,i) => <li><h3>{phase}</h3><ul id={'phase-' + i}></ul></li>)}</ol>

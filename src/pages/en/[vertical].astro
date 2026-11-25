@@ -1,4 +1,5 @@
 ---
+import AiEntry from '../../components/AiEntry';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LabSection from '../../components/LabSection.astro';
 import LabCard from '../../components/LabCard.astro';
@@ -23,6 +24,7 @@ const { spec } = Astro.props;
     <LabSection id="delivery" title="Architecture & delivery"><div class="lab-cards">
       {spec.stages.map(stage => <LabCard title={stage.artifact} when={stage.when}><p>{stage.detail}</p></LabCard>)}
     </div></LabSection>
+    <LabSection id="intake" title="Describe your setup"><AiEntry client:visible><div class="ai-entry" data-ai-entry="intake" data-vertical={spec.slug}></div></AiEntry></LabSection>
     <LabSection id="diagnostic" title="Readiness diagnostic">
       <DiagnosticTerminal client:visible spec={spec}>
         <form class="diagnostic"><p>Rate each control against evidence from your last run.</p>

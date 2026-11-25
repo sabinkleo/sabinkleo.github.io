@@ -72,7 +72,9 @@
       input.oninput=render;label.append(input);
       list=node('ul');list.id='vl-commands';list.setAttribute('role','listbox');list.setAttribute('aria-label',t('Commands','Comandos'));
       feedback=node('footer');feedback.setAttribute('role','status');
-      dialog.append(header,label,list,feedback);document.body.append(dialog);
+      const route=node('div','ai-entry');route.dataset.aiEntry='intent';
+      import('/assets/ai-client.mjs').then(module=>module.mountEntry(route));
+      dialog.append(header,label,list,feedback,route);document.body.append(dialog);
       dialog.addEventListener('close',()=>previous?.focus?.({preventScroll:true}));
       dialog.addEventListener('keydown',e=>{
         if(e.key==='Escape'){e.preventDefault();dialog.close();}
