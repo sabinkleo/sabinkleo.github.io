@@ -45,3 +45,16 @@ for (const slug of ['', 'ai-ops/', 'linux-security/', 'auto-telemetry/']) {
   }
 }
 console.log('English hub, three diagnostics, structured data and handoffs verified.');
+
+const manifest=JSON.parse(read('dist/observatorio/edicoes.json'));
+for(const slug of Object.keys(manifest)){
+  const context=JSON.parse(read('dist/observatorio/'+slug+'/context.json'));
+  assert.equal(context.slug,slug);
+  assert.ok(context.summary && context.sources.length);
+  for(const key of ['review','history','social_package','rubric'])assert.ok(!(key in context));
+}
+for(const route of ['n1','drops','tuning','raio-x-vendas','estudos/mecatronica','horoscopo','klein']){
+  assert.ok(read('dist/'+route+'/index.html').includes('/assets/product-tools.css'),route);
+}
+assert.ok(!read('dist/crm/index.html').includes('/assets/product-tools.css'));
+console.log('Article context and public tool styling checks passed.');
