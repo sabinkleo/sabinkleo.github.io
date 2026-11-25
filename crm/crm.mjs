@@ -153,8 +153,10 @@ async function showWorkspace() {
 $('login').onsubmit = run(async event => {
   const form = event.currentTarget;
   const fields = new FormData(form);
+  const identifier = fields.get('identifier').trim();
+  const email = identifier.toLowerCase() === 'admin' ? 'admin@verticelabs.me' : identifier;
   try {
-    await api('/account/sessions/email', 'POST', {email: fields.get('email'), password: fields.get('password')});
+    await api('/account/sessions/email', 'POST', {email, password: fields.get('password')});
     try {
       await showWorkspace();
     } catch (error) {
