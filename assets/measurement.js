@@ -2,6 +2,7 @@
   'use strict';
 
   var GTM_ID = 'GTM-MPTCNSL9';
+  if (!/^GTM-[A-Z0-9]+$/.test(GTM_ID)) return;
   var allowed = ['/','/solucoes/','/raio-x-vendas/','/tuning/'];
   var path = location.pathname.replace(/\/index\.html$/, '/');
   if (path !== '/' && !path.endsWith('/')) path += '/';
