@@ -7,11 +7,28 @@ const worker = 'https://vertice-technical-triage-pages.sabino-fabio.workers.dev'
 const browser = await chromium.launch({channel: 'chrome'});
 try {
   const page = await browser.newPage({viewport: {width: 375, height: 812}});
-  for (const route of ['/', '/en/', '/en/lab', '/en/teardown', '/crm/']) {
+  for (const route of ['/', '/pt/', '/pt/catalogo/', '/en/', '/en/lab', '/en/teardown', '/crm/']) {
     const response = await page.goto(site + route, {waitUntil: 'domcontentloaded'});
     console.log(route, response?.status());
     assert.equal(response?.status(), 200, route);
     assert.equal(new URL(page.url()).origin, site);
+  }
+  for (const [path,lang,query,button] of [['/','en','Sales','Preview route'],['/pt/','pt-BR','Vendas','Ver trilha'],['/pt/catalogo/','pt-BR','Vendas','Ver trilha']]) {
+    await page.goto(site + path, {waitUntil:'domcontentloaded'});
+    assert.equal(await page.locator('html').getAttribute('lang'),lang);
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),path+' overflow');
+    if(path !== '/pt/catalogo/') {
+      await page.locator('.workspace').waitFor();
+      assert.equal(await page.locator('.metric-grid .metric').count(),3);
+      assert.equal(await page.locator('.distribution-row').count(),4);
+    }
+    const entry=page.locator('[data-ai-entry=intent]');
+    await entry.getByRole('textbox').fill(query);
+    await entry.getByRole('button',{name:button}).click();
+    await entry.locator('a[href="/raio-x-vendas/"]').waitFor();
+    await entry.getByRole('textbox').fill('zzzz-no-match');
+    await entry.getByRole('button',{name:button}).click();
+    assert.equal(await entry.locator('a').isVisible(),false);
   }
   await page.goto(site + '/en/', {waitUntil: 'domcontentloaded'});
   const payload = {action:'intent', lang:'en', vertical:'ai-ops', entities:['429']};

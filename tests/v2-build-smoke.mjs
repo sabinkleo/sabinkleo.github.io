@@ -5,11 +5,15 @@ const en = read('dist/index.html');
 const pt = read('dist/pt/index.html');
 assert.match(en, /<html lang="en"/);
 assert.match(pt, /<html lang="pt-BR"/);
-assert.match(en, /Investigate\./);
-assert.match(pt, /Investigue\./);
+assert.match(en, /Turn signals/);
+assert.match(pt, /Transforme sinais/);
 assert.match(en, /href="\/pt\/"[^>]*hreflang="pt-BR"/);
-assert.match(pt, /href="\/en\/catalog\/"[^>]*hreflang="en"/);
+assert.match(pt, /href="\/"[^>]*hreflang="en"/);
 for (const html of [en, pt]) {
+  assert.ok(html.includes('product-shell'));
+  assert.ok(html.includes('workspace-body'));
+  assert.ok(html.includes('href="/pt/catalogo/"'));
+  assert.ok(existsSync('dist/pt/catalogo/index.html'));
   for (const route of ['/observatorio/', '/raio-x-vendas/', '/n1/', '/tuning/', '/privacy/', '/duelo-bot/', '/perps/']) {
     assert.ok(html.includes('href="' + route + '"'), route);
     assert.ok(existsSync('dist' + route + 'index.html'), 'Missing built route: ' + route);

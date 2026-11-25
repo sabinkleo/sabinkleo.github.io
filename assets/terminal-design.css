@@ -386,3 +386,13 @@
     transform: none;
   }
 }
+/* Compact legacy catalog on narrow screens, without affecting tool pages. */
+@media (max-width: 520px) {
+  .vl-site:has(.vl-home) .vl-nav-inner { gap: 4px; padding-block: 4px; }
+  .vl-site:has(.vl-home) .vl-nav-links { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)) auto; width: 100%; gap: 2px; }
+  .vl-site:has(.vl-home) .vl-nav .vl-nav-links a { font-size: 10px; padding: 0 4px; min-height: 44px; text-align: center; }
+  .vl-home .hero { padding-block: 24px 20px; }
+  .vl-home .hero h1 { font-size: clamp(30px,8.5vw,44px); }
+  .vl-home .hero .ai-entry { padding: 12px; }
+  .vl-home .hero .ai-entry textarea { min-height: 44px; resize: vertical; }
+}

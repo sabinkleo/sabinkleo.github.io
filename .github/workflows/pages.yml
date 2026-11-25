@@ -26,14 +26,17 @@ jobs:
         env:
           PUBLIC_TRIAGE_ENDPOINT: ${{ vars.PUBLIC_TRIAGE_ENDPOINT }}
       - run: node tests/v2-build-smoke.mjs
-      - name: Combine the static routes and preserve the Portuguese homepage
+      - run: node tests/catalog-route.mjs
+      - name: Combine static routes and publish the bilingual home
         run: |
           sudo chown -R "$(id -u):$(id -g)" _site
-          rsync -a --exclude=/index.html dist/ _site/
+          rsync -a dist/ _site/
           test -s _site/en/teardown/index.html
           test -s _site/en/lab/index.html
           test -s _site/pt/index.html
-          grep -q 'lang="pt-BR"' _site/index.html
+          grep -q 'lang="en"' _site/index.html
+          grep -q 'lang="pt-BR"' _site/pt/index.html
+          grep -q 'lang="pt-BR"' _site/pt/catalogo/index.html
           cmp crm/crm.mjs _site/crm/crm.mjs
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -52,7 +55,7 @@ jobs:
         id: publish
       - name: Verify production routes
         run: |
-          for route in / /en/ /en/lab /en/teardown /crm/; do
+          for route in / /pt/ /pt/catalogo/ /en/ /en/lab /en/teardown /crm/; do
             status=$(curl --retry 4 --retry-all-errors --max-time 20 -sSL -o /dev/null -w '%{http_code}' "https://verticelabs.me$route")
             echo "$route $status"
             test "$status" = 200

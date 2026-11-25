@@ -21,3 +21,6 @@ html.vl-scan body::after {content:"";z-index:2147483000;position:fixed;inset:0;p
 .ai-entry button,.ai-entry a { color:#ccff97; border:1px solid #4d6144; background:#162014; padding:.45rem .7rem; text-align:start }
 .ai-entry pre,.ai-readout { white-space:pre-wrap; overflow-wrap:anywhere }
 .ai-entry [hidden] { display:none }
+
+.ai-entry pre:empty { display:none }
+.ai-entry textarea { resize:vertical }

@@ -1,13 +1,12 @@
 ---
 import AiEntry from './AiEntry';
 import Lab from '../layouts/Lab.astro';
-import LabButton from './LabButton.astro';
 const { lang = 'en' } = Astro.props;
 const en = lang === 'en';
 
 const pillars = [
   {
-    id: 'intelligence', code: '01', name: 'Intelligence',
+    id: 'intelligence', code: '01', name: en ? 'Intelligence' : 'Inteligência',
     summary: (en ? "Research, news and market analysis with sources and context." : "Pesquisa, notícias e leituras de mercado com fontes e contexto."),
     links: [
       [(en ? "Observatory" : "Observatório"), '/observatorio/'],
@@ -16,7 +15,7 @@ const pillars = [
     ],
   },
   {
-    id: 'business', code: '02', name: 'Business',
+    id: 'business', code: '02', name: en ? 'Business' : 'Negócios',
     summary: (en ? "Sales diagnostics and tools for organizing operations." : "Diagnósticos de vendas e ferramentas para organizar operações."),
     links: [
       [(en ? "Sales Diagnostics" : "Raio-X de Vendas"), '/raio-x-vendas/'],
@@ -25,7 +24,7 @@ const pillars = [
     ],
   },
   {
-    id: 'creative', code: '03', name: 'Creative',
+    id: 'creative', code: '03', name: en ? 'Creative' : 'Criação',
     summary: (en ? "Visual analysis, creative portfolio and interactive experiments." : "Análise visual, portfólio de criativos e experimentos interativos."),
     links: [
       [(en ? "Visual Analysis · N1 Vision" : "Análise visual · N1 Visão"), '/n1/visao/fotos/'],
@@ -34,7 +33,7 @@ const pillars = [
     ],
   },
   {
-    id: 'engineering', code: '04', name: 'Engineering',
+    id: 'engineering', code: '04', name: en ? 'Engineering' : 'Engenharia',
     summary: (en ? "Technical tools, simulations and laboratory experiments." : "Ferramentas técnicas, simulações e experimentos de bancada."),
     links: [
       [(en ? "Mechatronics Bench" : "Bancada de Mecatrônica"), '/estudos/mecatronica/'],
@@ -45,56 +44,161 @@ const pillars = [
     ],
   },
 ];
+const total = pillars.reduce((sum, p) => sum + p.links.length, 0);
+const shortcuts = [
+  { label: en ? 'Sales diagnostics' : 'Raio-X de Vendas', detail: en ? 'Find commercial bottlenecks' : 'Identifique gargalos comerciais', href: '/raio-x-vendas/', icon: '↗' },
+  { label: en ? 'Observatory' : 'Observatório', detail: en ? 'Explore verified research' : 'Explore pesquisas verificadas', href: '/observatorio/', icon: '◎' },
+  { label: en ? 'Technical tracks' : 'Trilhas técnicas', detail: en ? 'Explore engineering tools' : 'Explore ferramentas de engenharia', href: '/en/', icon: '⌘' },
+];
 ---
-<Lab home lang={lang} title="Vértice Labs / Research" description={en ? "Independent laboratory for research, business diagnostics, visual analysis and engineering." : "Laboratório independente de pesquisa, diagnóstico comercial, análise visual e engenharia."}>
-  <main id="conteudo" class="frame">
-    <section class="hero grid items-center gap-6 lg:grid-cols-[1.25fr_1fr]" aria-labelledby="titulo">
-      <div class="relative z-10">
-        <p class="eyebrow"><span aria-hidden="true">/</span> RESEARCH</p>
-        <h1 id="titulo">{en ? "Investigate." : "Investigue."}<br />{en ? "Analyze." : "Analise."}<br /><em>{en ? "Execute." : "Execute."}</em></h1>
-        <p class="intro">{en ? "Applied research and tools for investigating real-world problems." : "Pesquisa aplicada e ferramentas para investigar problemas reais."}</p>
-        <AiEntry client:visible><div class="ai-entry" data-ai-entry="intent" ></div></AiEntry>
-        {!en && <AiEntry client:visible><div class="ai-entry" data-ai-entry="intake" ></div></AiEntry>}
-        <div class="flex flex-wrap gap-3">
-          <LabButton primary href="#pilares">{en ? "Explore the lab" : "Explorar o laboratório"}</LabButton>
-          <a class="button" href="/observatorio/">{en ? "Read the Observatory" : "Ler o Observatório"}</a>
+<Lab home lang={lang} title="Vértice Labs — Research & tools" description={en ? "Independent laboratory for research, business diagnostics, visual analysis and engineering." : "Laboratório independente de pesquisa, diagnóstico comercial, análise visual e engenharia."}>
+  <main id="conteudo" class="frame product-home">
+    <section data-catalog-hero class="hero product-hero" aria-labelledby="titulo">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot"></span>{en ? 'APPLIED RESEARCH' : 'PESQUISA APLICADA'}</p>
+        <h1 id="titulo">{en ? 'Turn signals' : 'Transforme sinais'}<br /><em>{en ? 'into decisions.' : 'em decisões.'}</em></h1>
+        <p class="intro">{en ? 'Research, diagnose and act with independent tools for business, technology and engineering.' : 'Pesquise, diagnostique e tome decisões com ferramentas independentes para negócios, tecnologia e engenharia.'}</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#pilares">{en ? 'Explore workspace' : 'Explorar ferramentas'} <span aria-hidden="true">↗</span></a>
+          <a class="button secondary" href="/observatorio/">{en ? 'Read the Observatory' : 'Ler o Observatório'}</a>
+        </div>
+        <div class="finder">
+          <p>{en ? 'Find the right tool' : 'Encontre a ferramenta certa'}</p>
+          <AiEntry client:visible><div class="ai-entry" data-ai-entry="intent"></div></AiEntry>
         </div>
       </div>
-      <div class="lab-grid" aria-hidden="true">
-        <div class="grid-center">
-          <div class="orbit orbit-outer"></div>
-          <div class="orbit orbit-middle"></div>
-          <div class="orbit orbit-inner"></div>
-          <div class="vertex vertex-left"></div>
-          <div class="vertex vertex-right"></div>
+
+      <section class="workspace" aria-label={en ? 'Public workspace' : 'Espaço de trabalho público'}>
+        <div class="window-bar">
+          <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="window-address">verticelabs.me</span>
+          <span aria-hidden="true">···</span>
         </div>
-        <div class="point point-top"></div>
-        <div class="point point-right"></div>
-        <div class="point point-bottom"></div>
-      </div>
+        <div class="workspace-body">
+          <header class="workspace-head">
+            <div class="workspace-identity"><span class="app-mark" aria-hidden="true">V</span><span>Vértice workspace</span></div>
+            <span class="workspace-status"><span class="status-dot"></span>{en ? 'Public' : 'Público'}</span>
+          </header>
+          <div class="overview-title"><div><p>{en ? 'Workspace / Overview' : 'Workspace / Visão geral'}</p><h2>{en ? 'Overview' : 'Visão geral'}</h2></div></div>
+          <div class="metric-grid">
+            <div class="metric featured"><span>{en ? 'Tools & resources' : 'Ferramentas'}</span><strong>{total}</strong><small>{en ? 'In the catalog' : 'No catálogo'}</small></div>
+            <div class="metric"><span>{en ? 'Research areas' : 'Áreas de pesquisa'}</span><strong>{pillars.length}</strong><small>{en ? 'Lab pillars' : 'Pilares do lab'}</small></div>
+            <a class="metric metric-link" href="/observatorio/"><span>{en ? 'Intelligence' : 'Inteligência'}</span><strong>{pillars[0].links.length}</strong><small>{en ? 'Research resources ↗' : 'Recursos de pesquisa ↗'}</small></a>
+          </div>
+          <div class="activity-panel">
+            <div class="panel-heading"><div><h3>{en ? 'Explore by area' : 'Explore por área'}</h3><p>{en ? 'Available tools and resources' : 'Ferramentas e recursos disponíveis'}</p></div><span class="count-pill">{total} {en ? 'items' : 'itens'}</span></div>
+            <div class="distribution">
+              {pillars.map(p => <a class="distribution-row" href={'#'+p.id}><span>{p.name}</span><span class="bar-track"><span class="bar-fill" style={'width:'+ (p.links.length / Math.max(...pillars.map(x=>x.links.length))*100)+'%'}></span></span><strong>{p.links.length}</strong></a>)}
+            </div>
+          </div>
+          <div class="activity-panel quick-panel">
+            <div class="panel-heading"><h3>{en ? 'Quick access' : 'Acesso rápido'}</h3><a href="#pilares">{en ? 'View all' : 'Ver todos'} ↗</a></div>
+            {shortcuts.map(s => <a class="quick-row" href={s.href}><span class="quick-icon" aria-hidden="true">{s.icon}</span><span class="quick-text"><strong>{s.label}</strong><small>{s.detail}</small></span><span class="quick-arrow" aria-hidden="true">↗</span></a>)}
+          </div>
+        </div>
+      </section>
     </section>
 
-    <section id="pilares" class="pillars" aria-labelledby="pilares-titulo">
-      <div class="section-bar flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-        <h2 id="pilares-titulo">{en ? "Lab pillars" : "Pilares do laboratório"}</h2>
-        <nav aria-label={en ? "Pillars" : "Pilares"} class="pillar-nav flex flex-wrap gap-3">
-          {pillars.map(({ id, code, name }) => <a href={'#' + id} aria-label={name}>{code}</a>)}
-        </nav>
-      </div>
+    <section id="pilares" class="pillars product-catalog" aria-labelledby="pilares-titulo">
+      <div class="section-bar"><div><p class="eyebrow">{en ? 'THE LAB' : 'O LABORATÓRIO'}</p><h2 id="pilares-titulo">{en ? 'Explore the workspace' : 'Explore o workspace'}</h2></div><a class="catalog-link" href="/pt/catalogo/">{en ? 'Classic catalog (PT)' : 'Catálogo clássico'} ↗</a></div>
       <div class="pillar-grid grid md:grid-cols-2">
         {pillars.map(({ id, code, name, summary, links }) => (
           <section class="pillar" id={id} aria-labelledby={id + '-title'}>
-            <div class="pillar-heading flex items-baseline gap-4">
-              <span class="pillar-code">{code}</span>
-              <h3 id={id + '-title'}>{name}</h3>
-            </div>
+            <div class="pillar-heading"><span class="pillar-code">{code}</span><h3 id={id + '-title'}>{name}</h3><span class="pillar-count">{links.length}</span></div>
             <p>{summary}</p>
-            <ul>
-              {links.map(([label, href]) => <li><a href={href}>{label}</a></li>)}
-            </ul>
+            <ul>{links.map(([label, href]) => <li><a href={href}><span>{label}</span><span aria-hidden="true">↗</span></a></li>)}</ul>
           </section>
         ))}
       </div>
     </section>
   </main>
 </Lab>
+
+<style>
+  .product-home { --mint:#b6f3a3; --soft:#a4b8a8; --edge:#30453b; --surface:#182720; }
+  .product-hero { min-height:0; display:grid; grid-template-columns:minmax(0, .93fr) minmax(0, 1.07fr); gap:clamp(2rem,5vw,5rem); align-items:center; padding-block:clamp(2.8rem,7vw,6.5rem); }
+  .hero-copy { min-width:0; }
+  .eyebrow { display:flex; align-items:center; gap:.65rem; color:var(--soft); font:600 .72rem/1.5 system-ui,sans-serif; letter-spacing:.16em; margin-block-end:1rem; }
+  .status-dot { width:.46rem; height:.46rem; display:inline-block; flex:none; background:var(--mint); border-radius:50%; box-shadow:0 0 12px #b6f3a344; }
+  .product-hero h1 { font-size:clamp(2.7rem,5.8vw,5.4rem); line-height:1.02; letter-spacing:-.065em; font-weight:710; }
+  .product-hero h1 em { color:var(--mint); }
+  .product-hero .intro { color:var(--soft); max-width:39ch; font-size:clamp(1rem,1.4vw,1.15rem); line-height:1.65; margin-block:1.2rem 1.6rem; }
+  .hero-actions { display:flex; flex-wrap:wrap; gap:.6rem; }
+  .hero-actions .button { font:650 .9rem system-ui,sans-serif; gap:.75rem; border-radius:.7rem; min-height:46px; }
+  .hero-actions .primary { color:#102015; background:var(--mint); border-color:var(--mint); }
+  .hero-actions .secondary { border-color:var(--edge); color:#e6eee7; background:#17221b; }
+  .hero-actions .button:hover { filter:brightness(1.12); }
+  .finder { max-width:30rem; margin-top:2rem; }
+  .finder > p { color:var(--soft); font-size:.82rem; font-weight:600; }
+  .finder :global(.ai-entry) { background:#16231c; border-color:var(--edge); border-radius:.9rem; padding:.65rem; margin-block:.5rem 0; font: .9rem/1.5 system-ui,sans-serif; }
+  .finder :global(.ai-entry textarea) { border:1px solid #40584a; border-radius:.55rem; background:#101b15; padding:.75rem; min-height:44px; }
+  .finder :global(.ai-entry button),.finder :global(.ai-entry a) { border:1px solid #45614d; color:var(--mint); border-radius:.55rem; background:#203729; min-height:44px; }
+  .workspace { min-width:0; background:#172720; border:1px solid #415a4b; border-radius:1.45rem; overflow:hidden; box-shadow:0 25px 100px #030b0790,0 0 80px #91c99a0e; }
+  .window-bar { display:grid; grid-template-columns:1fr 2fr 1fr; gap:.5rem; align-items:center; padding:.75rem 1rem; border-bottom:1px solid #35493d; background:#1b2b23; color:var(--soft); font-size:.7rem; }
+  .window-bar > :last-child { text-align:right; }
+  .window-dots { display:flex; gap:.3rem; }
+  .window-dots i { width:.38rem; height:.38rem; border-radius:50%; background:#789181; }
+  .window-address { background:#122019; padding:.3rem .5rem; border-radius:.4rem; text-align:center; white-space:nowrap; }
+  .workspace-body { padding:clamp(.8rem,2.3vw,1.4rem); }
+  .workspace-head,.workspace-identity,.workspace-status { display:flex; align-items:center; gap:.5rem; }
+  .workspace-head { justify-content:space-between; font-size:.8rem; }
+  .workspace-identity { font-weight:650; }
+  .app-mark { display:grid; place-items:center; border-radius:.45rem; width:1.65rem; height:1.65rem; background:var(--mint); color:#172a1a; font-weight:800; }
+  .workspace-status,.count-pill { color:#b8d8bc; border:1px solid #45624d; background:#26392d; border-radius:99px; padding:.24rem .55rem; font-size:.65rem; white-space:nowrap; }
+  .overview-title { margin-block:1.35rem .8rem; }
+  .overview-title p,.panel-heading p { font-size:.72rem; color:var(--soft); }
+  .overview-title h2 { font-size:1.7rem; font-weight:720; letter-spacing:-.05em; }
+  .metric-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.5rem; }
+  .metric { display:flex; flex-direction:column; min-width:0; min-height:6.6rem; background:#23352a; border:1px solid #354b3d; border-radius:.85rem; padding:.75rem; }
+  .metric span,.metric small { color:#b0c3b4; font-size:.67rem; line-height:1.3; overflow-wrap:anywhere; }
+  .metric strong { font-size:clamp(1.45rem,3vw,2.3rem); font-weight:750; line-height:1.2; letter-spacing:-.055em; margin-block:.35rem; }
+  .metric small { margin-top:auto; }
+  .metric.featured { background:linear-gradient(125deg,#c8f9ad,#89c997); color:#11291a; border-color:#b6f3a3; }
+  .metric.featured span,.metric.featured small { color:#294a32; }
+  .metric-link:hover { border-color:var(--mint); }
+  .activity-panel { background:#203128; border:1px solid #354b3e; border-radius:1rem; padding:.85rem; margin-top:.65rem; }
+  .panel-heading { display:flex; justify-content:space-between; align-items:center; gap:.5rem; }
+  .panel-heading h3 { font-size:.9rem; font-weight:700; }
+  .panel-heading a { font-size:.7rem; color:var(--mint); white-space:nowrap; }
+  .distribution { display:grid; gap:.7rem; margin-top:.85rem; }
+  .distribution-row { display:grid; grid-template-columns:minmax(0,5.2rem) minmax(0,1fr) 1rem; gap:.5rem; align-items:center; font-size:.72rem; color:#c3d4c6; }
+  .distribution-row:hover { color:var(--mint); }
+  .distribution-row strong { text-align:right; color:var(--mint); font-variant-numeric:tabular-nums; }
+  .bar-track { height:.48rem; background:#14231b; border-radius:99px; overflow:hidden; }
+  .bar-fill { display:block; height:100%; background:linear-gradient(90deg,#6fa97d,var(--mint)); border-radius:inherit; }
+  .quick-row { display:flex; align-items:center; gap:.65rem; padding:.6rem 0; border-top:1px solid #354b3e; }
+  .quick-row:first-of-type { margin-top:.6rem; }
+  .quick-icon { display:grid; place-items:center; width:1.8rem; height:1.8rem; flex:none; border-radius:.5rem; background:#355541; color:var(--mint); }
+  .quick-text { display:grid; min-width:0; flex:1; gap:.12rem; }
+  .quick-text strong { font-size:.77rem; font-weight:650; }
+  .quick-text small { color:var(--soft); font-size:.65rem; }
+  .quick-arrow { color:var(--mint); }
+  .quick-row:hover .quick-text strong { color:var(--mint); }
+  .product-catalog .section-bar { display:flex; justify-content:space-between; align-items:end; gap:1rem; flex-wrap:wrap; border-color:var(--edge); }
+  .section-bar .eyebrow { margin-bottom:.4rem; }
+  .product-catalog .section-bar h2 { font:700 clamp(1.5rem,3vw,2.2rem)/1.15 system-ui,sans-serif; letter-spacing:-.04em; }
+  .catalog-link { font-size:.8rem; color:var(--mint); }
+  .product-catalog .pillar-grid { background:none; border:0; gap:1rem; }
+  .product-catalog .pillar { background:var(--surface); border:1px solid var(--edge); border-radius:1.1rem; }
+  .product-catalog .pillar-heading { border:0; padding:0; display:flex; align-items:center; gap:.7rem; font-family:inherit; text-transform:none; }
+  .product-catalog .pillar-code { display:grid; place-items:center; width:2rem; height:2rem; border-radius:.6rem; background:#2c4937; color:var(--mint); }
+  .product-catalog .pillar h3 { font-size:1.3rem; font-weight:700; }
+  .pillar-count { margin-left:auto; color:var(--soft); font-size:.85rem; }
+  .product-catalog .pillar p { color:var(--soft); }
+  .product-catalog .pillar li { border-color:var(--edge); }
+  .product-catalog .pillar li a { display:flex; justify-content:space-between; gap:.6rem; min-height:44px; align-items:center; }
+  .product-catalog .pillar li a span:last-child { color:var(--mint); }
+  @media(max-width: 850px) {
+    .product-hero { grid-template-columns:minmax(0,1fr); gap:1.7rem; }
+    .product-hero h1 { font-size:clamp(2.6rem,10vw,4.8rem); }
+    .workspace { max-width:40rem; width:100%; }
+  }
+  @media(max-width: 400px) {
+    .product-hero { padding-block:1.6rem 2rem; }
+    .metric { padding:.5rem; }
+    .metric span,.metric small { font-size:.63rem; }
+    .workspace-body { padding:.7rem; }
+    .workspace-head { font-size:.73rem; }
+    .hero-actions .button { width:100%; justify-content:space-between; }
+  }
+</style>
