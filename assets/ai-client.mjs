@@ -40,10 +40,40 @@ export function mountEntry(root){
         link.href=url.href;link.textContent=t('Open ','Abrir ')+v.vertical;
         out.textContent=v.vertical+' · '+v.urgency+'\n'+v.quick_reply.replace(/\s+/g,' ');
       }else{
-        markdown=['## '+v.detected_setup,t('Risk','Risco')+' '+v.risk_score+'/100',...v.priorities.map(x=>'- '+x),'',...v.plan].join('\n');
+        markdown=['## '+v.detected_setup,t('Risk','Risco')+' '+v.risk_score+'/100',...Object.entries(v.fields).map(([k,x])=>k+' · '+x),...v.priorities.map(x=>'- '+x),'',...v.plan].join('\n');
         out.textContent=markdown;link.href='https://wa.me/5541998844684?text='+encodeURIComponent(v.whatsapp_summary);link.textContent='WhatsApp';copy.hidden=false;
       }
       root.dataset.source=source;link.hidden=false;
     });
   };
+}
+
+export async function narrateEvent(p,display){
+  const fallback=localResult(p);
+  display(fallback.quick_reply);
+  try{
+    const response=await fetch('/api/ai',{method:'POST',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',
+      headers:{Accept:'application/x-ndjson','Content-Type':'application/json'},body:JSON.stringify(p),signal:AbortSignal.timeout(9500)});
+    if(!response.ok)return;
+    if(!response.headers.get('content-type')?.startsWith('application/x-ndjson')){
+      const {result}=await response.json();if(accepted(p,result))display(result.quick_reply);return;
+    }
+    let text='',pending='';
+    const reader=response.body.pipeThrough(new TextDecoderStream()).getReader();
+    try{
+      for(;;){
+        const {value,done}=await reader.read();if(done)break;
+        pending+=value;if(pending.length>12000)throw Error();
+        const lines=pending.split('\n');pending=lines.pop();
+        for(const row of lines){
+          const {text:part}=JSON.parse(row);
+          if(typeof part!=='string'||text.length+part.length>700||/[<>\x00-\x08]/.test(part))throw Error();
+          text+=part;
+        }
+        if(text && !matchMedia('(prefers-reduced-motion: reduce)').matches)display(text);
+      }
+      if(pending || !accepted(p,{...fallback,quick_reply:text}))throw Error();
+      display(text);
+    } finally {await reader.cancel();}
+  }catch{display(fallback.quick_reply);}
 }

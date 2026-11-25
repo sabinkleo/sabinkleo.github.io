@@ -35,7 +35,7 @@ for(const status of [200,429]){
       await page.goto(base+'/en/lab/');await page.locator('#narrate').check();await page.locator('[data-rate]').click();
       await expect(page.locator('#narration')).toContainText('quota');await page.locator('#pull-rpm').scrollIntoViewIfNeeded();
       await expect(page.locator('[data-reading]').first()).not.toHaveText('—');
-      await page.locator('#pull-rpm').fill('4880');await expect(page.locator('#narration')).toContainText('knock');
+      await page.locator('#pull-rpm').evaluate(el=>{el.value='4880';el.dispatchEvent(new Event('input',{bubbles:true}));});await expect(page.locator('#narration')).toContainText('knock');
       await page.locator('#lab-remix').click();await expect.poll(()=>calls.length).toBe(3);
     });
     test('local teardown, opt-in audit and print safety',async({page})=>{

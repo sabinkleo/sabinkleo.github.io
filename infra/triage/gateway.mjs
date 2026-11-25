@@ -37,3 +37,14 @@ export async function quota(request,env){
   try {return (await env.AI_RATE_LIMITER.limit({key:request.headers.get('CF-Connecting-IP')||'unknown'})).success===true;}
   catch {return false;}
 }
+
+export function eventStream(reply) {
+  const encoder=new TextEncoder();
+  const words=reply.result.quick_reply.split(/(?<=\s)/u);
+  return new Response(new ReadableStream({
+    start(controller){
+      for(const word of words)controller.enqueue(encoder.encode(JSON.stringify({text:word})+'\n'));
+      controller.close();
+    }
+  }),{headers:{'Content-Type':'application/x-ndjson','Cache-Control':'no-store'}});
+}

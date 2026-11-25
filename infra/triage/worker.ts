@@ -1,8 +1,8 @@
 import { verticals } from '../../src/data/diagnostics';
 import { assess } from '../../src/data/diagnostics/score';
 
-import {generate, quota} from './gateway.mjs';
-import {valid} from '../../assets/ai-contract.mjs';
+import {generate, quota, eventStream} from './gateway.mjs';
+import {valid,extract} from '../../assets/ai-contract.mjs';
 
 interface Env {
   TRIAGE_GATEWAY_URL?: string;
@@ -42,9 +42,15 @@ export default {
     try { payload = await readPayload(request, path === '/api/ai' ? 4096 : 1024); }
     catch { return reply({ error: 'Invalid or oversized JSON' }, 400); }
     if (path === '/api/ai') {
+      if (payload && ['intent','intake'].includes(payload.action) && typeof payload.text==='string' && payload.text.length<=2500) {
+        const {text,...fields}=payload;
+        payload={...fields,...extract(text,fields.vertical)};
+      }
       if (!valid(payload)) return reply({error:'Invalid action payload'}, 400);
       if (!await quota(request, env)) return reply({error:'Rate limited'}, 429);
-      return reply(await generate(payload, env));
+      const output=await generate(payload,env);
+      if(payload.action==='intent' && payload.event && request.headers.get('Accept')==='application/x-ndjson')return eventStream(output);
+      return reply(output);
     }
     const spec = verticals.find(v => v.slug === payload?.vertical);
     if (!spec) return reply({ error: 'Unknown vertical' }, 400);

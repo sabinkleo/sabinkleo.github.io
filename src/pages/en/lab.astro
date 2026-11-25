@@ -44,15 +44,15 @@ const tracks = ['Boost · PSI','AFR · air/fuel','Ignition · °BTDC','Knock ret
 </BaseLayout>
 
 <script>
-  import {ask} from '../../../assets/ai-client.mjs';
+  import {narrateEvent} from '../../../assets/ai-client.mjs';
   const toggle=document.querySelector<HTMLInputElement>('#narrate')!, again=document.querySelector<HTMLButtonElement>('#lab-remix')!, out=document.querySelector<HTMLElement>('#narration')!;
   let last='',ticket=0,remix=0;
   function narrate(event:string){
     if(!toggle.checked)return;
     last=event;again.disabled=false;
     const current=++ticket;
-    void ask({action:'intent',lang:'en',vertical:event==='knock'?'auto-telemetry':'ai-ops',entities:[],event,remix},(v:any)=>{
-      if(current===ticket)out.textContent=v.quick_reply;
+    void narrateEvent({action:'intent',lang:'en',vertical:event==='knock'?'auto-telemetry':'ai-ops',entities:[],event,remix},(line:string)=>{
+      if(current===ticket)out.textContent=line;
     });
   }
   toggle.onchange=()=>{ticket++;out.textContent='';again.disabled=true;last='';};
