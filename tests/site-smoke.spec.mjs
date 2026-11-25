@@ -539,6 +539,7 @@ test('CRM operator can create, edit, filter and reopen a lead on mobile', async 
     const path = new URL(request.url()).pathname.slice(3);
     const method = request.method();
     if (path === '/account/sessions/email') {
+      expect(request.postDataJSON().email).toBe('admin@verticelabs.me');
       signedIn = true;
       return route.fulfill({ status: 201, json: {} });
     }
@@ -560,7 +561,7 @@ test('CRM operator can create, edit, filter and reopen a lead on mobile', async 
   });
   await page.goto(origin + '/crm/');
   await expect(page.locator('#workspace')).toBeHidden();
-  await page.getByLabel('E-mail').fill('operator@example.test');
+  await page.getByLabel('Usuário ou e-mail').fill('admin');
   await page.getByLabel('Senha').fill('synthetic-test-password');
   await page.getByRole('button', { name: 'Entrar' }).click();
   await page.getByRole('button', { name: 'Novo lead' }).click();
