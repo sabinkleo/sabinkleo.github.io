@@ -12,5 +12,6 @@ import { verticals } from '../../data/diagnostics';
     <LabSection id="tracks" title="Choose a diagnostic">
       <div class="lab-cards">{verticals.map(v => <LabCard title={v.name}><p>{v.description}</p><a data-attribution href={'/en/' + v.slug + '/'}>Explore {v.name} →</a></LabCard>)}</div>
     </LabSection>
+    <LabSection id="teardown" title="Executive teardown"><p>Model a 90-day savings scenario and inspect your own usage logs, SSH policy or dyno traces locally.</p><a class="button" data-attribution href="/en/teardown/">Open the teardown</a></LabSection>
   </main>
 </BaseLayout>
