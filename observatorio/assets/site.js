@@ -89,14 +89,15 @@
       controller?.abort();
       controller = new AbortController();
       const current = ++sequence;
-      const timeout = setTimeout(() => controller.abort(), 14000);
+      const requestController = controller;
+      const timeout = setTimeout(() => requestController.abort(), 14000);
       for (const b of actions.querySelectorAll("button")) b.setAttribute("aria-pressed", String(b === button));
       output.hidden = false;
       output.dataset.source = "loading";
       output.textContent = tr("Reading the published article…","Consultando a matéria publicada…");
       try {
         const response = await fetch(endpoint,{method:"POST",credentials:"omit",redirect:"error",referrerPolicy:"no-referrer",
-          headers:{"Content-Type":"application/json"},signal:controller.signal,
+          headers:{"Content-Type":"application/json"},signal:requestController.signal,
           body:JSON.stringify({action:"article",slug,mode,lang:en?"en":"pt"})});
         if (!response.ok) throw Error("Unavailable");
         const data = await response.json();
