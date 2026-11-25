@@ -1,3 +1,4 @@
+import {ask,extract,anglesText} from '../assets/ai-client.mjs';
 import {decode, encodeCsv, rowId} from './transfer.mjs';
 
 const $ = id => document.getElementById(id);
@@ -66,9 +67,42 @@ function item(text, url) {
   return li;
 }
 
+let hookTicket=0, remix=0;
+function resetAngles(){
+  hookTicket++;remix=0;
+  $('ai-hypothesis').textContent='';
+  $('hook-wa').hidden=true;$('hook-wa').removeAttribute('href');
+  $('archive').open=false;$('reviewed').replaceChildren();
+}
+function generateHook(){
+  const row=rows.find(r=>r.id===activeId);
+  if(!row) return;
+  const signal=extract([row.lead.segment,...(row.lead.evidence||[]).map(f=>f.text)].join(' '));
+  const ticket=++hookTicket;
+  void ask({...signal,action:'crm_hypothesis',lang:'pt',mode:$('creativity_mode').value,remix},v=>{
+    if(ticket!==hookTicket)return;
+    $('ai-hypothesis').textContent=[v.observable_friction,v.concrete_offer,v.whatsapp_hook,'',anglesText(v)].join('\n');
+    const digits=String(row.lead.whatsapp||'').replace(/\D/g,'');
+    if(/^55\d{10,11}$/.test(digits)){
+      $('hook-wa').href='https://wa.me/'+digits+'?text='+encodeURIComponent(v.whatsapp_hook);
+      $('hook-wa').hidden=false;
+    }
+  });
+}
+$('generate-hook').onclick=generateHook;
+$('remix-hook').onclick=()=>{remix=(remix+1)%1000;generateHook();};
+$('copy-teardown').onclick=async()=>{
+  const row=rows.find(r=>r.id===activeId);
+  if(!row)return;
+  const url=new URL('/en/teardown/',location.origin);
+  url.searchParams.set('c',row.lead.name);
+  url.searchParams.set('v',extract((row.lead.evidence||[]).map(f=>f.text).join(' ')).vertical);
+  try{await navigator.clipboard.writeText(url.href);status('Link copiado.');}catch{status(url.href);}
+};
 function openProfile(id, focus = true) {
   const {lead, state} = rows.find(row => row.id === id);
   activeId = id;
+  resetAngles();
   $('company').textContent = lead.name;
   $('lead-details').textContent = [
     lead.segment, lead.city, lead.confirmed ? 'Contato confirmado' : 'Contato a verificar',
@@ -84,7 +118,14 @@ function openProfile(id, focus = true) {
     $('contacts').append(a);
   }
   $('evidence').replaceChildren(...(lead.evidence || []).map(fact => item([fact.text, fact.date].filter(Boolean).join(' · '), fact.url)));
-  $('hypotheses').replaceChildren(...(lead.hypotheses || []).map(h => item(['Hipótese', h.provider, h.text].filter(Boolean).join(' · '))));
+  const unique=new Set();
+  $('hypotheses').replaceChildren();
+  for(const h of [...(lead.hypotheses||[]),...(Array.isArray(lead.reviewed_archive)?lead.reviewed_archive.map(h=>({...(typeof h==='string'?{text:h}:h),status:'reviewed_archive'})):[])]){
+    const body=String(h.text||'').trim(), key=body.normalize('NFKC').toLocaleLowerCase('pt-BR').replace(/\s+/g,' ');
+    if(!body||unique.has(key))continue;
+    unique.add(key);
+    $(h.status==='reviewed_archive'||h.provider==='reviewed_archive'?'reviewed':'hypotheses').append(item(body));
+  }
   $('history').replaceChildren(...(state.history || []).map(entry => item(entry.at + ' · ' + entry.text)));
   const fields = $('pipeline').elements;
   for (const name of ['stage', 'nextAction', 'followUp', ...moneyFields]) fields.namedItem(name).value = state[name] ?? (name === 'stage' ? 'Prospecção' : '');
@@ -109,6 +150,7 @@ async function refresh() {
 }
 
 function locked() {
+  resetAngles();
   rows = [];
   activeId = undefined;
   $('leads').replaceChildren();
