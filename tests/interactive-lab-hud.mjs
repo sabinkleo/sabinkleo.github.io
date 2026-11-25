@@ -45,13 +45,13 @@ try {
   for(const [path,locale] of [['/pt/','pt'],['/observatorio/','pt'],['/en/lab/','en']]) {
     await page.goto(base+path);
     await page.keyboard.press('Control+k');
-    const input=page.getByRole('combobox');
+    const input=page.getByRole('dialog').getByRole('combobox');
     await input.fill(locale==='pt'?'grade':'grid');await input.press('Enter');
     assert.notEqual(await page.evaluate(()=>localStorage.getItem('vertice.telemetry-grid')),null);
     await input.press('Escape');await page.getByRole('dialog').waitFor({state:'hidden'});
   }
   await page.keyboard.press('Control+k');
-  const input=page.getByRole('combobox');await input.fill('WhatsApp');await input.press('Enter');
+  const input=page.getByRole('dialog').getByRole('combobox');await input.fill('WhatsApp');await input.press('Enter');
   await page.waitForFunction(async()=>await navigator.clipboard.readText()==='+5541998844684');
   await input.fill('Linux');await input.press('Enter');await page.waitForURL('**/en/linux-security/');
   assert.ok(await page.evaluate(()=>document.documentElement.classList.contains('vl-scan')));
