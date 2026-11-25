@@ -7,6 +7,14 @@
     <language>pt-BR</language>
     <atom:link href="https://verticelabs.me/observatorio/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Google Workspace libera MCP e CLI para agentes de IA</title>
+      <link>https://verticelabs.me/observatorio/google-workspace-mcp-cli/</link>
+      <guid>https://verticelabs.me/observatorio/google-workspace-mcp-cli/</guid>
+      <description>O Google disponibilizou dois caminhos oficiais para integrar agentes ao Workspace e anunciou novas exigências de acesso e controle para 2027.</description>
+      <category>Automação</category>
+      <pubDate>Wed, 25 Nov 2026 22:30:00 +0000</pubDate>
+    </item>
+    <item>
       <title>OpenAI e Cisco anunciam proteção temporária para serviços Linux</title>
       <link>https://verticelabs.me/observatorio/shirudo-protecao-linux/</link>
       <guid>https://verticelabs.me/observatorio/shirudo-protecao-linux/</guid>

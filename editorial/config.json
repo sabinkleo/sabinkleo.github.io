@@ -4,6 +4,7 @@
   "news_window_days": 7,
   "source_hosts": {
     "developers.google.com": "Google",
+    "workspace.google.com": "Google",
     "support.google.com": "Google",
     "blog.google": "Google",
     "github.blog": "GitHub",
