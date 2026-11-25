@@ -7,7 +7,7 @@ const en = lang === 'en';
 
 const pillars = [
   {
-    id: 'intelligence', code: '01', name: 'Intelligence',
+    id: 'intelligence', code: '01', name: en ? 'Intelligence' : 'Inteligência',
     summary: (en ? "Research, news and market analysis with sources and context." : "Pesquisa, notícias e leituras de mercado com fontes e contexto."),
     links: [
       [(en ? "Observatory" : "Observatório"), '/observatorio/'],
@@ -16,7 +16,7 @@ const pillars = [
     ],
   },
   {
-    id: 'business', code: '02', name: 'Business',
+    id: 'business', code: '02', name: en ? 'Business' : 'Negócios',
     summary: (en ? "Sales diagnostics and tools for organizing operations." : "Diagnósticos de vendas e ferramentas para organizar operações."),
     links: [
       [(en ? "Sales Diagnostics" : "Raio-X de Vendas"), '/raio-x-vendas/'],
@@ -25,7 +25,7 @@ const pillars = [
     ],
   },
   {
-    id: 'creative', code: '03', name: 'Creative',
+    id: 'creative', code: '03', name: en ? 'Creative' : 'Criação',
     summary: (en ? "Visual analysis, creative portfolio and interactive experiments." : "Análise visual, portfólio de criativos e experimentos interativos."),
     links: [
       [(en ? "Visual Analysis · N1 Vision" : "Análise visual · N1 Visão"), '/n1/visao/fotos/'],
@@ -34,7 +34,7 @@ const pillars = [
     ],
   },
   {
-    id: 'engineering', code: '04', name: 'Engineering',
+    id: 'engineering', code: '04', name: en ? 'Engineering' : 'Engenharia',
     summary: (en ? "Technical tools, simulations and laboratory experiments." : "Ferramentas técnicas, simulações e experimentos de bancada."),
     links: [
       [(en ? "Mechatronics Bench" : "Bancada de Mecatrônica"), '/estudos/mecatronica/'],
@@ -50,7 +50,7 @@ const pillars = [
   <main id="conteudo" class="frame">
     <section data-catalog-hero class="hero grid items-center gap-6 lg:grid-cols-[1.25fr_1fr]" aria-labelledby="titulo">
       <div class="relative z-10">
-        <p class="eyebrow"><span aria-hidden="true">/</span> RESEARCH</p>
+        <p class="eyebrow"><span aria-hidden="true">/</span> {en ? "RESEARCH" : "PESQUISA"}</p>
         <h1 id="titulo">{en ? "Investigate." : "Investigue."}<br />{en ? "Analyze." : "Analise."}<br /><em>{en ? "Execute." : "Execute."}</em></h1>
         <p class="intro">{en ? "Applied research and tools for investigating real-world problems." : "Pesquisa aplicada e ferramentas para investigar problemas reais."}</p>
         <AiEntry client:visible><div class="ai-entry" data-ai-entry="intent" ></div></AiEntry>
