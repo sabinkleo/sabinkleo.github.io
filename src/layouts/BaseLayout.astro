@@ -13,6 +13,9 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#0c0e0d" />
     <meta name="referrer" content="no-referrer" />
+    <link rel="stylesheet" href="/assets/command-hud.css" />
+    <script is:inline defer src="/assets/command-hud.js"></script>
+    {import.meta.env.PUBLIC_CONTACT_EMAIL && <meta name="vl-contact-email" content={import.meta.env.PUBLIC_CONTACT_EMAIL} />}
     <title>{title}</title>
     <meta name="description" content={description} />
     {home || technical ? (
@@ -49,6 +52,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
           <a href="/observatorio/">{en ? "Observatory" : "Observatório"}</a>
           <a href="/solucoes/">{en ? "Solutions" : "Soluções"}</a>
           <a data-attribution href="/en/">{en ? "Technical tracks" : "Trilhas técnicas"}</a>
+          <span data-hud-trigger></span>
           <span class="flex gap-2" aria-label={en ? "Site languages" : "Idiomas do site"}>
             <a href="/pt/" lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
             <span aria-hidden="true">/</span>

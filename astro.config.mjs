@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { cp } from 'node:fs/promises';
+import { cp, readdir, readFile, writeFile } from 'node:fs/promises';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -10,6 +10,22 @@ const legacyPaths = [
   'n1', 'observatorio', 'perps', 'politica-de-privacidade', 'privacy',
   'radar-ia-cripto', 'raio-x-vendas', 'signal-lab', 'solucoes', 'tuning', 'tunning',
 ];
+
+// Attach the shared HUD to the public legacy HTML produced by the static build.
+async function attachPublicHud(dir) {
+  for (const entry of await readdir(dir, { withFileTypes: true })) {
+    if (entry.name === 'crm' || entry.name === '_astro') continue;
+    const url = new URL(encodeURIComponent(entry.name) + (entry.isDirectory() ? '/' : ''), dir);
+    if (entry.isDirectory()) await attachPublicHud(url);
+    else if (entry.name.endsWith('.html')) {
+      const html = await readFile(url, 'utf8');
+      if (!html.includes('/assets/command-hud.js')) {
+        const assets = '<link rel="stylesheet" href="/assets/command-hud.css"><script defer src="/assets/command-hud.js"></script>';
+        await writeFile(url, html.replace(/<\/head>/i, assets + '</head>'));
+      }
+    }
+  }
+}
 
 export default defineConfig({
   site: 'https://verticelabs.me',
@@ -28,6 +44,7 @@ export default defineConfig({
           new URL(path, import.meta.url), new URL(path, dir),
           { recursive: true, filter: (source) => !source.endsWith('/vision-worker') },
         )));
+        await attachPublicHud(dir);
       },
     },
   }],
