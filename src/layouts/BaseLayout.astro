@@ -48,16 +48,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
       </>
     ) : <meta name="robots" content="noindex,nofollow" />}
   </head>
-  <body>
+  <body class:list={[{'product-shell':home}]}>
     <a class="skip" href="#conteudo">{en ? "Skip to content" : "Ir para o conteúdo"}</a>
     <header class="top">
       <div class="frame top-inner flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
-        <a class="brand" href={homePath} aria-label={en ? "Vértice Labs, home" : "Vértice Labs, início"}><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">.</span> LABS</a>
+        <a class="brand" href={homePath} aria-label={en ? "Vértice Labs, home" : "Vértice Labs, início"}><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">{home ? " /" : "."}</span> LABS</a>
         <nav class="flex flex-wrap gap-x-6 gap-y-2" aria-label={en ? "Vértice navigation" : "Menu da Vértice"}>
-          <a href={home ? '#pilares' : homePath + '#pilares'}>{en ? "Pillars" : "Pilares"}</a>
+          <a href={home ? '#pilares' : homePath + '#pilares'}>{en ? "Workspace" : "Ferramentas"}</a>
           <a href="/observatorio/">{en ? "Observatory" : "Observatório"}</a>
           <a href="/solucoes/">{en ? "Solutions" : "Soluções"}</a>
-          <a data-attribution={!privateBrief || undefined} href="/en/">{en ? "Technical tracks" : "Trilhas técnicas"}</a>
+          <a data-attribution={!privateBrief || undefined} href="/en/">{en ? "Engineering" : "Engenharia"}</a>
           {!privateBrief && <span data-hud-trigger></span>}
           <span class="flex gap-2" aria-label={en ? "Site languages" : "Idiomas do site"}>
             <a href="/pt/" lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
