@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Teardown from '../../teardown/controller';
+import { tracks, maxWaste } from '../../teardown/model';
+import '../../styles/teardown.css';
+const options = Object.entries(tracks);
+---
+<BaseLayout technical privateBrief lang="en" title="Executive engineering teardown | Vértice Labs" description="Review operating costs, inspect technical evidence locally and build a 30-day remediation plan.">
+  <main class="frame teardown" id="conteudo">
+    <Teardown client:load>
+      <div class="brief-bar"><p class="eyebrow">Engineering / Executive teardown</p>
+        <button id="operator-toggle" class="screen-only" aria-expanded="false" aria-controls="operator">[Operator Mode]</button></div>
+      <section id="operator" hidden class="screen-only panel">
+        <h2>Outreach link builder</h2><div class="builder-grid">
+          <label>Company<input id="op-company" maxlength="80" /></label>
+          <label>Vertical<select id="op-track">{options.map(([v,t]) => <option value={v}>{t.title}</option>)}</select></label>
+          <label>Monthly baseline (USD)<input id="op-waste" type="number" min="0" max={maxWaste} step="0.01" /></label>
+        </div><fieldset><legend>Gaps to review</legend><div id="op-gaps"></div></fieldset>
+        <label>Shareable briefing link<input id="op-link" readonly /></label><button type="button" class="button" id="op-copy">Copy briefing link</button><span id="op-status" role="status"></span>
+      </section>
+      <div class="brief-hero">
+        <header><p class="kicker">Prepared for</p><h1 id="company">Your Engineering Team</h1>
+          <p class="brief-sub" id="focus">Review routing, usage and repeat charges.</p>
+          <label class="screen-only track-picker">Briefing track<select id="track">{options.map(([v,t]) => <option value={v}>{t.title}</option>)}</select></label>
+        </header>
+        <section class="forecast" aria-labelledby="forecast-title"><h2 id="forecast-title">Projected 90-day savings</h2><strong id="savings">$0</strong>
+          <p id="formula"></p><a href="#calculator" class="screen-only">Adjust assumptions</a></section>
+      </div>
+      <section id="calculator" class="panel"><h2>Cost-leakage scenario</h2>
+        <div class="builder-grid screen-only">
+          <label>Monthly avoidable cost or risk baseline (USD)<input id="waste" type="number" min="0" max={maxWaste} step="0.01" value="0" /></label>
+          <label><span id="volume-label">Monthly requests</span><input id="volume" type="range" /></label>
+          <label><span id="recovery-label">Recoverable share</span><input id="recovery" type="range" min="0" max="100" step="1" /></label>
+        </div><p id="assumptions"></p>
+      </section>
+      <section class="panel analyzer" aria-labelledby="analyzer-title">
+        <div class="section-heading"><h2 id="analyzer-title">Local evidence analyzer</h2><span class="local-badge screen-only">100% Local — Zero bytes leave your browser</span></div>
+        <div class="screen-only"><p>File contents stay in this tab. The contact draft includes the briefing fields and estimate.</p>
+          <p id="format" class="format"></p>
+          <fieldset id="trace-settings" hidden><legend>Telemetry reference values</legend><div class="builder-grid">
+            <label>Unit for unlabelled Boost<select id="pressure-unit"><option value="kpa">Gauge kPa</option><option value="psi">Gauge psi</option><option value="bar">Gauge bar</option></select></label>
+            <label>Reference AFR<input id="ref-afr" type="number" min="1" max="40" step=".1" placeholder="Use target_AFR column" /></label>
+            <label>Reference boost (gauge kPa)<input id="ref-boost" type="number" min="0" max="1000" step=".1" placeholder="Use target_boost column" /></label>
+          </div></fieldset>
+          <div id="drop-zone"><label for="raw">Paste data or drop one file here</label>
+            <textarea id="raw" rows="6" maxlength="524288" spellcheck="false" autocomplete="off"></textarea>
+            <label class="file-label">Open a local file <input id="file" type="file" accept=".csv,.tsv,.json,.txt,.conf,.config,text/*,application/json" /></label></div>
+          <div class="actions"><button id="analyze" class="button primary">Analyze evidence</button><button id="sample" class="button">Load sample</button></div>
+          <p id="status" role="status"></p>
+        </div>
+        <article id="evidence" aria-live="polite"><h3>Evidence summary</h3><strong id="score">Awaiting evidence</strong>
+          <p id="summary">Load a sample or analyze an export to score the checks that can be evaluated.</p><ul id="findings"></ul><pre id="diff" hidden></pre></article>
+      </section>
+      <section class="panel" aria-labelledby="plan-title"><h2 id="plan-title">30-day remediation roadmap</h2><p id="basis"></p>
+        <ol class="roadmap">{['Days 1–7 · Establish evidence','Days 8–20 · Test the change','Days 21–30 · Verify impact'].map((phase,i) => <li><h3>{phase}</h3><ul id={'phase-' + i}></ul></li>)}</ol>
+      </section>
+      <div class="brief-end"><div><h2>Review this briefing</h2><p>Bring the findings and assumptions to an engineering review.</p></div>
+        <div class="actions screen-only"><a id="contact" class="button primary" href="https://wa.me/5541998844684" rel="noreferrer">Schedule via WhatsApp</a><button id="print" class="button">Export Executive PDF</button></div>
+        <div class="print-contact"><img src="/contact-qr.svg" width="88" height="88" alt="QR code for Vértice Labs on WhatsApp" /><span>Vértice Labs · Engineering review<br/>wa.me/5541998844684</span></div>
+      </div>
+      <noscript>Enable JavaScript for personalization and local analysis.</noscript>
+    </Teardown>
+  </main>
+</BaseLayout>
