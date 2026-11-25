@@ -62,3 +62,24 @@ for(const status of [200,429]){
     });
   });
 }
+
+test('article questions send only fixed context keys and render model or editorial fallback',async({page})=>{
+  const requests=[];
+  let status=200;
+  await page.route('**/api/ai',route=>{
+    requests.push(route.request().postDataJSON());
+    return route.fulfill({status,json:status===200?{source:'gateway',answer:'Resposta contextual de teste.'}:{error:'Unavailable'}});
+  });
+  await page.goto(base+'/observatorio/google-workspace-mcp-cli/');
+  const panel=page.locator('.article-assistant');
+  await expect(panel.getByRole('button')).toHaveCount(4);
+  await panel.locator('[data-article-mode=summary]').click();
+  await expect(panel.locator('.article-answer')).toHaveAttribute('data-source','gateway');
+  await expect(panel.locator('.article-answer')).toHaveText('Resposta contextual de teste.');
+  expect(requests[0]).toEqual({action:'article',slug:'google-workspace-mcp-cli',mode:'summary',lang:'pt'});
+  status=503;
+  await panel.locator('[data-article-mode=actions]').click();
+  await expect(panel.locator('.article-answer')).toHaveAttribute('data-source','editorial');
+  await expect(panel.locator('.article-answer')).toContainText('IA indisponível');
+  await expect(page.locator('#fontes')).toBeVisible();
+});
