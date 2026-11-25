@@ -58,6 +58,7 @@ function dyno(root:HTMLElement) {
       bg.stroke(); bg.lineWidth=1;
     });
   }
+  let flagged=false;
   function paint() {
     if(!width || !height) return;
     const base=sample(rpm,false), tuned=sample(rpm,true), current=calibrated?tuned:base;
@@ -70,6 +71,9 @@ function dyno(root:HTMLElement) {
     const delta=(v:number)=>(v>=0?'+':'')+v.toFixed(1);
     const values=[current.torque.toFixed(0),delta(tuned.torque-base.torque),delta(tuned.channels[1]-base.channels[1]),...current.channels.map(v=>v.toFixed(1))];
     readings.forEach((node,i)=>{if(node.value!==values[i]) node.value=values[i];});
+    const next=current.channels[3]>.5;
+    if(next && !flagged) root.dispatchEvent(new CustomEvent('dyno-warning',{bubbles:true}));
+    flagged=next;
     event.textContent=current.channels[3]>.5?'Knock correction · −'+current.channels[3].toFixed(1)+'°':'Knock correction clear';
   }
   function advance(now:number) {

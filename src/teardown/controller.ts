@@ -1,3 +1,4 @@
+import {ask, anglesText} from '../../assets/ai-client.mjs';
 import { analyze, maxBytes } from './analyze';
 import { baseline, clean, defaultCompany, isVertical, money, readBrief, shareLink, tracks } from './model';
 import type { Analysis, Brief, Roadmap, Vertical } from './model';
@@ -59,9 +60,23 @@ function mount(root: HTMLElement) {
     put('basis', basis.join(' ') || 'Suggested review sequence. No specific gap has been established.');
     for (let phase = 0; phase < 3; phase++) list('phase-' + phase, gaps.map(g => catalog[g][phase + 1]));
   }
+  let auditTicket=0, remix=0;
+  const deep=get<HTMLButtonElement>('deep-audit'), again=get<HTMLButtonElement>('audit-remix');
+  function audit(){
+    if(!report) return;
+    const ticket=++auditTicket;
+    void ask({action:'teardown_audit',lang:'en',vertical:brief.vertical,entities:[],findings:report.findings.map(f=>f.gap),checks:report.checks,mode:get<HTMLSelectElement>('audit-mode').value,remix},(v:any)=>{
+      if(ticket!==auditTicket) return;
+      put('audit-result',[v.executive_narrative,...v.remediation_diff,v.roi_justification,anglesText(v)].join('\n\n'));
+      again.hidden=false;
+    });
+  }
+  deep.onclick=audit;
+  again.onclick=()=>{remix=(remix+1)%1000;audit();};
   function clearReport() {
     revision++;
     report = undefined;
+    auditTicket++; remix=0; deep.disabled=true; again.hidden=true; put("audit-result","");
     put('score','Awaiting evidence');
     put('summary','Analyze the current input to score the checks that can be evaluated.');
     list('findings', []);
@@ -78,6 +93,7 @@ function mount(root: HTMLElement) {
         afr:input('ref-afr').validity.valid ? input('ref-afr').valueAsNumber : NaN,
         boost:input('ref-boost').validity.valid ? input('ref-boost').valueAsNumber : NaN,
       });
+      deep.disabled=false;
       const count = report.findings.length;
       put('score', 'Review priority · ' + Math.round(100 * count / report.checks) + '/100');
       put('summary', (sample ? 'Illustrative sample. ' : 'Local input. ') + count + ' of ' + report.checks + ' evaluated checks flagged. ' + report.summary);

@@ -14,3 +14,12 @@ table { width: 100%; border-collapse: collapse; }
 th, td { padding: .45rem; text-align: left; border-bottom: 1px solid #44565b; }
 td:first-child button { text-align: left; }
 #profile { border-top: 1px solid #6a8289; padding-block: 1rem; }
+
+main{max-width:78rem}.command-center{display:grid;gap:1.5rem;grid-template-columns:minmax(16rem,1fr) minmax(0,2fr);align-items:start}
+.command-center aside,#profile{padding:1rem;background:#101612;border:1px solid #455341}
+#evidence{list-style:none;padding:0}#evidence li{position:relative;padding:.8rem;margin:.4rem 0;border:1px solid #52624a}
+#evidence a::after{content:"";position:absolute;inset:0}
+#ai-hypothesis{white-space:pre-wrap;overflow-wrap:anywhere;color:#d2f4b9}
+#company,#revenue,.table-region,summary{font-family:ui-monospace,monospace}
+button,.actions a{background:#c4eb9e;color:#152011}
+[hidden]{display:none!important}@media(max-width:48rem){.command-center{grid-template-columns:minmax(0,1fr)}}
