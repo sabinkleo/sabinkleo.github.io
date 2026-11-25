@@ -35,7 +35,7 @@ test('Home places Recursos e pesquisa first without losing commercial tools', as
   await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(origin + '/');
+    await page.goto(origin + '/pt/catalogo/');
     const groups = page.locator('.vl-home .tool-group');
     await expect(groups).toHaveCount(4);
     await expect(groups.locator('h2')).toHaveText([
@@ -55,7 +55,7 @@ test('Terminal visual layer is scoped, responsive and keeps the commercial links
   await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
   for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto(origin + '/');
+    await page.goto(origin + '/pt/catalogo/');
     await expect(page.locator('.vt-eyebrow')).toBeVisible();
     await expect(page.locator('link[href="/assets/terminal-design.css"]')).toHaveCount(1);
     await expect(page.getByRole('link', { name: 'Abrir Raio-X de Vendas' })).toBeVisible();
@@ -424,7 +424,7 @@ test('Raio-X discards unregistered and repeated attribution fields before opt-in
 });
 
 test('Homepage prioritizes Drops and Observatório while preserving featured business tools', async ({ page }) => {
-  await page.goto(origin + '/');
+  await page.goto(origin + '/pt/catalogo/');
   const groups = page.locator('.catalog > .tool-group');
   await expect(groups.first().locator('h2')).toHaveText('Recursos e pesquisa');
   await expect(groups.first().locator('.card h3')).toHaveText(['Vértice Drops', 'Observatório', 'Astro Lab — mapa natal']);
@@ -449,7 +449,7 @@ test('Leo Klein portfolio keeps its own styles, honest proof and responsive layo
     await expect(nav.getByRole('link', { name: 'Ferramentas' })).toBeVisible();
   }
 
-  await page.goto(origin + '/');
+  await page.goto(origin + '/pt/catalogo/');
   const founder = page.locator('.vl-home .vt-founder');
   await expect(founder.getByRole('link', { name: /Ver portfólio e serviços/i })).toHaveAttribute('href', '/klein/');
   await founder.getByRole('link', { name: /Ver portfólio e serviços/i }).click();
