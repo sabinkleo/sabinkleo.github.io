@@ -1,0 +1,43 @@
+---
+import Lab from '../layouts/Lab.astro';
+const { lang = 'en' } = Astro.props;
+const en = lang === 'en';
+const t = (a: string,b: string) => en ? a : b;
+const title = t('Agentic Commerce Readiness | Vértice Labs','Preparação para comércio agêntico | Vértice Labs');
+const description = t('Prepare your product catalog for AI-assisted discovery and future commerce integrations.','Prepare seu catálogo para descoberta por IA e futuras integrações comerciais.');
+const items = [
+[t('Catalog audit','Auditoria de catálogo'),t('Review product identifiers, variants, descriptions and accessible images.','Revise identificadores, variantes, descrições e imagens acessíveis.')],
+[t('Structured product data','Dados estruturados'),t('Review Product and Offer markup and existing product feeds.','Revise marcação Product e Offer e feeds existentes.')],
+[t('Price and stock consistency','Consistência de preço e estoque'),t('Compare public product pages with available catalog data.','Compare páginas públicas com os dados disponíveis do catálogo.')],
+[t('Implementation and retest','Implementação e reteste'),t('Apply agreed fixes and document discovery tests and integration gaps.','Aplique correções acordadas e documente testes de descoberta e lacunas de integração.')]
+];
+const contact = 'https://wa.me/5541998844684?text=' + encodeURIComponent(t('Hello, I would like an agentic commerce assessment. Website: ','Olá, gostaria de um diagnóstico de comércio agêntico. Site: '));
+---
+<Lab lang={lang} publicService title={title} description={description}>
+<main id="conteudo" class="frame geo">
+  <section class="geo-hero">
+    <div><p class="kicker">BUSINESS / 02 — AGENTIC COMMERCE</p>
+    <h1>{t('Is your catalog ready for AI shoppers?','Seu catálogo está pronto para compradores de IA?')}</h1>
+    <p class="lead">{description}</p>
+    <a class="cta" href={contact}>{t('Request an assessment','Solicitar diagnóstico')} ↗</a>
+    <p class="muted">{t('Manual assessment · Curitiba, Brazil · Remote delivery','Diagnóstico manual · Curitiba, PR · Atendimento remoto')}</p></div>
+    <aside class="panel"><p class="kicker">{t('IMPLEMENTATION','IMPLEMENTAÇÃO')}</p><strong class="price">{t('From R$5,000','A partir de R$ 5.000')}</strong><p>{t('One store, up to 20 sample products, agreed fixes and one retest. Final scope agreed before payment.','Uma loja, até 20 produtos de amostra, correções acordadas e um reteste. Escopo final definido antes do pagamento.')}</p><p class="muted">{t('No guaranteed AI recommendations, checkout integrations or sales.','Sem garantia de recomendações por IA, integração de checkout ou vendas.')}</p></aside>
+  </section>
+  <section aria-labelledby="scope"><h2 id="scope">{t('What we deliver','O que entregamos')}</h2><div class="geo-grid">{items.map(([name,detail],i)=><article class="panel"><p class="kicker">0{i+1}</p><h3>{name}</h3><p>{detail}</p></article>)}</div></section>
+  <section class="panel next"><h2>{t('Start with your website','Comece pelo seu site')}</h2><p>{t('Send your website, target market and priority products or services. We will assess fit before proposing implementation.','Envie seu site, mercado-alvo e produtos ou serviços prioritários. Avaliamos a adequação antes de propor a implementação.')}</p><a class="cta" href={contact}>{t('Talk on WhatsApp','Conversar pelo WhatsApp')} ↗</a></section>
+</main>
+</Lab>
+<style>
+.geo{--mint:#b6f3a3;--edge:#30453b;--soft:#a4b8a8;padding-block:clamp(2rem,6vw,5rem)}
+.geo-hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(1rem,5vw,4rem);align-items:center;margin-bottom:3rem}
+.kicker{color:var(--mint);font-size:.75rem;letter-spacing:.13em;font-weight:650;margin-bottom:.8rem}
+h1{font-size:clamp(2.4rem,5.8vw,4.8rem);line-height:1.06;letter-spacing:-.055em;font-weight:720}
+h2{font-size:1.65rem;font-weight:700;margin-bottom:1rem}h3{font-size:1.15rem;font-weight:650;margin-bottom:.5rem}
+.lead{font-size:1.15rem;color:var(--soft);margin:1.2rem 0;max-width:44ch}
+.panel{background:#182720;border:1px solid var(--edge);border-radius:1.1rem;padding:clamp(1rem,3vw,1.8rem);min-width:0}
+.panel p{line-height:1.65}.price{font-size:clamp(1.6rem,3vw,2.5rem);color:var(--mint);display:block;margin-bottom:.8rem}
+.cta{display:inline-flex;align-items:center;background:var(--mint);color:#102015;padding:.8rem 1rem;border-radius:.7rem;font-weight:700;min-height:44px;text-decoration:none}
+.cta:focus-visible{outline:2px solid white;outline-offset:4px}.muted{font-size:.85rem;color:var(--soft);margin-top:.9rem}
+.geo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.next{margin-top:2rem}.next .cta{margin-top:1rem}
+@media(max-width:760px){.geo-hero,.geo-grid{grid-template-columns:1fr}}
+</style>
