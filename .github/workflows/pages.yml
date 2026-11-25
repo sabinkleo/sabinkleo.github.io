@@ -26,11 +26,10 @@ jobs:
         env:
           PUBLIC_TRIAGE_ENDPOINT: ${{ vars.PUBLIC_TRIAGE_ENDPOINT }}
       - run: node tests/v2-build-smoke.mjs
+      - run: node tests/catalog-route.mjs
       - name: Combine static routes and publish the bilingual home
         run: |
           sudo chown -R "$(id -u):$(id -g)" _site
-          mkdir -p _site/pt/catalogo
-          cp _site/index.html _site/pt/catalogo/index.html
           rsync -a dist/ _site/
           test -s _site/en/teardown/index.html
           test -s _site/en/lab/index.html
