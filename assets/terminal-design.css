@@ -396,3 +396,30 @@
   .vl-home .hero .ai-entry { padding: 12px; }
   .vl-home .hero .ai-entry textarea { min-height: 44px; resize: vertical; }
 }
+
+/* Public catalog and commercial pages share the editorial product identity.
+   Tool internals, CRM, trading and OPSEC are deliberately not targeted. */
+.vl-site:has(.vl-home),.vl-site.vl-marketing {
+  --vt-void:#121613; --vt-deep:#1b211d; --vt-featured:#1b211d;
+  --vt-ink:#edf0ed; --vt-muted:#aeb8b1; --vt-edge:#303a35; --vt-signal:#b6e9b1;
+  --vt-head:system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:#121613; --vl-edge:#303a35;
+}
+.vl-site:has(.vl-home) .vl-nav,.vl-site.vl-marketing .vl-nav { background:#121613; }
+.vl-site:has(.vl-home) .vl-nav .vl-nav-links a,.vl-site.vl-marketing .vl-nav .vl-nav-links a { border-radius:999px; font:550 .85rem/1.3 var(--vt-head); letter-spacing:0; }
+.vl-home .vt-eyebrow,.vl-home .tool-meta,.vl-home .card > a,.vl-home .offer > a,.vl-marketing .tag { font-family:var(--vt-head); letter-spacing:normal; text-transform:none; }
+.vl-home .tool-group > h2::before,.vl-home .vt-hero-rail span::before { content:none; }
+.vl-home .card,.vl-home .offer,.vl-site.vl-marketing main .box,.vl-marketing .end { border-radius:16px; border-color:var(--vt-edge); background:var(--vt-deep); }
+.vl-home .featured .card { background:#1b211d; border-color:#435447; }
+.vl-home .card::before { display:none; }
+.vl-home .card p { font-size:15px; }
+.vl-site.vl-marketing { --line:var(--vt-edge); --mono:var(--vt-head); }
+.vl-marketing .stripe { height:1px; background:var(--vt-edge); }
+.vl-site.vl-marketing main h1 { font-weight:680; font-size:clamp(2.7rem,6vw,5rem); line-height:1.08; }
+.vl-marketing .button { border-radius:999px; min-height:44px; font-size:.9rem; }
+.vl-marketing .button:hover { background:#d6f4cc; color:#142119; }
+.vl-marketing .button.alt:hover { background:#29342c; color:var(--vt-ink); }
+.vl-marketing footer,.vl-site:has(.vl-home) > .footer { font-family:var(--vt-head); }
+@media(max-width:520px) {
+  .vl-site:has(.vl-home) .vl-nav .vl-nav-links a { font-size:.72rem; }
+}
