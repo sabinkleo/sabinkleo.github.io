@@ -1,4 +1,4 @@
-import {accepted, extract, localResult, valid} from './ai-contract.mjs';
+import {accepted, catalogs, extract, localResult, valid} from './ai-contract.mjs';
 export {extract};
 const endpoint = typeof location !== "undefined" && ['verticelabs.me', 'www.verticelabs.me'].includes(location.hostname)
   ? 'https://vertice-technical-triage-pages.sabino-fabio.workers.dev/api/ai'
@@ -18,13 +18,29 @@ export async function ask(p,display){
 export function anglesText(result){
   return result.angles.map(a=>[a.name,a.observable_friction,a.concrete_offer,a.whatsapp_hook].join('\n')).join('\n\n');
 }
+// Public catalog intents never send free text or invent a technical vertical.
+export function catalogRoute(text, lang='en'){
+  const words=String(text).normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().split(/[^\p{L}\p{N}]+/u);
+  const has=(terms)=>terms.some(term=>words.includes(term));
+  const pt=lang==='pt';
+  if(has(['venda','vendas','sales','lead','leads','conversao','conversion','faturamento','revenue','agendamento','whatsapp','clientes','customers'])) return {href:'/raio-x-vendas/',label:pt?'Raio-X de Vendas':'Sales diagnostics'};
+  if(has(['estoque','inventory','stock','etiqueta','etiquetas'])) return {href:'/n1/',label:pt?'Núcleo N1 — estoque':'N1 — inventory'};
+  if(has(['noticia','noticias','news','pesquisa','research','observatorio','observatory'])) return {href:'/observatorio/',label:pt?'Observatório':'Observatory'};
+  if(has(['criativo','criativos','creative','design','portfolio'])) return {href:'/klein/',label:pt?'Portfólio e criativos':'Portfolio & creative'};
+  if(has(['mecatronica','mechatronics','resistor','resistores','eletricidade','electricity'])) return {href:'/estudos/mecatronica/',label:pt?'Bancada de Mecatrônica':'Mechatronics bench'};
+  if(has(['cripto','crypto','bitcoin','mercado','markets'])) return {href:'/radar-ia-cripto/',label:pt?'Radar IA + Cripto':'AI + Crypto Radar'};
+  return null;
+}
 export function mountEntry(root){
+  if(!root || root.dataset.mounted==='true')return;
+  root.dataset.mounted='true';
   const pt=document.documentElement.lang.startsWith('pt'), lang=pt?'pt':'en';
   const t=(en,br)=>pt?br:en;
   const action=root.dataset.aiEntry;
+  const catalog=action==='intent' && Boolean(root.closest('.vl-home, .hero[data-catalog-hero]'));
   const input=document.createElement('textarea'), button=document.createElement('button'), out=document.createElement('pre'), link=document.createElement('a'), copy=document.createElement('button');
-  const label=action==='intent'?t('Ask / Route with AI','Perguntar / encontrar trilha'):t('Free-text intake','Diagnóstico em texto livre');
-  input.setAttribute('aria-label',label);input.placeholder=label;input.rows=2;input.maxLength=2500;
+  const label=action==='intent'?(catalog?t('Find a tool','Encontrar ferramenta'):t('Ask / Route with AI','Perguntar / encontrar trilha')):t('Free-text intake','Diagnóstico em texto livre');
+  input.setAttribute('aria-label',label);input.placeholder=label;input.rows=catalog?1:2;input.maxLength=2500;
   button.type=copy.type='button';button.textContent=action==='intent'?t('Preview route','Ver trilha'):t('Analyze setup','Analisar setup');
   out.setAttribute('role','status'); link.hidden=copy.hidden=true;copy.textContent=t('Copy Markdown','Copiar Markdown');
   root.append(input,button,out,link,copy);
@@ -40,6 +56,13 @@ export function mountEntry(root){
   button.onclick=()=>{
     clearTimeout(debounce);clear();if(!input.value.trim()){input.focus();return;}
     const token=ticket, signals=extract(input.value,root.dataset.vertical);
+    if(catalog){
+      const match=catalogRoute(input.value,lang);
+      if(match){out.textContent=match.label;link.href=match.href;link.textContent=t('Open ','Abrir ')+match.label;link.hidden=false;root.dataset.source='catalog';return;}
+      if(!signals.entities.some(entity=>Object.values(catalogs).some(terms=>terms.includes(entity)))){
+        out.textContent=t('No matching tool. Browse the catalog below.','Nenhuma ferramenta correspondente. Explore o catálogo abaixo.');root.dataset.source='catalog';return;
+      }
+    }
     ask({action,lang,...signals},(v,source)=>{
       if(token!==ticket)return;
       if(action==='intent'){
