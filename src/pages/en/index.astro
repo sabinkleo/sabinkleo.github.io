@@ -1,4 +1,5 @@
 ---
+import AiEntry from '../../components/AiEntry';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LabSection from '../../components/LabSection.astro';
 import LabCard from '../../components/LabCard.astro';
@@ -7,7 +8,7 @@ import { verticals } from '../../data/diagnostics';
 <BaseLayout technical lang="en" title="Technical tracks | Vértice Labs" description="Assess inference routing, Linux host controls or dyno telemetry with evidence-based diagnostics and a concrete delivery plan.">
   <main id="conteudo" class="frame">
     <header class="vertical-hero"><div><p class="eyebrow">VÉRTICE / ENGINEERING</p><h1>Technical tracks<span class="accent">.</span></h1>
-      <p class="intro">Choose the system you work on. Review a sample trace, inspect the deliverables and score your current setup.</p></div></header>
+      <p class="intro">Choose the system you work on. Review a sample trace, inspect the deliverables and score your current setup.</p><AiEntry client:visible><div class="ai-entry" data-ai-entry="intent"></div></AiEntry></div></header>
     <a class="button" href="/en/lab/">Open interactive lab →</a>
     <LabSection id="tracks" title="Choose a diagnostic">
       <div class="lab-cards">{verticals.map(v => <LabCard title={v.name}><p>{v.description}</p><a data-attribution href={'/en/' + v.slug + '/'}>Explore {v.name} →</a></LabCard>)}</div>
