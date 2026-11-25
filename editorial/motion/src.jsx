@@ -19,16 +19,17 @@ function Reveal({children, delay = 0, distance = 28, axis = 'Y', className}) {
 
 function Network({labels, repeat}) {
   const frame = useCurrentFrame();
-  const p = repeat ? frame % 52 / 52 : enter(frame, 15);
-  const position = repeat
-    ? (p < .5 ? {x: 125 + 550*p/.5, y: 100} : {x: 675 - 550*(p-.5)/.5, y: 235})
-    : {x: 125 + 550*p, y: 104};
+  const pulseX = repeat ? 0 : 125 + 550 * enter(frame, 15);
+  const loopMotion = repeat ? {
+    offsetPath: 'url(#query-loop)',
+    offsetDistance: `${frame % 52 / 52 * 100}%`,
+  } : undefined;
   return <div className="network">
     <svg viewBox="0 0 800 330" aria-hidden="true">
       {repeat
-        ? <path d="M125 100 H650 Q710 100 710 167 Q710 235 650 235 H150 Q90 235 90 167 Q90 100 150 100" fill="none" stroke="currentColor" strokeWidth="6" strokeDasharray="10 12"/>
+        ? <path id="query-loop" d="M150 100 H650 Q710 100 710 167 Q710 235 650 235 H150 Q90 235 90 167 Q90 100 150 100 Z" fill="none" stroke="currentColor" strokeWidth="6" strokeDasharray="10 12"/>
         : <path d="M125 104 H675 M645 84 L675 104 L645 124" fill="none" stroke="currentColor" strokeWidth="6"/>}
-      <circle cx={position.x} cy={position.y} r="19" fill="var(--accent)" stroke="var(--paper)" strokeWidth="4"/>
+      <circle cx={pulseX} cy={repeat ? 0 : 104} r="19" fill="var(--accent)" stroke="var(--paper)" strokeWidth="4" style={loopMotion}/>
     </svg>
     <div className="network-labels">{labels.map((label, i) =>
       <Reveal key={label} delay={i * 8} className="tile">{label}</Reveal>)}</div>
