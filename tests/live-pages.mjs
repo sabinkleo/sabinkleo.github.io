@@ -17,6 +17,11 @@ try {
     await page.goto(site + path, {waitUntil:'domcontentloaded'});
     assert.equal(await page.locator('html').getAttribute('lang'),lang);
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),path+' overflow');
+    if(path !== '/pt/catalogo/') {
+      await page.locator('.workspace').waitFor();
+      assert.equal(await page.locator('.metric-grid .metric').count(),3);
+      assert.equal(await page.locator('.distribution-row').count(),4);
+    }
     const entry=page.locator('[data-ai-entry=intent]');
     await entry.getByRole('textbox').fill(query);
     await entry.getByRole('button',{name:button}).click();
