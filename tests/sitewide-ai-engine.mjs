@@ -4,12 +4,12 @@ const base='http://127.0.0.1:8766';
 test.use({channel:process.env.CHROMIUM_PATH?undefined:'chrome',launchOptions:{executablePath:process.env.CHROMIUM_PATH},reducedMotion:'reduce'});
 for(const status of [200,429]){
   test.describe('gateway '+status,()=>{
-    let calls;
+    let calls,unsafe;
     test.beforeEach(async({page})=>{
-      calls=[];
+      calls=[];unsafe=false;
       await page.route('**/api/ai',route=>{
         const p=route.request().postDataJSON();calls.push(p);
-        return route.fulfill({status,json:status===200?{source:'gateway',result:localResult(p)}:{error:'Rate limited'}});
+        const result=localResult(p);if(unsafe)result.executive_narrative='<img src=x onerror=window.xss=1>';return route.fulfill({status,json:status===200?{source:'gateway',result}:{error:'Rate limited'}});
       });
     });
     test('hero and command palette preview before routing',async({page})=>{
@@ -44,6 +44,7 @@ for(const status of [200,429]){
       await page.locator('#deep-audit').click();await expect(page.locator('#audit-result')).toContainText('Contra-Intuitivo');
       await expect.poll(()=>calls.length).toBe(1);expect(Object.keys(calls[0]).sort()).toEqual(['action','checks','entities','findings','lang','remix','vertical']);
       expect(JSON.stringify(calls)).not.toContain('private-example');
+      unsafe=true;await page.locator('#audit-remix').click();await expect.poll(()=>calls.length).toBe(2);await expect(page.locator('#audit-result img')).toHaveCount(0);expect(await page.evaluate(()=>window.xss)).toBeUndefined();
       await page.emulateMedia({media:'print'});await expect(page.locator('#audit-result')).toBeVisible();
     });
     test('operator queue, archive, deduplication and creative handoff',async({page})=>{
