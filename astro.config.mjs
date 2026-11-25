@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import { cp } from 'node:fs/promises';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
@@ -17,6 +18,11 @@ export default defineConfig({
   integrations: [{
     name: 'vertice-legacy-routes',
     hooks: {
+      'astro:config:setup': ({ addRenderer }) => addRenderer({
+        name: 'vertice-native-diagnostic',
+        serverEntrypoint: fileURLToPath(new URL('./src/renderers/diagnostic-server.mjs', import.meta.url)),
+        clientEntrypoint: fileURLToPath(new URL('./src/renderers/diagnostic-client.mjs', import.meta.url)),
+      }),
       'astro:build:done': async ({ dir }) => {
         await Promise.all(legacyPaths.map((path) => cp(
           new URL(path, import.meta.url), new URL(path, dir),

@@ -1,11 +1,12 @@
 ---
 import Lab from '../layouts/Lab.astro';
+import LabButton from './LabButton.astro';
 const { lang = 'en' } = Astro.props;
 const en = lang === 'en';
 
 const pillars = [
   {
-    id: 'intelligence', code: '01', name: 'Intelligence', color: '#c6fb72',
+    id: 'intelligence', code: '01', name: 'Intelligence',
     summary: (en ? "Research, news and market analysis with sources and context." : "Pesquisa, notícias e leituras de mercado com fontes e contexto."),
     links: [
       [(en ? "Observatory" : "Observatório"), '/observatorio/'],
@@ -14,7 +15,7 @@ const pillars = [
     ],
   },
   {
-    id: 'business', code: '02', name: 'Business', color: '#82e9c6',
+    id: 'business', code: '02', name: 'Business',
     summary: (en ? "Sales diagnostics and tools for organizing operations." : "Diagnósticos de vendas e ferramentas para organizar operações."),
     links: [
       [(en ? "Sales Diagnostics" : "Raio-X de Vendas"), '/raio-x-vendas/'],
@@ -23,7 +24,7 @@ const pillars = [
     ],
   },
   {
-    id: 'creative', code: '03', name: 'Creative', color: '#e4aef5',
+    id: 'creative', code: '03', name: 'Creative',
     summary: (en ? "Visual analysis, creative portfolio and interactive experiments." : "Análise visual, portfólio de criativos e experimentos interativos."),
     links: [
       [(en ? "Visual Analysis · N1 Vision" : "Análise visual · N1 Visão"), '/n1/visao/fotos/'],
@@ -32,7 +33,7 @@ const pillars = [
     ],
   },
   {
-    id: 'engineering', code: '04', name: 'Engineering', color: '#f6c580',
+    id: 'engineering', code: '04', name: 'Engineering',
     summary: (en ? "Technical tools, simulations and laboratory experiments." : "Ferramentas técnicas, simulações e experimentos de bancada."),
     links: [
       [(en ? "Mechatronics Bench" : "Bancada de Mecatrônica"), '/estudos/mecatronica/'],
@@ -52,7 +53,7 @@ const pillars = [
         <h1 id="titulo">{en ? "Investigate." : "Investigue."}<br />{en ? "Analyze." : "Analise."}<br /><em>{en ? "Execute." : "Execute."}</em></h1>
         <p class="intro">{en ? "Applied research and tools for investigating real-world problems." : "Pesquisa aplicada e ferramentas para investigar problemas reais."}</p>
         <div class="flex flex-wrap gap-3">
-          <a class="button primary" href="#pilares">{en ? "Explore the lab" : "Explorar o laboratório"}</a>
+          <LabButton primary href="#pilares">{en ? "Explore the lab" : "Explorar o laboratório"}</LabButton>
           <a class="button" href="/observatorio/">{en ? "Read the Observatory" : "Ler o Observatório"}</a>
         </div>
       </div>
@@ -78,8 +79,8 @@ const pillars = [
         </nav>
       </div>
       <div class="pillar-grid grid md:grid-cols-2">
-        {pillars.map(({ id, code, name, color, summary, links }) => (
-          <section class="pillar" id={id} aria-labelledby={id + '-title'} style={{ '--pillar-accent': color }}>
+        {pillars.map(({ id, code, name, summary, links }) => (
+          <section class="pillar" id={id} aria-labelledby={id + '-title'}>
             <div class="pillar-heading flex items-baseline gap-4">
               <span class="pillar-code">{code}</span>
               <h3 id={id + '-title'}>{name}</h3>

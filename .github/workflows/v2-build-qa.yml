@@ -20,5 +20,23 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
+      - name: Build PR base and record existing HTML routes
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --depth=1 origin "$BASE_SHA"
+          git worktree add --detach "$RUNNER_TEMP/vertice-base" "$BASE_SHA"
+          cd "$RUNNER_TEMP/vertice-base"
+          npm ci --no-audit --no-fund
+          npm run build
+          find dist -type f -name '*.html' | LC_ALL=C sort > "$RUNNER_TEMP/vertice-base-routes"
       - run: npm run build
+      - name: Verify every baseline HTML route
+        if: github.event_name == 'pull_request'
+        run: |
+          find dist -type f -name '*.html' | LC_ALL=C sort > "$RUNNER_TEMP/vertice-pr-routes"
+          LC_ALL=C comm -23 "$RUNNER_TEMP/vertice-base-routes" "$RUNNER_TEMP/vertice-pr-routes" > "$RUNNER_TEMP/missing"
+          cat "$RUNNER_TEMP/missing"
+          test ! -s "$RUNNER_TEMP/missing"
       - run: node tests/v2-build-smoke.mjs
