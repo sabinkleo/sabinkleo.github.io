@@ -1,0 +1,31 @@
+name: Workspace preview checks
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: node tests/v2-build-smoke.mjs
+      - run: node tests/catalog-route.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Verify responsive public workspace
+        run: |
+          npm run preview -- --port 4321 > /tmp/workspace-preview.log 2>&1 &
+          trap 'kill $! 2>/dev/null || true' EXIT
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/workspace-mobile.mjs
