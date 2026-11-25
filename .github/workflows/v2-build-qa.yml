@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'src/**'
+      - 'crm/**'
+      - 'assets/ai-*.mjs'
+      - 'tests/sitewide-ai*'
       - 'astro.config.mjs'
       - 'package.json'
       - 'package-lock.json'
@@ -37,6 +40,7 @@ jobs:
           npm ci --no-audit --no-fund
           npm run build
           find dist -type f -name '*.html' | LC_ALL=C sort > "$RUNNER_TEMP/vertice-base-routes"
+      - run: node --test tests/sitewide-ai-worker.mjs
       - run: npm run build
       - name: Verify every baseline HTML route
         if: github.event_name == 'pull_request'
@@ -55,3 +59,5 @@ jobs:
           node tests/technical-diagnostics.mjs
           node tests/interactive-lab-hud.mjs
           node tests/teardown-engine.mjs
+
+          npx --no-install playwright test --config tests/sitewide-ai.config.mjs
