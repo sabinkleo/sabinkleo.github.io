@@ -8,8 +8,9 @@ try {
       const response=await page.goto('http://127.0.0.1:4321'+path);
       assert.equal(response.status(),200);
       assert.equal(await page.locator('html').getAttribute('lang'),language);
-      assert.equal(await page.locator('.workspace .metric').count(),3);
-      assert.equal(await page.locator('.distribution-row').count(),4);
+      assert.equal(await page.locator('.editorial-highlights .highlight').count(),3);
+      assert.equal(await page.locator('.product-catalog .pillar').count(),4);
+      assert.equal(await page.locator('.metric-grid').count(),0);
       assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),width+' '+path+' overflow');
       const entry=page.locator('[data-ai-entry=intent]');
       await entry.getByRole('textbox').fill(query);

@@ -78,15 +78,17 @@ jobs:
           code=$(curl --max-time 20 -sS -o "$RUNNER_TEMP/ai-probe.json" -w '%{http_code}' -H 'Origin: https://verticelabs.me' -H 'Content-Type: application/json' --data '{"action":"intent","lang":"en","vertical":"ai-ops","entities":[]}' "$url")
           echo "Worker POST /api/ai $code"
           echo "status=$code" >> "$GITHUB_OUTPUT"
-      - name: Upgrade the legacy triage-only Pages Worker
-        if: steps.edge.outputs.status == '404'
+          capability=$(curl --max-time 15 -sS "$url" | jq -r '.article // false' 2>/dev/null || echo false)
+          echo "article=$capability" >> "$GITHUB_OUTPUT"
+      - name: Upgrade Pages Worker when contextual article support is missing
+        if: steps.edge.outputs.status == '404' || steps.edge.outputs.article != 'true'
         working-directory: infra/triage
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-            echo "::warning::Worker still serves only triage. Cloudflare deployment credential unavailable."
+            echo "::warning::Article AI unavailable: Cloudflare deployment credential unavailable."
           else
             npx --yes wrangler@4 deploy --env pages
           fi

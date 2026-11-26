@@ -34,9 +34,10 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --no-audit --no-fund --no-package-lock
+      - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Start local static server and run Chromium smoke checks
         run: |
-          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/vertice-http.log 2>&1 &
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory dist > /tmp/vertice-http.log 2>&1 &
           sleep 3
           npm run test:browser

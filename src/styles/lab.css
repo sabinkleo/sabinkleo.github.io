@@ -160,3 +160,12 @@ body.product-shell {
   .product-shell .top nav { gap:.15rem .7rem; }
   .product-shell .top nav a { min-height:44px; }
 }
+
+/* Public product shell: neutral canvas, readable brand, consistent navigation. */
+body.product-shell { --accent:#b6e9b1; --line:#303a35; --muted:#aeb8b1; background:#121613; }
+.product-shell .top { background:#121613; border-color:#303a35; }
+.product-shell .top-inner { min-height:68px; padding-block:.7rem; }
+.product-shell .brand { font:720 1.08rem/1.3 system-ui,sans-serif; letter-spacing:-.045em; }
+.product-shell .top nav { font-size:.9rem; }
+.product-shell .top nav a { min-height:44px; display:inline-flex; align-items:center; }
+.product-shell .foot { border-color:#303a35; }

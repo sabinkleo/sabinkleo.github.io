@@ -1,0 +1,17 @@
+/* Public tool frame only. Preserve specialized data colors, charts and internal controls. */
+body.vl-site {
+  --vl-paper:#edf0ed; --vl-muted:#aeb8b1; --vl-accent:#b6e9b1;
+  --vl-edge:#303a35; --vl-surface:#1b211d; --vl-canvas:#121613;
+  --vl-font:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.vl-site .vl-nav { background:#121613; border-color:#303a35; }
+.vl-site .vl-nav .vl-wordmark { font:720 1.2rem/1.3 var(--vl-font); letter-spacing:-.045em; }
+.vl-site .vl-nav .vl-nav-links a { border-radius:999px; font:550 .85rem/1.3 var(--vl-font); }
+.vl-site .vl-nav a:hover,.vl-site .vl-nav a[aria-current="page"] { background:#26322a; border-color:#46584a; }
+.vl-site.vl-tool { background:#121613; background-image:none; color:#edf0ed; }
+.vl-site.vl-tool main h1,.vl-site.vl-tool .hero-head h1 { font-family:var(--vl-font); font-weight:680; letter-spacing:-.045em; text-transform:none; line-height:1.12; }
+.vl-site.vl-tool main :is(.panel,.card,.box) { border-radius:14px; }
+.vl-site.vl-tool :is(.hero,.hero-head) { margin-bottom:1.4rem; }
+.vl-site .vl-key { border-radius:999px; font:550 .8rem/1.4 var(--vl-font); min-height:36px; }
+.vl-site dialog.vl-command { border-radius:16px; font-family:var(--vl-font); }
+@media(max-width:520px) { .vl-site .vl-nav .vl-nav-links a { font-size:.76rem; padding-inline:5px; } }

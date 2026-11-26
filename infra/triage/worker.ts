@@ -2,6 +2,7 @@ import { verticals } from '../../src/data/diagnostics';
 import { assess } from '../../src/data/diagnostics/score';
 
 import {generate, quota, eventStream} from './gateway.mjs';
+import {validArticle, articleAnswer} from './article.mjs';
 import {valid,extract} from '../../assets/ai-contract.mjs';
 
 import guides from '../../src/data/lab-guides.json';
@@ -37,12 +38,20 @@ async function readPayload(request: Request, limit: number) {
 async function dispatch(request: Request, env: Env) {
     const path = new URL(request.url).pathname;
     if (!['/api/triage','/api/ai'].includes(path)) return reply({ error: 'Unknown route' }, 404);
+    if (path === '/api/ai' && request.method === 'GET') return reply({article: true});
     if (request.method !== 'POST') return new Response(null, { status: 405, headers: { Allow: 'POST' } });
     if (request.headers.get('content-type')?.split(';')[0] !== 'application/json') return reply({ error: 'Expected JSON' }, 415);
     let payload;
     try { payload = await readPayload(request, path === '/api/ai' ? 4096 : 1024); }
     catch { return reply({ error: 'Invalid or oversized JSON' }, 400); }
     if (path === '/api/ai') {
+      if (payload?.action === 'article') {
+        if (!validArticle(payload)) return reply({error:'Invalid article payload'}, 400);
+        if (!await quota(request, env)) return reply({error:'Rate limited'}, 429);
+        const result = await articleAnswer(payload, env);
+        if ('error' in result) return reply({error:result.error}, result.status);
+        return reply(result);
+      }
       if (payload && ['intent','intake'].includes(payload.action) && typeof payload.text==='string' && payload.text.length<=2500) {
         const {text,...fields}=payload;
         payload={...fields,...extract(text,fields.vertical)};
