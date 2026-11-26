@@ -1,9 +1,12 @@
+@import "../../assets/vl-tokens.css";
+
 :root {
-  --lab-ground: #0c0e0d;
-  --lab-text: #edf1eb;
-  --lab-muted: #aeb8ad;
-  --lab-line: #313b31;
-  --lab-accent: #d3fa43;
-  --lab-surface: #121613;
-  --lab-mono: "IBM Plex Mono", "Cascadia Mono", monospace;
+  --lab-ground: var(--vl-color-ground);
+  --lab-text: var(--vl-color-text);
+  --lab-muted: var(--vl-color-muted);
+  --lab-line: var(--vl-color-line);
+  --lab-accent: var(--vl-color-accent);
+  --lab-surface: var(--vl-color-surface);
+  --lab-sans: var(--vl-font-sans);
+  --lab-mono: var(--vl-font-mono);
 }
