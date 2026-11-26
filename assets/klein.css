@@ -2,7 +2,7 @@
    lime accent, mono/grotesk typography, hairline grid and fictitious CLI demo.
    All rules are scoped to .vl-klein or .vl-home .vt-founder. */
 .vl-site.vl-klein {
-  --vl-accent: #a3e635;
+  --vl-accent: #d3fa43;
   --vl-paper: #efefef;
   --vl-muted: #adb3a8;
   --vl-edge: #30372c;
@@ -12,8 +12,8 @@
   min-width: 0;
   color: var(--vl-paper);
   background:
-    linear-gradient(rgba(163,230,53,.024) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(163,230,53,.024) 1px, transparent 1px),
+    linear-gradient(rgba(211,250,67,.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(211,250,67,.024) 1px, transparent 1px),
     #0a0a0a;
   background-size: 52px 52px;
   color-scheme: dark;
