@@ -79,7 +79,8 @@ def add_languages(html, pt, en, language):
     tags = (f'<link rel="alternate" hreflang="pt-BR" href="{pt}">\n'
             f'<link rel="alternate" hreflang="en" href="{en}">\n'
             f'<link rel="alternate" hreflang="x-default" href="{en}">\n')
-    html = html.replace("</head>", tags + "</head>", 1)
+    if tags not in html:
+        html = html.replace("</head>", tags + "</head>", 1)
     other = pt if language == "en" else en
     label = "PT" if language == "en" else "EN"
     lang = "pt-BR" if language == "en" else "en"
@@ -87,6 +88,8 @@ def add_languages(html, pt, en, language):
     marker = '<div class="vl-nav-links">'
     if marker not in html:
         raise ValueError("Missing editorial navigation")
+    if switch in html:
+        return html
     return html.replace(marker, marker + "\n      " + switch, 1)
 
 
