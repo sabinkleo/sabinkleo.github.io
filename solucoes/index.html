@@ -9,7 +9,7 @@
 <link rel="canonical" href="https://verticelabs.me/solucoes/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://verticelabs.me/solucoes/">
-<meta property="og:title" content="Organize seus leads e acompanhamentos | Vértice Labs">
+<meta property="og:title" content="Implantação comercial | Vértice Labs">
 <meta property="og:description" content="Implantação enxuta de processo comercial com rastreio de origem, etapas e retornos. Diagnóstico gratuito.">
 <style>
 :root{--bg:#090a09;--fg:#ecebe2;--muted:#abb2a5;--line:#344033;--accent:#d3fa43;--panel:#141914;--mono:ui-monospace,SFMono-Regular,Consolas,monospace}
@@ -18,6 +18,28 @@ a{color:var(--accent)}a:focus-visible{outline:3px solid var(--accent);outline-of
 main{padding:68px 0 90px}h1{font:700 clamp(34px,6vw,76px)/1.06 var(--vl-font-sans);letter-spacing:-.035em;text-transform:none;max-width:970px;margin:14px 0 27px}h1 em{font-style:normal;color:var(--accent)}h2{font-size:clamp(24px,3vw,34px);line-height:1.15;margin:0 0 14px}h3{font-size:18px;margin:0 0 8px}p{margin-top:0}.tag{font:11px var(--mono);letter-spacing:.11em;text-transform:uppercase;color:var(--accent)}.lead{font-size:clamp(17px,2.3vw,21px);color:var(--muted);max-width:760px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.button{display:inline-flex;justify-content:center;align-items:center;min-height:48px;padding:12px 19px;border-radius:7px;background:var(--accent);color:#101510;text-decoration:none;font-weight:800}.button.alt{background:transparent;color:var(--fg);border:1px solid #697c50}.button:hover{filter:brightness(.92)}.note{color:var(--muted);font-size:12px;margin-top:16px}
 .section{margin-top:76px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:23px}.box{padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:10px}.box p{color:var(--muted);font-size:15px;margin:0}.box .tag{display:block;margin-bottom:14px}.pricing{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;align-items:start;margin-top:25px}.money{font:700 clamp(38px,6vw,62px)/1 var(--vl-font-sans);color:var(--accent);margin:13px 0}.small{font-size:13px;color:var(--muted)}.terms{margin:18px 0;padding-left:20px}.terms li{margin:9px 0}.check{padding:0;list-style:none}.check li{padding:12px 0;border-bottom:1px solid var(--line)}.check li:before{content:"✓ ";color:var(--accent);font-weight:900}.FAQ{max-width:800px}.FAQ details{border-bottom:1px solid var(--line);padding:17px 0}.FAQ summary{cursor:pointer;font-weight:700}.FAQ p{color:var(--muted);margin:12px 0 0}.end{border:1px solid #6c843b;border-radius:12px;background:#151e10;padding:28px;margin-top:76px}.end p{max-width:730px;color:var(--muted)}footer{padding:24px 0;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 @media(max-width:760px){main{padding-top:43px}.grid,.pricing{grid-template-columns:1fr}.section{margin-top:55px}.actions .button{width:100%}nav .back{font-size:11px}.box{padding:21px}}
+/* Commercial hierarchy uses the shared tokens without changing the offer. */
+.vl-site.vl-marketing { --bg:var(--vl-color-ground); --accent:var(--vl-color-accent); --mono:var(--vl-font-mono); font-family:var(--vl-font-sans); }
+.vl-site.vl-marketing .stripe { height:1px; background:var(--vl-color-line); }
+.vl-site.vl-marketing main h1 { font-size:clamp(36px,6vw,76px); line-height:1.08; }
+.vl-site.vl-marketing .button { border-radius:var(--vl-radius-control); background:var(--vl-color-accent); color:var(--vl-color-on-accent); font:700 15px/1.3 var(--vl-font-sans); }
+.vl-site.vl-marketing .box,.vl-site.vl-marketing .end { border-radius:var(--vl-radius-panel); }
+.secondary-link { display:inline-flex; align-items:center; min-height:44px; padding:4px 2px; color:var(--vl-color-accent); text-underline-offset:4px; }
+.secondary-link[hidden] { display:none; }
+.price-rail { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 20px; margin-top:28px; padding:18px 0; border-block:1px solid var(--vl-color-line); font-size:14px; }
+.price-rail strong { font:700 1.8rem/1.2 var(--vl-font-sans); color:var(--vl-color-accent); }
+.price-rail small { flex-basis:100%; color:var(--vl-color-muted); }
+.founder { max-width:720px; }
+.founder p { color:var(--vl-color-muted); }
+.mobile-contact { display:none; }
+@media(max-width:760px) {
+  .vl-site.vl-marketing main { padding-bottom:120px; }
+  .mobile-contact { display:block; position:fixed; z-index:10; bottom:0; left:0; right:0; padding:8px 14px max(8px,env(safe-area-inset-bottom)); background:var(--vl-color-ground); border-top:1px solid var(--vl-color-line); }
+  .mobile-contact .button { width:100%; min-height:48px; }
+  body:has(.vl-consent section:not([hidden]),.vl-consent dialog[open]) .mobile-contact { display:none; }
+  html { scroll-padding-bottom:80px; }
+}
+@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
 </style>
 <meta name="referrer" content="no-referrer">
 <link rel="stylesheet" href="/assets/consent.css">
@@ -51,9 +73,10 @@ main{padding:68px 0 90px}h1{font:700 clamp(34px,6vw,76px)/1.06 var(--vl-font-san
 <span class="tag">Vértice Revenue OS / Implementação pontual</span>
 <h1 id="title">O lead chegou.<br><em>E depois?</em></h1>
 <p class="lead">Organizamos o processo de atendimento de negócios que vendem por WhatsApp: de onde veio a oportunidade, quem responde, quando retornar e qual foi o resultado. Sem trocar tudo por um software caro.</p>
-<div class="actions"><a class="button" href="/raio-x-vendas/">Fazer diagnóstico gratuito</a><a class="button alt" href="https://wa.me/5541997857043?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Quero avaliar minha operação</a></div>
+<div class="actions"><a class="button" id="contact" href="https://wa.me/5541997857043?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Conversar pelo WhatsApp</a><a class="secondary-link" href="/raio-x-vendas/">Fazer diagnóstico gratuito</a><a class="secondary-link" id="contact-email" hidden>Enviar e-mail</a></div>
 <p class="note">Para avaliar a implantação, tenha em mãos o total de novas conversas da última semana e quantas ficaram sem retorno. Os totais bastam para a primeira conversa.</p>
 </section>
+<section class="price-rail" aria-label="Condições comerciais"><strong>R$ 1.497</strong><span>50% na contratação</span><span>Sem assinatura obrigatória</span><small>Hipótese em validação. Sujeito à confirmação de compatibilidade e proposta.</small></section>
 <section class="section" aria-labelledby="problem"><h2 id="problem">O problema não é apenas gerar mensagens.</h2><p class="lead">Quando o atendimento fica disperso, fica difícil distinguir anúncio, indicação, orçamento pendente e venda. Uma planilha bem operada e um processo claro podem resolver a primeira camada do problema.</p>
 <div class="grid">
 <article class="box"><span class="tag">Origem</span><h3>De onde veio?</h3><p>Organização de links identificados, origem declarada e registro de oportunidades — sem atribuição inventada.</p></article>
@@ -74,22 +97,24 @@ main{padding:68px 0 90px}h1{font:700 clamp(34px,6vw,76px)/1.06 var(--vl-font-san
 <p class="small">Prazo combinado após avaliação do processo e disponibilização dos materiais necessários.</p>
 </div>
 <div class="box">
-<span class="tag">Investimento inicial / Hipótese em validação</span>
+<span class="tag">Investimento inicial</span>
 <div class="money">R$ 1.497</div>
 <p>50% na contratação (R$ 748,50) e 50% após aceite dos entregáveis.</p>
 <p style="margin:17px 0">Suporte opcional: <strong>R$ 197/mês</strong>, limitado a uma hora mensal para monitoramento e relatório.</p>
-<a class="button" style="width:100%" href="https://wa.me/5541997857043?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Solicitar proposta</a>
+<a class="secondary-link" href="#contact">Solicitar proposta ↗</a>
 <p class="note">Valores para o escopo descrito, sujeitos à confirmação de compatibilidade e proposta. Sem assinatura obrigatória.</p>
 </div>
 </div></section>
+<section class="section founder" aria-labelledby="founder-title"><span class="tag">Quem faz</span><h2 id="founder-title">Leo Klein</h2><p>Marketing, programação e automação. Conheça o portfólio e as ferramentas publicadas, com exemplos identificados como fictícios e sem resultados de clientes inventados.</p><a class="secondary-link" href="/klein/">Ver portfólio e projetos ↗</a></section>
 <section class="section FAQ" aria-labelledby="questions"><h2 id="questions">Antes de contratar</h2>
 <details><summary>Preciso contratar uma API ou um CRM novo?</summary><p>Não. A proposta inicial reutiliza o WhatsApp Business, uma planilha ou o CRM existente. APIs, licenças e automações avançadas ficam fora do pacote.</p></details>
 <details><summary>Vocês garantem aumento de vendas?</summary><p>Não. A entrega é a implantação e a validação de um processo de registro e acompanhamento. Resultados comerciais dependem de operação, demanda e qualidade dos dados.</p></details>
-<details><summary>Vocês precisam receber conversas dos meus clientes?</summary><p>O diagnóstico inicial pode usar dados agregados e fictícios. Qualquer acesso a informações pessoais depende de escopo, finalidade e controles definidos com o contratante; nunca envie listas de clientes pelo formulário ou diagnóstico público.</p></details>
+<details><summary>Vocês precisam receber conversas dos meus clientes?</summary><p>O diagnóstico inicial pode usar dados agregados e fictícios. Qualquer acesso a informações pessoais depende de escopo, finalidade e controles definidos com o contratante; nunca envie listas de clientes pelo diagnóstico público ou pelo WhatsApp inicial.</p></details>
 <details><summary>Quais empresas fazem sentido?</summary><p>Negócios de serviços, oficinas, autopeças e operações locais que já recebem oportunidades e tenham uma pessoa responsável por registrar e acompanhar cada contato.</p></details>
 <details><summary>O que não está incluído?</summary><p>Gestão de anúncios, mídia paga, disparos em massa, integração automática WhatsApp/Meta, software sob medida, licenças e garantia de faturamento.</p></details>
 </section>
-<section class="end" aria-labelledby="close"><span class="tag">Próximo passo</span><h2 id="close">Teste o diagnóstico antes de investir.</h2><p>Se os dados da sua empresa indicarem um gargalo real, avaliamos uma implantação de escopo limitado. Se ainda não houver evidência suficiente, a recomendação pode ser começar medindo sem contratar.</p><div class="actions"><a class="button" href="/raio-x-vendas/">Abrir Raio-X de Vendas</a><a class="button alt" href="https://wa.me/5541997857043?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Falar com a Vértice</a></div></section>
+<section class="end" aria-labelledby="close"><span class="tag">Próximo passo</span><h2 id="close">Teste o diagnóstico antes de investir.</h2><p>Se os dados da sua empresa indicarem um gargalo real, avaliamos uma implantação de escopo limitado. Se ainda não houver evidência suficiente, a recomendação pode ser começar medindo sem contratar.</p><div class="actions"><a class="secondary-link" href="/raio-x-vendas/">Abrir Raio-X de Vendas</a><a class="secondary-link" href="#contact">Falar com a Vértice ↗</a></div></section>
+<div class="mobile-contact"><a class="button" href="https://wa.me/5541997857043?text=Ol%C3%A1!%20Vi%20a%20implanta%C3%A7%C3%A3o%20comercial%20da%20V%C3%A9rtice%20Labs%20e%20quero%20avaliar%20se%20faz%20sentido%20para%20minha%20empresa." target="_blank" rel="noopener noreferrer">Conversar pelo WhatsApp</a></div>
 </main>
 <footer><div class="wrap">Vértice Labs · Curitiba · Serviços de implementação técnica · Não é uma ferramenta de venda automática.</div></footer>
 <script src="/assets/revenue-campaign.js" defer></script>
