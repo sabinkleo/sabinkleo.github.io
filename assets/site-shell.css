@@ -1,3 +1,4 @@
+@import url("./vl-tokens.css");
 .vl-site {
   --vl-paper: #edf1e8;
   --vl-muted: #b7c1b4;
@@ -386,7 +387,7 @@
   display: none;
 }
 
-@media (min-width: 960px) {
+@media (min-width: 1024px) {
   .vl-home .featured .card {
     position: relative;
     min-height: 185px;
@@ -405,3 +406,6 @@
     stroke-linejoin: round;
   }
 }
+
+/* Shared public identity; do not restyle specialist trading or OPSEC interfaces. */
+.vl-site:has(.vl-home), .vl-site.vl-marketing, .vl-site.vl-klein, .vl-site.vl-sales-diagnostic { --vl-accent:var(--vl-color-accent); --vl-font:var(--vl-font-sans); }
