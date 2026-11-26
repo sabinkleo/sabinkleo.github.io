@@ -110,7 +110,7 @@ def add_languages(html, pt, en, language):
     </div>
   </div>
 </nav>'''
-    html, count = re.subn(r'<nav class="vl-nav(?: vl-unified-nav)?"[^>]*>[\\s\\S]*?</nav>', lambda _: nav, html, count=1)
+    html, count = re.subn(r'<nav class="vl-nav(?: vl-unified-nav)?"[^>]*>.*?</nav>', lambda _: nav, html, count=1, flags=re.DOTALL)
     if count != 1:
         raise ValueError("Missing editorial navigation")
     return html
