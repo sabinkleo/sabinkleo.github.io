@@ -335,28 +335,29 @@ for (const width of [320, 375, 390, 768, 1440]) {
   test('Shared navigation, tool layout and catalog routes work at ' + width + 'px', async ({ page }) => {
     await page.setViewportSize({ width, height: 812 });
     await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
-    const nav = page.getByRole('navigation', { name: 'Menu da Vértice' });
     for (const route of [
-      '/', '/solucoes/', '/raio-x-vendas/', '/tuning/', '/n1/', '/n1/equipe/',
+      '/', '/pt/', '/solucoes/', '/raio-x-vendas/', '/tuning/', '/n1/', '/n1/equipe/',
       '/n1/etiquetas/', '/n1/visao/', '/n1/visao/fotos/', '/duelo-bot/',
       '/observatorio/', '/observatorio/frete-search-console/', '/drops/',
       '/radar-ia-cripto/', '/perps/', '/privacy/', '/estudos/mecatronica/'
     ]) {
       await page.goto(origin + route, { waitUntil: 'domcontentloaded' });
+      const english = route === '/';
+      const nav = page.getByRole('navigation', { name: english ? 'Vértice navigation' : 'Menu da Vértice' });
       await expect(nav, route).toBeInViewport();
       expect(await page.evaluate(() => document.documentElement.scrollWidth), route).toBeLessThanOrEqual(width);
       const menu = await nav.boundingBox();
-      for (const label of ['Ferramentas', 'Soluções', 'Observatório']) {
+      for (const label of english ? ['Tools', 'Solutions', 'Observatory'] : ['Ferramentas', 'Soluções', 'Observatório']) {
         const target = await nav.getByRole('link', { name: label, exact: true }).boundingBox();
         expect(target.height, route).toBeGreaterThanOrEqual(44);
         expect(target.y + target.height, route).toBeLessThanOrEqual(menu.y + menu.height);
       }
     }
-    const catalog = nav.getByRole('link', { name: 'Ferramentas' });
+    const catalog = page.getByRole('navigation', { name: 'Menu da Vértice' }).getByRole('link', { name: 'Ferramentas' });
     await catalog.focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(origin + '/');
-    const diagnostic = page.getByRole('link', { name: 'Abrir Raio-X de Vendas' });
+    const diagnostic = page.getByRole('link', { name: 'Sales Diagnostics', exact: true });
     await diagnostic.scrollIntoViewIfNeeded();
     await expect(diagnostic).toBeInViewport();
     await diagnostic.click();
