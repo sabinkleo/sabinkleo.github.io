@@ -37,6 +37,13 @@ async function attachPublicHud(dir, prefix = '') {
         html = html.replace(/<\/head>/i, '<link rel="stylesheet" href="/assets/product-tools.css"></head>');
         await writeFile(url, html);
       }
+      if (prefix === 'solucoes/' && entry.name === 'index.html') {
+        const email = process.env.PUBLIC_CONTACT_EMAIL || '';
+        if (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(email)) {
+          html = html.replace('<a class="secondary-link" id="contact-email" hidden>', '<a class="secondary-link" id="contact-email" href="mailto:' + encodeURIComponent(email).replace('%40','@') + '">');
+          await writeFile(url, html);
+        }
+      }
       if (!html.includes('/assets/command-hud.js')) {
         const assets = '<link rel="stylesheet" href="/assets/command-hud.css"><script defer src="/assets/command-hud.js"></script>';
         await writeFile(url, html.replace(/<\/head>/i, assets + '</head>'));

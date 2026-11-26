@@ -16,7 +16,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     {privateBrief && <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23d3fa43' d='M1 4h8l7 15 7-15h8L16 32z'/%3E%3C/svg%3E" />}
     {privateBrief && <meta http-equiv="Content-Security-Policy" content="connect-src 'self'; form-action 'none'; object-src 'none'; base-uri 'self'" />}
     {!privateBrief && <>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/command-hud.css" />
+    <link rel="stylesheet" href="/assets/vl-nav.css" />
     <script is:inline defer src="/assets/command-hud.js"></script>
     {import.meta.env.PUBLIC_CONTACT_EMAIL && <meta name="vl-contact-email" content={import.meta.env.PUBLIC_CONTACT_EMAIL} />}
     </>}
@@ -50,6 +54,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
   </head>
   <body class:list={[{'product-shell':home || (technical && !privateBrief)}]}>
     <a class="skip" href="#conteudo">{en ? "Skip to content" : "Ir para o conteúdo"}</a>
+    {privateBrief ? (
     <header class="top">
       <div class="frame top-inner flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
         <a class="brand" href={homePath} aria-label={en ? "Vértice Labs, home" : "Vértice Labs, início"}><span class="brand-mark" aria-hidden="true"></span> VÉRTICE<span class="accent">{home ? " /" : "."}</span> LABS</a>
@@ -67,6 +72,23 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
         </nav>
       </div>
     </header>
+    ) : (
+    <nav class="vl-nav vl-unified-nav" aria-label={en ? "Vértice navigation" : "Menu da Vértice"}>
+      <div class="vl-nav-inner">
+        <a class="vl-wordmark" href={homePath} aria-label={en ? "Vértice Labs, home" : "Vértice Labs, início"}>Vértice<span>Labs</span></a>
+        <div class="vl-nav-links">
+          <a href={home ? '#pilares' : homePath + '#pilares'}>{en ? "Tools" : "Ferramentas"}</a>
+          <a href={en ? '/en/observatory/' : '/observatorio/'}>{en ? "Observatory" : "Observatório"}</a>
+          <a href="/solucoes/">{en ? "Solutions (PT)" : "Soluções"}</a>
+          <a data-attribution href="/en/">{en ? "Engineering" : "Engenharia (EN)"}</a>
+          <a href="/pt/" lang="pt-BR" hreflang="pt-BR" aria-current={!en && home ? 'page' : undefined}>PT</a>
+          <a href="/" lang="en" hreflang="en" aria-current={en && home ? 'page' : undefined}>EN</a>
+          <a class="vl-nav-cta" href="/raio-x-vendas/">{en ? "Free diagnosis (PT)" : "Diagnóstico grátis"}</a>
+          <span data-hud-trigger></span>
+        </div>
+      </div>
+    </nav>
+    )}
     <slot />
     <footer class="foot">
       <div class="frame flex flex-wrap items-center justify-between gap-4">

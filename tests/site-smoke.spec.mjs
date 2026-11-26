@@ -66,8 +66,8 @@ test('Product visual layer is scoped, responsive and keeps the commercial links 
       scrollWidth: document.documentElement.scrollWidth
     }));
     expect(homeStyles.grid).toBe('auto');
-    expect(homeStyles.cardRadius).toBe('16px');
-    expect(homeStyles.headingFont).toContain('system-ui');
+    expect(homeStyles.cardRadius).toBe('4px');
+    expect(homeStyles.headingFont).toContain('Space Grotesk');
     expect(homeStyles.scrollWidth).toBeLessThanOrEqual(width);
 
     await page.goto(origin + '/solucoes/');
@@ -78,8 +78,8 @@ test('Product visual layer is scoped, responsive and keeps the commercial links 
       headingFont: getComputedStyle(document.querySelector('main h1')).fontFamily,
       scrollWidth: document.documentElement.scrollWidth
     }));
-    expect(marketingStyles.cardRadius).toBe('16px');
-    expect(marketingStyles.headingFont).toContain('system-ui');
+    expect(marketingStyles.cardRadius).toBe('4px');
+    expect(marketingStyles.headingFont).toContain('Space Grotesk');
     expect(marketingStyles.scrollWidth).toBeLessThanOrEqual(width);
   }
 
@@ -335,28 +335,29 @@ for (const width of [320, 375, 390, 768, 1440]) {
   test('Shared navigation, tool layout and catalog routes work at ' + width + 'px', async ({ page }) => {
     await page.setViewportSize({ width, height: 812 });
     await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2', 'none'));
-    const nav = page.getByRole('navigation', { name: 'Menu da Vértice' });
     for (const route of [
-      '/', '/solucoes/', '/raio-x-vendas/', '/tuning/', '/n1/', '/n1/equipe/',
+      '/', '/pt/', '/solucoes/', '/raio-x-vendas/', '/tuning/', '/n1/', '/n1/equipe/',
       '/n1/etiquetas/', '/n1/visao/', '/n1/visao/fotos/', '/duelo-bot/',
       '/observatorio/', '/observatorio/frete-search-console/', '/drops/',
       '/radar-ia-cripto/', '/perps/', '/privacy/', '/estudos/mecatronica/'
     ]) {
       await page.goto(origin + route, { waitUntil: 'domcontentloaded' });
+      const english = route === '/';
+      const nav = page.getByRole('navigation', { name: english ? 'Vértice navigation' : 'Menu da Vértice' });
       await expect(nav, route).toBeInViewport();
       expect(await page.evaluate(() => document.documentElement.scrollWidth), route).toBeLessThanOrEqual(width);
       const menu = await nav.boundingBox();
-      for (const label of ['Ferramentas', 'Soluções', 'Observatório']) {
+      for (const label of english ? ['Tools', 'Solutions (PT)', 'Observatory'] : ['Ferramentas', 'Soluções', 'Observatório']) {
         const target = await nav.getByRole('link', { name: label, exact: true }).boundingBox();
         expect(target.height, route).toBeGreaterThanOrEqual(44);
         expect(target.y + target.height, route).toBeLessThanOrEqual(menu.y + menu.height);
       }
     }
-    const catalog = nav.getByRole('link', { name: 'Ferramentas' });
+    const catalog = page.getByRole('navigation', { name: 'Menu da Vértice' }).getByRole('link', { name: 'Ferramentas' });
     await catalog.focus();
     await page.keyboard.press('Enter');
-    await expect(page).toHaveURL(origin + '/');
-    const diagnostic = page.getByRole('link', { name: 'Abrir Raio-X de Vendas' });
+    await expect(page).toHaveURL(origin + '/pt/');
+    const diagnostic = page.getByRole('link', { name: 'Fazer diagnóstico grátis', exact: true });
     await diagnostic.scrollIntoViewIfNeeded();
     await expect(diagnostic).toBeInViewport();
     await diagnostic.click();
@@ -632,4 +633,16 @@ test('CRM leaves a recovery control available after persistent network failure',
   await expect(page.getByRole('button', {name: 'Tentar novamente'})).toBeVisible();
   await expect(page.locator('#login')).toBeVisible();
   await expect(page.locator('#workspace')).toBeHidden();
+});
+
+
+test('Mobile recovery mirrors the original calculator without changing WhatsApp summary', async ({page}) => {
+  await page.setViewportSize({width:375,height:812});
+  await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2','none'));
+  await page.goto(origin + '/raio-x-vendas/');
+  await page.locator('#ticket').fill('1800');
+  await expect(page.locator('#potential-mobile')).toHaveText(await page.locator('#potential').innerText());
+  await expect(page.locator('.mobile-result')).toBeInViewport();
+  await page.getByRole('link',{name:'Ver resultado',exact:true}).click();
+  await expect(page.locator('#resultTitle')).toBeInViewport();
 });

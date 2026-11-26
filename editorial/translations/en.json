@@ -102,5 +102,32 @@
       "Fictional example and three-step verification guide prepared.",
       "Demonstration edition approved for generating project review files."
     ]
+  },
+  "agentic-commerce-walmart-meta": {
+    "revision": "2026-11-26T15:00:00Z",
+    "title": "Walmart confirms shopping through Meta's Muse agent",
+    "category": "Agentic commerce",
+    "sector": "Retail",
+    "summary": "On November 24, Walmart confirmed that customers can find deals, build a basket and complete purchases through Muse, Meta’s personal AI agent, connected to Walmart Agent Gateway.",
+    "what_changed": "Walmart announced the experience as available starting November 24 for Black Friday shopping: customers describe what they want in Muse, which uses Agent Gateway to find products and build a basket. The announcement says customers can set spending limits, require approval and review a separate history of agent purchases. News outlets reported the development before Walmart published its primary confirmation.",
+    "who_is_affected": "The launch described is for Walmart customers in the United States. For Brazilian retailers, it is a signal to review product data quality and authorization rules without assuming the same flow is available in Brazil.",
+    "how_to_adapt": [
+      "Choose a sample of frequently viewed products and check identifiers, brand, variants, price, availability and delivery time across the store’s data sources.",
+      "Compare product pages, feeds and structured data. Record missing or conflicting fields that would prevent reliable comparisons.",
+      "Test discovery only through authorized channels and in the market served. Before enabling agent purchases, define spending limits, human approval and transaction records."
+    ],
+    "brazil_note": "Walmart’s announcement describes Black Friday shopping in the United States. Availability of Muse, Agent Gateway and integrated checkout for Brazilian accounts or stores has not been confirmed.",
+    "limitations": "The primary confirmation is from Walmart and describes Black Friday deals in the United States. The announcement does not confirm a launch in Brazil, disclose adoption or purchase volume, or demonstrate increased sales for retailers. Meta had previously announced Walmart as a Muse connector; that does not prove availability in every market.",
+    "business_opportunity": "Commercial hypothesis: stores with incomplete catalog data may benefit from a manual audit of attributes, variants and consistency between product pages and feeds. The Walmart–Meta integration does not prove demand or financial returns for this service.",
+    "source_titles": [
+      "Walmart’s Black Friday Deals Continue. Meta’s Muse Can Now Shop Them, Too.",
+      "The Biggest News From Connect 2026"
+    ],
+    "history_notes": [
+      "Initially reported by news outlets; the story was updated after Walmart published primary confirmation.",
+      "Scope, date, controls and market checked against Walmart’s announcement; Meta’s earlier announcement is used as context.",
+      "Article and practical analysis prepared, separating the U.S. rollout from unconfirmed availability in Brazil.",
+      "Bilingual edition prepared for publication review."
+    ]
   }
 }

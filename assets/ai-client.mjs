@@ -23,12 +23,12 @@ export function catalogRoute(text, lang='en'){
   const words=String(text).normalize('NFD').replace(/\p{M}/gu,'').toLowerCase().split(/[^\p{L}\p{N}]+/u);
   const has=(terms)=>terms.some(term=>words.includes(term));
   const pt=lang==='pt';
-  if(has(['venda','vendas','sales','lead','leads','conversao','conversion','faturamento','revenue','agendamento','whatsapp','clientes','customers'])) return {href:'/raio-x-vendas/',label:pt?'Raio-X de Vendas':'Sales diagnostics'};
-  if(has(['estoque','inventory','stock','etiqueta','etiquetas'])) return {href:'/n1/',label:pt?'Núcleo N1 — estoque':'N1 — inventory'};
-  if(has(['noticia','noticias','news','pesquisa','research','observatorio','observatory'])) return {href:'/observatorio/',label:pt?'Observatório':'Observatory'};
-  if(has(['criativo','criativos','creative','design','portfolio'])) return {href:'/klein/',label:pt?'Portfólio e criativos':'Portfolio & creative'};
-  if(has(['mecatronica','mechatronics','resistor','resistores','eletricidade','electricity'])) return {href:'/estudos/mecatronica/',label:pt?'Bancada de Mecatrônica':'Mechatronics bench'};
-  if(has(['cripto','crypto','bitcoin','mercado','markets'])) return {href:'/radar-ia-cripto/',label:pt?'Radar IA + Cripto':'AI + Crypto Radar'};
+  if(has(['venda','vendas','sales','lead','leads','conversao','conversion','faturamento','revenue','agendamento','whatsapp','clientes','customers'])) return {href:'/raio-x-vendas/',label:pt?'Raio-X de Vendas':'Sales diagnostics (PT)'};
+  if(has(['estoque','inventory','stock','etiqueta','etiquetas'])) return {href:'/n1/',label:pt?'Núcleo N1 — estoque':'N1 — inventory (PT)'};
+  if(has(['noticia','noticias','news','pesquisa','research','observatorio','observatory'])) return {href:pt?'/observatorio/':'/en/observatory/',label:pt?'Observatório':'Observatory'};
+  if(has(['criativo','criativos','creative','design','portfolio'])) return {href:'/klein/',label:pt?'Portfólio e criativos':'Portfolio & creative (PT)'};
+  if(has(['mecatronica','mechatronics','resistor','resistores','eletricidade','electricity'])) return {href:'/estudos/mecatronica/',label:pt?'Bancada de Mecatrônica':'Mechatronics bench (PT)'};
+  if(has(['cripto','crypto','bitcoin','mercado','markets'])) return {href:'/radar-ia-cripto/',label:pt?'Radar IA + Cripto':'AI + Crypto Radar (PT)'};
   return null;
 }
 export function mountEntry(root){

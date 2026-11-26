@@ -79,15 +79,41 @@ def add_languages(html, pt, en, language):
     tags = (f'<link rel="alternate" hreflang="pt-BR" href="{pt}">\n'
             f'<link rel="alternate" hreflang="en" href="{en}">\n'
             f'<link rel="alternate" hreflang="x-default" href="{en}">\n')
-    html = html.replace("</head>", tags + "</head>", 1)
-    other = pt if language == "en" else en
-    label = "PT" if language == "en" else "EN"
-    lang = "pt-BR" if language == "en" else "en"
-    switch = f'<a href="{other}" lang="{lang}" hreflang="{lang}">{label}</a>'
-    marker = '<div class="vl-nav-links">'
-    if marker not in html:
+    if tags not in html:
+        html = html.replace("</head>", tags + "</head>", 1)
+    if '/assets/vl-nav.css' not in html:
+        html = html.replace("</head>", '<link rel="stylesheet" href="/assets/vl-nav.css">\n'
+                            '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+                            '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+                            '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">\n</head>', 1)
+    english = language == "en"
+    home = "/" if english else "/pt/"
+    observatory = "/en/observatory/" if english else "/observatorio/"
+    menu = "Vértice navigation" if english else "Menu da Vértice"
+    brand = "Vértice Labs, home" if english else "Vértice Labs, início"
+    tools = "Tools" if english else "Ferramentas"
+    news = "Observatory" if english else "Observatório"
+    solutions = "Solutions (PT)" if english else "Soluções"
+    engineering = "Engineering" if english else "Engenharia (EN)"
+    diagnostic = "Free diagnosis (PT)" if english else "Diagnóstico grátis"
+    nav = f'''<nav class="vl-nav vl-unified-nav" aria-label="{menu}">
+  <div class="vl-nav-inner">
+    <a class="vl-wordmark" href="{home}" aria-label="{brand}">Vértice<span>Labs</span></a>
+    <div class="vl-nav-links">
+      <a href="{home}">{tools}</a>
+      <a href="{observatory}" aria-current="page">{news}</a>
+      <a href="/solucoes/">{solutions}</a>
+      <a href="/en/">{engineering}</a>
+      <a href="{pt}" lang="pt-BR" hreflang="pt-BR">PT</a>
+      <a href="{en}" lang="en" hreflang="en">EN</a>
+      <a class="vl-nav-cta" href="/raio-x-vendas/">{diagnostic}</a>
+    </div>
+  </div>
+</nav>'''
+    html, count = re.subn(r'<nav class="vl-nav(?: vl-unified-nav)?"[^>]*>.*?</nav>', lambda _: nav, html, count=1, flags=re.DOTALL)
+    if count != 1:
         raise ValueError("Missing editorial navigation")
-    return html.replace(marker, marker + "\n      " + switch, 1)
+    return html
 
 
 def translated(record, entry):
