@@ -9,7 +9,7 @@ assert.match(en, /Turn signals/);
 assert.match(pt, /Transforme sinais/);
 assert.match(en, /href="\/pt\/"[^>]*hreflang="pt-BR"/);
 assert.match(pt, /href="\/"[^>]*hreflang="en"/);
-for (const html of [en, pt]) {
+for (const [html, observatoryRoute] of [[en, '/en/observatory/'], [pt, '/observatorio/']]) {
   assert.ok(html.includes('product-shell'));
   assert.ok(html.includes('editorial-highlights'));
   assert.ok(html.includes('highlight-grid'));
@@ -17,7 +17,9 @@ for (const html of [en, pt]) {
   assert.ok(!html.includes('metric-grid'), 'Decorative metrics returned');
   assert.ok(html.includes('href="/pt/catalogo/"'));
   assert.ok(existsSync('dist/pt/catalogo/index.html'));
-  for (const route of ['/observatorio/', '/raio-x-vendas/', '/n1/', '/tuning/', '/privacy/', '/duelo-bot/', '/perps/']) {
+  assert.ok(html.includes('diagnosis-preview'), 'Missing product example');
+  assert.ok(html.includes('vl-unified-nav'), 'Missing shared navigation');
+  for (const route of [observatoryRoute, '/raio-x-vendas/', '/n1/', '/tuning/', '/privacy/', '/duelo-bot/', '/perps/']) {
     assert.ok(html.includes('href="' + route + '"'), route);
     assert.ok(existsSync('dist' + route + 'index.html'), 'Missing built route: ' + route);
   }
