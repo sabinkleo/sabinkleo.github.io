@@ -9,7 +9,7 @@ const pillars = [
     id: 'intelligence', code: '01', name: en ? 'Intelligence' : 'Inteligência',
     summary: (en ? "Research, news and market analysis with sources and context." : "Pesquisa, notícias e leituras de mercado com fontes e contexto."),
     links: [
-      [(en ? "Observatory" : "Observatório"), '/observatorio/'],
+      [(en ? "Observatory" : "Observatório"), en ? '/en/observatory/' : '/observatorio/'],
       ['Vértice Drops', '/drops/'],
       [(en ? "AI + Crypto Radar" : "Radar IA + Cripto"), '/radar-ia-cripto/'],
     ],
@@ -46,9 +46,9 @@ const pillars = [
 ];
 
 const highlights = [
-  { label: en ? 'Research' : 'Pesquisa', title: en ? 'Understand what is changing.' : 'Entenda o que está mudando.', detail: en ? 'Verified technology news, sources and practical implications.' : 'Notícias de tecnologia verificadas, fontes e impactos práticos.', href: '/observatorio/', link: en ? 'Read the Observatory' : 'Ler o Observatório', icon: '01' },
+  { label: en ? 'Research' : 'Pesquisa', title: en ? 'Understand what is changing.' : 'Entenda o que está mudando.', detail: en ? 'Verified technology news, sources and practical implications.' : 'Notícias de tecnologia verificadas, fontes e impactos práticos.', href: en ? '/en/observatory/' : '/observatorio/', link: en ? 'Read the Observatory' : 'Ler o Observatório', icon: '01' },
   { label: en ? 'Business' : 'Negócios', title: en ? 'Find where sales are leaking.' : 'Descubra onde as vendas estão escapando.', detail: en ? 'Explore sales diagnostics and implementation services.' : 'Explore diagnósticos comerciais e serviços de implantação.', href: '/raio-x-vendas/', link: en ? 'Start a diagnosis' : 'Iniciar diagnóstico', icon: '02' },
-  { label: en ? 'Engineering' : 'Engenharia', title: en ? 'Explore technical problems.' : 'Explore problemas técnicos.', detail: en ? 'Interactive tools, diagnostics and engineering studies.' : 'Ferramentas interativas, diagnósticos e estudos de engenharia.', href: '/en/', link: en ? 'Explore engineering' : 'Explorar engenharia', icon: '03' },
+  { label: en ? 'Engineering' : 'Engenharia', title: en ? 'Explore technical problems.' : 'Explore problemas técnicos.', detail: en ? 'Interactive tools, diagnostics and engineering studies.' : 'Ferramentas interativas, diagnósticos e estudos de engenharia.', href: '/en/', link: en ? 'Explore engineering' : 'Explorar engenharia (EN)', icon: '03' },
 ];
 ---
 <Lab home lang={lang} title="Vértice Labs — Research & tools" description={en ? "Independent laboratory for research, business diagnostics, visual analysis and engineering." : "Laboratório independente de pesquisa, diagnóstico comercial, análise visual e engenharia."}>
@@ -60,7 +60,7 @@ const highlights = [
         <p class="intro">{en ? 'Research, diagnose and act with independent tools for business, technology and engineering.' : 'Pesquise, diagnostique e tome decisões com ferramentas independentes para negócios, tecnologia e engenharia.'}</p>
         <div class="hero-actions">
           <a class="button primary" href="#pilares">{en ? 'Explore tools' : 'Explorar ferramentas'} <span aria-hidden="true">↗</span></a>
-          <a class="button secondary" href="/observatorio/">{en ? 'Read the Observatory' : 'Ler o Observatório'}</a>
+          <a class="button secondary" href={en ? '/en/observatory/' : '/observatorio/'}>{en ? 'Read the Observatory' : 'Ler o Observatório'}</a>
         </div>
         <div class="finder">
           <p>{en ? 'What are you working on?' : 'Em que você está trabalhando?'}</p>
@@ -90,29 +90,29 @@ const highlights = [
 </Lab>
 
 <style>
-  .product-home { --mint:#b6e9b1; --soft:#aeb8b1; --edge:#303a35; --surface:#191e1b; }
-  .product-hero { min-height:0; display:block; text-align:center; padding-block:clamp(3rem,8vw,7rem) clamp(2rem,5vw,4rem); }
-  .hero-copy { max-width:54rem; margin-inline:auto; }
-  .eyebrow { color:var(--soft); font:600 .76rem/1.5 system-ui,sans-serif; letter-spacing:.11em; margin-block-end:1.2rem; }
+  .product-home { --mint:var(--lab-accent); --soft:#aeb8b1; --edge:#303a35; --surface:#191e1b; }
+  .product-hero { min-height:0; display:block; text-align:left; padding-block:clamp(3rem,8vw,7rem) clamp(2rem,5vw,4rem); }
+  .hero-copy { max-width:54rem; margin-inline:0; }
+  .eyebrow { color:var(--mint); font:500 .76rem/1.5 var(--lab-mono); letter-spacing:.13em; margin-block-end:1.2rem; }
   .status-dot { display:inline-block; width:.45rem; height:.45rem; margin-right:.55rem; border-radius:50%; background:var(--mint); }
   .product-hero h1 { font-size:clamp(3rem,7.5vw,6.3rem); line-height:1.03; letter-spacing:-.065em; font-weight:680; text-wrap:balance; }
   .product-hero h1 em { color:var(--mint); }
-  .product-hero .intro { max-width:52ch; margin:1.5rem auto; color:var(--soft); font-size:clamp(1rem,1.5vw,1.25rem); line-height:1.65; }
-  .hero-actions { display:flex; flex-wrap:wrap; justify-content:center; gap:.65rem; }
-  .hero-actions .button { font:600 .95rem system-ui,sans-serif; border-radius:999px; min-height:46px; gap:.65rem; padding:.75rem 1.2rem; }
-  .hero-actions .primary { color:#142119; background:var(--mint); border-color:var(--mint); }
+  .product-hero .intro { max-width:52ch; margin:1.5rem 0; color:var(--soft); font-size:clamp(1rem,1.5vw,1.25rem); line-height:1.65; }
+  .hero-actions { display:flex; flex-wrap:wrap; justify-content:flex-start; gap:.65rem; }
+  .hero-actions .button { font:600 .95rem var(--lab-sans); border-radius:2px; min-height:46px; gap:.65rem; padding:.75rem 1.2rem; }
+  .hero-actions .primary { color:#11190a; background:var(--mint); border-color:var(--mint); }
   .hero-actions .secondary { border-color:var(--edge); color:inherit; background:transparent; }
-  .finder { max-width:42rem; margin:2.6rem auto 0; text-align:left; }
+  .finder { max-width:42rem; margin:2.6rem 0 0; text-align:left; }
   .finder > p { font-size:.85rem; color:var(--soft); }
-  .finder :global(.ai-entry) { background:#1c221e; border:1px solid #414d45; border-radius:1.2rem; padding:.8rem; margin:.55rem 0 0; font:.95rem/1.5 system-ui,sans-serif; }
+  .finder :global(.ai-entry) { background:#1c221e; border:1px solid #414d45; border-radius:4px; padding:.8rem; margin:.55rem 0 0; font:.95rem/1.5 var(--lab-sans); }
   .finder :global(.ai-entry textarea) { color:#ecf0ec; background:transparent; border:0; border-radius:.6rem; padding:.8rem; min-height:50px; }
-  .finder :global(.ai-entry button),.finder :global(.ai-entry a) { justify-self:start; min-height:44px; border-radius:999px; border:1px solid #506354; background:#293c2d; color:var(--mint); padding:.6rem 1rem; }
+  .finder :global(.ai-entry button),.finder :global(.ai-entry a) { justify-self:start; min-height:44px; border-radius:2px; border:1px solid #4b5b36; background:#202c14; color:var(--mint); padding:.6rem 1rem; }
   .editorial-highlights { padding-block:1rem 3.5rem; }
   .section-bar { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; flex-wrap:wrap; border-color:var(--edge); font-family:inherit; }
-  .section-bar h2 { font:650 clamp(1.5rem,3vw,2.15rem)/1.2 system-ui,sans-serif; letter-spacing:-.045em; }
+  .section-bar h2 { font:650 clamp(1.5rem,3vw,2.15rem)/1.2 var(--lab-sans); letter-spacing:-.045em; }
   .section-bar .eyebrow { margin:0 0 .5rem; }
   .highlight-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
-  .highlight { display:flex; flex-direction:column; align-items:flex-start; min-width:0; background:var(--surface); border:1px solid var(--edge); border-radius:1.3rem; padding:clamp(1.25rem,3vw,2rem); }
+  .highlight { display:flex; flex-direction:column; align-items:flex-start; min-width:0; background:var(--surface); border:1px solid var(--edge); border-radius:4px; padding:clamp(1.25rem,3vw,2rem); }
   .highlight-label { color:var(--mint); font-size:.83rem; }
   .highlight h3 { font-size:clamp(1.3rem,2.4vw,1.9rem); font-weight:650; line-height:1.15; letter-spacing:-.04em; margin:1.1rem 0 .65rem; }
   .highlight p { color:var(--soft); line-height:1.6; margin-bottom:1.5rem; }
@@ -121,7 +121,7 @@ const highlights = [
   .product-catalog .pillar-grid { background:none; border:0; gap:1.3rem; }
   .product-catalog .pillar { background:transparent; border:0; border-top:1px solid var(--edge); padding:1.25rem 0; }
   .product-catalog .pillar-heading { border:0; padding:0; display:flex; align-items:center; gap:.75rem; font-family:inherit; text-transform:none; }
-  .product-catalog .pillar-code { color:var(--soft); font:500 .8rem system-ui,sans-serif; }
+  .product-catalog .pillar-code { color:var(--soft); font:500 .8rem var(--lab-sans); }
   .product-catalog .pillar h3 { font-size:1.45rem; font-weight:650; }
   .pillar-count { margin-left:auto; color:var(--soft); font-size:.85rem; }
   .product-catalog .pillar p { color:var(--soft); }
@@ -129,5 +129,5 @@ const highlights = [
   .product-catalog .pillar li a { display:flex; justify-content:space-between; gap:.6rem; min-height:44px; align-items:center; }
   .product-catalog .pillar li a span:last-child { color:var(--mint); }
   @media(max-width:760px) { .highlight-grid { grid-template-columns:1fr; } .product-hero { padding-block:3rem 2rem; } .product-hero h1 { font-size:clamp(2.7rem,10vw,4.8rem); } }
-  @media(prefers-reduced-motion:no-preference) { .highlight { transition:border-color .18s ease,transform .18s ease; } .highlight:hover { border-color:#6c8874; transform:translateY(-2px); } }
+  @media(prefers-reduced-motion:no-preference) { .highlight { transition:border-color .18s ease,transform .18s ease; } .highlight:hover { border-color:var(--mint); transform:translateY(-2px); } }
 </style>
