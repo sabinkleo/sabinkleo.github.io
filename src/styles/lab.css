@@ -11,7 +11,7 @@
   --accent: var(--lab-accent);
   --surface: var(--lab-surface);
   --mono: var(--lab-mono);
-  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--lab-sans);
   background: var(--ground);
   color: var(--text);
   scroll-padding-top: 1rem;
@@ -86,12 +86,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .control-panel h2 { font-size: 1.25rem; font-weight: 700; }
 .control-panel p { margin-block: .6rem 1rem; color: var(--muted); }
 
-@media (max-width: 63.99rem) {
+@media (max-width: 1023px) {
   .hero { padding-block: 3.2rem 2rem; }
   .lab-grid { min-height: 17rem; }
   .grid-center { max-width: 13rem; }
 }
-@media (max-width: 36rem) {
+@media (max-width: 520px) {
   .frame { width: calc(100% - 2rem); }
   .hero h1 { font-size: clamp(3.25rem, 13vw, 5rem); }
   .lab-grid { min-height: 13rem; }
@@ -123,14 +123,14 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .diagnostic textarea { width: 100%; min-height: 10rem; font-family: var(--mono); }
 .diagnostic [data-output] { padding-block: 1.5rem; }
 .diagnostic li { padding-block: .5rem; }
-@media (min-width: 48rem) {
+@media (min-width: 760px) {
   .lab-cards { grid-template-columns: repeat(3,minmax(0,1fr)); }
   .vertical-hero:has(.terminal) { grid-template-columns: 1.15fr 1fr; }
   .diagnostic label { grid-template-columns: 1fr 15rem; }
 }
 
 /* Keep public home navigation and useful content above decorative elements. */
-@media (max-width: 36rem) {
+@media (max-width: 520px) {
   body:has([data-catalog-hero]) .top-inner { padding-block:.65rem; gap:.25rem; }
   body:has([data-catalog-hero]) .top nav { width:100%; gap:.25rem .75rem; font-size:.78rem; align-items:center; }
   body:has([data-catalog-hero]) .top nav a { display:inline-flex; align-items:center; min-height:44px; }
@@ -144,28 +144,28 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
 /* Product identity: scope to the public bilingual home; technical and private interfaces stay independent. */
 body.product-shell {
-  --accent:#b6f3a3; --line:#30453b; --muted:#a4b8a8;
+  --accent:var(--lab-accent); --line:#30453b; --muted:#a4b8a8;
   background:radial-gradient(ellipse at 80% 5%,#20392a 0%,transparent 46rem),#0e1712;
   min-height:100vh;
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-family:var(--lab-sans);
 }
 .product-shell .top { background:#101a15d9; border-color:#30453b; }
-.product-shell .brand { font:750 .92rem/1.3 system-ui,sans-serif; letter-spacing:.105em; }
+.product-shell .brand { font:750 .92rem/1.3 var(--lab-sans); letter-spacing:.105em; }
 .product-shell .brand-mark { clip-path:polygon(0 0,100% 0,50% 100%,0 0,25% 20%,50% 70%,75% 20%,25% 20%); width:1.1rem; height:.95rem; vertical-align:middle; margin-right:.3rem; }
 .product-shell .top nav { font-size:.85rem; align-items:center; }
 .product-shell .top nav a[aria-current=page] { color:var(--accent); font-weight:700; }
 .product-shell .vl-key { border-radius:.45rem; color:var(--accent); border-color:#405848; }
 .product-shell .foot { font-family:inherit; }
-@media(max-width:36rem) {
+@media(max-width:520px) {
   .product-shell .top nav { gap:.15rem .7rem; }
   .product-shell .top nav a { min-height:44px; }
 }
 
 /* Public product shell: neutral canvas, readable brand, consistent navigation. */
-body.product-shell { --accent:#b6e9b1; --line:#303a35; --muted:#aeb8b1; background:#121613; }
+body.product-shell { --accent:var(--lab-accent); --line:#303a35; --muted:#aeb8b1; background:#121613; }
 .product-shell .top { background:#121613; border-color:#303a35; }
 .product-shell .top-inner { min-height:68px; padding-block:.7rem; }
-.product-shell .brand { font:720 1.08rem/1.3 system-ui,sans-serif; letter-spacing:-.045em; }
+.product-shell .brand { font:720 1.08rem/1.3 var(--lab-sans); letter-spacing:-.045em; }
 .product-shell .top nav { font-size:.9rem; }
 .product-shell .top nav a { min-height:44px; display:inline-flex; align-items:center; }
 .product-shell .foot { border-color:#303a35; }
