@@ -66,8 +66,8 @@ test('Product visual layer is scoped, responsive and keeps the commercial links 
       scrollWidth: document.documentElement.scrollWidth
     }));
     expect(homeStyles.grid).toBe('auto');
-    expect(homeStyles.cardRadius).toBe('16px');
-    expect(homeStyles.headingFont).toContain('system-ui');
+    expect(homeStyles.cardRadius).toBe('4px');
+    expect(homeStyles.headingFont).toContain('Space Grotesk');
     expect(homeStyles.scrollWidth).toBeLessThanOrEqual(width);
 
     await page.goto(origin + '/solucoes/');
@@ -78,8 +78,8 @@ test('Product visual layer is scoped, responsive and keeps the commercial links 
       headingFont: getComputedStyle(document.querySelector('main h1')).fontFamily,
       scrollWidth: document.documentElement.scrollWidth
     }));
-    expect(marketingStyles.cardRadius).toBe('16px');
-    expect(marketingStyles.headingFont).toContain('system-ui');
+    expect(marketingStyles.cardRadius).toBe('4px');
+    expect(marketingStyles.headingFont).toContain('Space Grotesk');
     expect(marketingStyles.scrollWidth).toBeLessThanOrEqual(width);
   }
 
