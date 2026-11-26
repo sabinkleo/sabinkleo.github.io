@@ -9,7 +9,18 @@ try {
       assert.equal(response.status(),200);
       assert.equal(await page.locator('html').getAttribute('lang'),language);
       assert.equal(await page.locator('.editorial-highlights .highlight').count(),3);
-      assert.equal(await page.locator('.product-catalog .pillar').count(),4);
+      const groups = page.locator('.product-catalog details');
+      assert.equal(await groups.count(), 4);
+      for (const group of await groups.all()) {
+        const summary = group.locator('summary');
+        const links = group.getByRole('link');
+        await summary.focus();
+        await page.keyboard.press('Enter');
+        assert.ok(await links.first().isVisible());
+        assert.equal(parseInt(await summary.locator('.resource-count').innerText(), 10), await links.count());
+        await page.keyboard.press('Space');
+        assert.equal(await group.getAttribute('open'), null);
+      }
       assert.equal(await page.locator('.metric-grid').count(),0);
       assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),width+' '+path+' overflow');
       const entry=page.locator('[data-ai-entry=intent]');
