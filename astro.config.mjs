@@ -39,7 +39,7 @@ async function attachPublicHud(dir, prefix = '') {
       }
       if (prefix === 'solucoes/' && entry.name === 'index.html') {
         const email = process.env.PUBLIC_CONTACT_EMAIL || '';
-        if (/^[^\\s@<>"]+@[^\\s@<>"]+\\.[^\\s@<>"]+$/.test(email)) {
+        if (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(email)) {
           html = html.replace('<a class="secondary-link" id="contact-email" hidden>', '<a class="secondary-link" id="contact-email" href="mailto:' + encodeURIComponent(email).replace('%40','@') + '">');
           await writeFile(url, html);
         }
