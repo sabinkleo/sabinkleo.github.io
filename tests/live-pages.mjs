@@ -21,7 +21,7 @@ try {
       await page.locator('.diagnosis-preview').waitFor();
       assert.equal(await page.locator('.metric-grid').count(),0);
       assert.equal(await page.locator('.editorial-highlights .highlight').count(),3);
-      assert.equal(await page.locator('.product-catalog .pillar').count(),4);
+      assert.equal(await page.locator('.product-catalog details.resource-group').count(),4);
     }
     const entry=page.locator('[data-ai-entry=intent]');
     await entry.getByRole('textbox').fill(query);
