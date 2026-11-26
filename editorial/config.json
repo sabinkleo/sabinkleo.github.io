@@ -1,5 +1,11 @@
 {
-  "weights": {"relevance": 30, "adaptation": 25, "urgency": 20, "evidence": 15, "novelty": 10},
+  "weights": {
+    "relevance": 30,
+    "adaptation": 25,
+    "urgency": 20,
+    "evidence": 15,
+    "novelty": 10
+  },
   "min_priority": 65,
   "news_window_days": 7,
   "source_hosts": {
@@ -15,7 +21,14 @@
     "www.gov.br": "Governo Federal",
     "www.bcb.gov.br": "Banco Central do Brasil",
     "openai.com": "OpenAI",
-    "verticelabs.me": "Vértice Labs"
+    "verticelabs.me": "Vértice Labs",
+    "corporate.walmart.com": "Walmart",
+    "about.fb.com": "Meta"
   },
-  "related_tools": ["/raio-x-vendas/", "/n1/", "/tuning/", "/solucoes/"]
+  "related_tools": [
+    "/raio-x-vendas/",
+    "/n1/",
+    "/tuning/",
+    "/solucoes/"
+  ]
 }
