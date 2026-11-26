@@ -5,5 +5,6 @@
   --lab-line: #313b31;
   --lab-accent: #d3fa43;
   --lab-surface: #121613;
+  --lab-sans: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --lab-mono: "IBM Plex Mono", "Cascadia Mono", monospace;
 }
