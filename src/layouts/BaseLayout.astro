@@ -71,6 +71,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
     <footer class="foot">
       <div class="frame flex flex-wrap items-center justify-between gap-4">
         <span>VÉRTICE LABS · {en ? "INDEPENDENT LABORATORY" : "LABORATÓRIO INDEPENDENTE"}</span>
+        {!privateBrief && <a href={en ? "https://wa.me/5541997857043?text=Hello%2C%20I%20would%20like%20to%20discuss%20a%20project%20with%20V%C3%A9rtice%20Labs." : "https://wa.me/5541997857043?text=Ol%C3%A1%2C%20gostaria%20de%20conversar%20sobre%20um%20projeto%20com%20a%20V%C3%A9rtice%20Labs."} target="_blank" rel="noopener noreferrer">{en ? "Contact via WhatsApp" : "Fale pelo WhatsApp"}</a>}
         <a href="/politica-de-privacidade/">{en ? "Privacy policy" : "Política de privacidade"}</a>
       </div>
     </footer>
