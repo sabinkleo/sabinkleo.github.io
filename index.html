@@ -26,20 +26,25 @@
   import { mountEntry } from '/assets/ai-client.mjs';
   mountEntry(document.querySelector('.hero [data-ai-entry]'));
 </script>
+<link rel="stylesheet" href="/assets/vl-nav.css">
 </head>
 <body class="vl-site">
-<nav class="vl-nav" aria-label="Menu da Vértice">
+<a class="vl-public-skip" href="#conteudo">Ir para o conteúdo</a>
+<nav class="vl-nav vl-unified-nav" aria-label="Menu da Vértice">
   <div class="vl-nav-inner">
     <a class="vl-wordmark" href="/pt/" aria-label="Vértice Labs, início">Vértice<span>Labs</span></a>
     <div class="vl-nav-links">
       <a href="/pt/catalogo/" aria-current="page">Ferramentas</a>
-      <a href="/solucoes/">Soluções</a>
       <a href="/observatorio/">Observatório</a>
+      <a href="/solucoes/">Soluções</a>
+      <a href="/en/">Engenharia (EN)</a>
+      <a href="/pt/" lang="pt-BR" hreflang="pt-BR">PT</a>
       <a href="/" lang="en" hreflang="en">EN</a>
+      <a class="vl-nav-cta" href="/raio-x-vendas/">Diagnóstico grátis</a>
     </div>
   </div>
 </nav>
-  <main class="vl-home">
+  <main id="conteudo" class="vl-home">
     <section class="hero" aria-labelledby="page-title">
       <span class="vt-eyebrow">Vértice Labs / Laboratório digital</span>
       <h1 id="page-title">Ferramentas para o trabalho técnico.</h1>
