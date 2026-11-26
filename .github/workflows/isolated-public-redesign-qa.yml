@@ -1,0 +1,98 @@
+name: Public experience isolated verification
+on:
+  push:
+    branches: [qa/unified-public-experience]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: candidate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: candidate
+      - uses: actions/checkout@v4
+        with:
+          ref: 2b1877226891d1c9df98b2c4ccd7afd623e04fa8
+          path: baseline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build published baseline
+        working-directory: baseline
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          python3 -m editorial.bilingual --output dist
+      - name: Build candidate and verify contracts
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          node tests/v2-build-smoke.mjs
+          node tests/catalog-route.mjs
+          python3 -m editorial.bilingual --check
+          python3 tools/site_smoke.py
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Capture 48 before and after screenshots and compare routes
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory dist > /tmp/candidate-http.log 2>&1 &
+          python3 -m http.server 8766 --bind 127.0.0.1 --directory ../baseline/dist > /tmp/baseline-http.log 2>&1 &
+          mkdir -p evidence
+          sleep 3
+          node --input-type=module <<'NODE'
+          import {chromium} from 'playwright';
+          import {readdir,writeFile} from 'node:fs/promises';
+          import assert from 'node:assert/strict';
+          const report = [];
+          const browser = await chromium.launch();
+          try {
+            for (const [label, origin] of [['before','http://127.0.0.1:8766'],['after','http://127.0.0.1:8765']]) {
+              for (const route of ['/','/pt/','/solucoes/','/raio-x-vendas/','/klein/','/en/']) {
+                for (const width of [320,375,768,1440]) {
+                  const page = await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+                  await page.addInitScript(() => localStorage.setItem('vertice_measurement_consent_v2','none'));
+                  const response = await page.goto(origin+route,{waitUntil:'domcontentloaded'});
+                  await page.evaluate(() => Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,5000))]));
+                  const result=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,fonts:document.fonts.check('16px "Space Grotesk"')}));
+                  report.push({label,route,width,status:response?.status(),...result});
+                  await page.screenshot({path:'evidence/'+label+'-'+(route==='/'?'home-en':route.replaceAll('/',''))+'-'+width+'.png',fullPage:true,animations:'disabled',timeout:30000});
+                  await page.close();
+                }
+              }
+            }
+          } finally { await browser.close(); }
+          const routes=(await readdir('../baseline/dist',{recursive:true})).filter(p=>p.endsWith('index.html')).map(p=>'/'+p.slice(0,-'index.html'.length));
+          const routeResults=[];
+          for (const route of routes) {
+            const [before,after]=await Promise.all([fetch('http://127.0.0.1:8766'+route),fetch('http://127.0.0.1:8765'+route)]);
+            routeResults.push({route,before:before.status,after:after.status});
+          }
+          await writeFile('evidence/report.json',JSON.stringify({screenshots:report,routes:routeResults},null,2));
+          assert.equal(report.length,48);
+          assert.ok(report.filter(r=>r.label==='after').every(r=>r.status===200&&r.scrollWidth<=r.width),'Candidate overflow or unavailable route');
+          assert.ok(routeResults.every(r=>r.before===r.after&&r.after===200),'Built route regression');
+          NODE
+      - name: Run original browser smoke suite
+        if: ${{ !cancelled() }}
+        run: |
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory dist > /tmp/smoke-http.log 2>&1 &
+          sleep 3
+          SITE_TEST_ORIGIN=http://127.0.0.1:8767 npx playwright test tests/site-smoke.spec.mjs
+      - name: Attach evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-redesign-evidence
+          path: |
+            candidate/evidence
+            candidate/test-results
+          if-no-files-found: warn
