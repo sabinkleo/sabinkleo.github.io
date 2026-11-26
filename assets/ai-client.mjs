@@ -37,7 +37,7 @@ export function mountEntry(root){
   const pt=document.documentElement.lang.startsWith('pt'), lang=pt?'pt':'en';
   const t=(en,br)=>pt?br:en;
   const action=root.dataset.aiEntry;
-  const catalog=action==='intent' && Boolean(root.closest('.vl-home, .hero[data-catalog-hero]'));
+  const catalog=action==='intent' && Boolean(root.closest('.vl-home, .product-home, .hero[data-catalog-hero]'));
   const input=document.createElement('textarea'), button=document.createElement('button'), out=document.createElement('pre'), link=document.createElement('a'), copy=document.createElement('button');
   const label=action==='intent'?(catalog?t('Find a tool','Encontrar ferramenta'):t('Ask / Route with AI','Perguntar / encontrar trilha')):t('Free-text intake','Diagnóstico em texto livre');
   input.setAttribute('aria-label',label);input.placeholder=label;input.rows=catalog?1:2;input.maxLength=2500;
