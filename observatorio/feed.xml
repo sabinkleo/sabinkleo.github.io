@@ -7,6 +7,14 @@
     <language>pt-BR</language>
     <atom:link href="https://verticelabs.me/observatorio/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Walmart confirma compras pelo agente Muse, da Meta</title>
+      <link>https://verticelabs.me/observatorio/agentic-commerce-walmart-meta/</link>
+      <guid>https://verticelabs.me/observatorio/agentic-commerce-walmart-meta/</guid>
+      <description>O Walmart confirmou compras de Black Friday pelo Muse via Agent Gateway, com controles para o cliente. O anúncio descreve os EUA; disponibilidade no Brasil não confirmada.</description>
+      <category>Comércio agêntico</category>
+      <pubDate>Thu, 26 Nov 2026 15:00:00 +0000</pubDate>
+    </item>
+    <item>
       <title>Google Workspace libera MCP e CLI para agentes de IA</title>
       <link>https://verticelabs.me/observatorio/google-workspace-mcp-cli/</link>
       <guid>https://verticelabs.me/observatorio/google-workspace-mcp-cli/</guid>
