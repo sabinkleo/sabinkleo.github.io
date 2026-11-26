@@ -5,8 +5,8 @@ const en = read('dist/index.html');
 const pt = read('dist/pt/index.html');
 assert.match(en, /<html lang="en"/);
 assert.match(pt, /<html lang="pt-BR"/);
-assert.match(en, /Turn signals/);
-assert.match(pt, /Transforme sinais/);
+assert.match(en.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g, ' '), /Lab\s+atlas/);
+assert.match(pt.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]+>/g, ' '), /Atlas do\s+laboratório/);
 assert.match(en, /href="\/pt\/"[^>]*hreflang="pt-BR"/);
 assert.match(pt, /href="\/"[^>]*hreflang="en"/);
 for (const [html, observatoryRoute] of [[en, '/en/observatory/'], [pt, '/observatorio/']]) {
