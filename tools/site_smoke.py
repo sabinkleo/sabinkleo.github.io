@@ -52,6 +52,8 @@ class Document(HTMLParser):
 
 
 def expected_url(relative: Path) -> str:
+    if relative.as_posix() == "index.html":
+        return ORIGIN + "/pt/catalogo/"  # Legacy source is copied here by Astro.
     directory = relative.parent.as_posix()
     return ORIGIN + ("/" if directory == "." else "/" + directory + "/")
 
@@ -61,6 +63,8 @@ def local_target(page: Path, href: str) -> Path | None:
     if parsed.scheme or parsed.netloc or not parsed.path:
         return None
     path = unquote(parsed.path)
+    if path == "/pt/catalogo/":
+        return ROOT / "index.html"  # Build alias of the legacy source.
     if path.startswith("/"):
         target = ROOT / path.lstrip("/")
     else:
