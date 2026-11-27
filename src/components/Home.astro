@@ -43,6 +43,21 @@ const pillars = [
   },
 ];
 
+// Project a ridge surface into a stack of contour profiles for the atlas cover.
+const ridges = Array.from({ length: 40 }, (_, row) => {
+  const y = row / 39;
+  const points = Array.from({ length: 101 }, (_, column) => {
+    const x = column / 100;
+    const crest = .57 + .13 * Math.sin(y * 4);
+    const peak = Math.exp(-Math.pow((x - crest) / .17, 2));
+    const spur = Math.exp(-Math.pow((x - .32 - y * .09) / .13, 2));
+    const height = (peak * 148 + spur * 62) * (.54 + .46 * Math.sin(y * Math.PI));
+    const folds = (7 * Math.sin(x * 69 + y * 7) + 4 * Math.sin(x * 123 - y * 4)) * peak;
+    return `${column === 0 ? 'M' : 'L'}${column * 6},${(116 + y * 214 - height + folds).toFixed(1)}`;
+  });
+  return points.join(' ') + ' V340 H0 Z';
+});
+
 const highlights = [
   { label: en ? 'Business' : 'Negócios', title: en ? 'I sell through WhatsApp.' : 'Vendo pelo WhatsApp.', detail: en ? 'Find gaps in follow-up and organize your sales process.' : 'Identifique falhas no atendimento e organize seu processo comercial.', href: '/solucoes/', link: en ? 'Explore implementation (PT)' : 'Conhecer a implantação', icon: '01' },
   { label: en ? 'Research' : 'Pesquisa', title: en ? 'I follow technology.' : 'Acompanho tecnologia.', detail: en ? 'Verified technology news, sources and practical implications.' : 'Notícias de tecnologia verificadas, fontes e impactos práticos.', href: observatory, link: en ? 'Read the Observatory' : 'Ler o Observatório', icon: '02' },
@@ -51,41 +66,17 @@ const highlights = [
 ---
 <Lab home lang={lang} title="Vértice Labs — Research & tools" description={en ? "Independent laboratory for research, business diagnostics, visual analysis and engineering." : "Laboratório independente de pesquisa, diagnóstico comercial, análise visual e engenharia."}>
   <main id="conteudo" class="frame product-home">
-    <section data-catalog-hero class="hero product-hero" aria-labelledby="titulo">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span>{en ? 'APPLIED RESEARCH' : 'PESQUISA APLICADA'}</p>
-        <h1 id="titulo">{en ? 'Turn signals' : 'Transforme sinais'}<br /><em>{en ? 'into decisions.' : 'em decisões.'}</em></h1>
-        <p class="intro">{en ? 'Research, diagnose and act with independent tools for business, technology and engineering.' : 'Pesquise, diagnostique e tome decisões com ferramentas independentes para negócios, tecnologia e engenharia.'}</p>
-        <div class="hero-actions">
-          <a class="button primary" href="/raio-x-vendas/">{en ? 'Run a free diagnosis (PT)' : 'Fazer diagnóstico grátis'} <span aria-hidden="true">↗</span></a>
-          <a class="button secondary" href={observatory}>{en ? 'Read the Observatory' : 'Ler o Observatório'}</a>
-        </div>
-        <div class="finder">
-          <p>{en ? 'What are you working on?' : 'Em que você está trabalhando?'}</p>
-          <AiEntry client:visible><div class="ai-entry" data-ai-entry="intent"></div></AiEntry>
-        </div>
+    <section data-catalog-hero class="atlas-cover" aria-labelledby="titulo">
+      <svg class="relief" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        {ridges.map(path => <path d={path} />)}
+      </svg>
+      <div class="cover-type">
+        <h1 id="titulo">{en ? 'Lab' : 'Atlas do'}<br /><em>{en ? 'atlas' : 'laboratório'}</em></h1>
+        <p>{en ? 'Tools, field notes and experiments from Vértice Labs.' : 'Ferramentas, notas de campo e experimentos da Vértice Labs.'}</p>
       </div>
-      <aside class="diagnosis-preview" aria-labelledby="example-title">
-        <span class="example-tag">{en ? 'ILLUSTRATIVE DATA' : 'DADOS FICTÍCIOS'}</span>
-        <h2 id="example-title">{en ? 'Sales diagnostic · example' : 'Raio-X de Vendas · exemplo'}</h2>
-        <dl>
-          <div><dt>{en ? 'Monthly inquiries' : 'Leads por mês'}</dt><dd>200</dd></div>
-          <div><dt>{en ? 'Unanswered inquiries' : 'Leads sem resposta'}</dt><dd>60</dd></div>
-          <div><dt>{en ? 'Assumed conversion' : 'Conversão assumida'}</dt><dd>8%</dd></div>
-          <div><dt>{en ? 'Average sale / contribution margin' : 'Ticket médio / margem de contribuição'}</dt><dd>{en ? 'R$1,200 / 40%' : 'R$ 1.200 / 40%'}</dd></div>
-        </dl>
-        <div class="example-output"><span>{en ? 'Potential monthly contribution' : 'Possível recuperação mensal'}</span><strong>{en ? 'R$2,304' : 'R$ 2.304'}</strong></div>
-        <p>{en ? 'Illustrative estimate, not observed revenue. Recovery and conversion are not guaranteed.' : 'Estimativa ilustrativa, não receita observada. Recuperação e conversão não são garantidas.'}</p>
-        <a href="/raio-x-vendas/">{en ? 'Calculate with your data (PT)' : 'Calcular com meus dados'} ↗</a>
-      </aside>
     </section>
-    <section class="workspace-body editorial-highlights" aria-labelledby="highlights-title">
-      <div class="section-bar"><h2 id="highlights-title">{en ? 'Start with a real problem' : 'Comece por um problema real'}</h2></div>
-      <div class="highlight-grid">{highlights.map(item => <article class="highlight"><span class="highlight-label">{item.label}</span><h3>{item.title}</h3><p>{item.detail}</p><a href={item.href}>{item.link} <span aria-hidden="true">↗</span></a></article>)}</div>
-    </section>
-
     <section id="pilares" class="pillars product-catalog" aria-labelledby="pilares-titulo">
-      <div class="section-bar"><h2 id="pilares-titulo">{en ? 'All tools and resources' : 'Todas as ferramentas e recursos'}</h2></div>
+      <div class="section-bar"><h2 id="pilares-titulo">{en ? 'Browse by field' : 'Explore por área'}</h2></div>
       <div class="resource-list">
         {pillars.map(({ id, icon, name, summary, links }) => (
           <details id={id} class="resource-group">
@@ -104,6 +95,30 @@ const highlights = [
       </div>
       <a class="directory-action" href="/pt/catalogo/">{en ? 'View classic catalog (PT)' : 'Ver catálogo clássico'}</a>
     </section>
+    <div class="workbench">
+        <div class="finder">
+          <p>{en ? 'What are you working on?' : 'Em que você está trabalhando?'}</p>
+          <AiEntry client:load><div class="ai-entry" data-ai-entry="intent"></div></AiEntry>
+        </div>
+      <aside class="diagnosis-preview" aria-labelledby="example-title">
+        <span class="example-tag">{en ? 'ILLUSTRATIVE DATA' : 'DADOS FICTÍCIOS'}</span>
+        <h2 id="example-title">{en ? 'Sales diagnostic · example' : 'Raio-X de Vendas · exemplo'}</h2>
+        <dl>
+          <div><dt>{en ? 'Monthly inquiries' : 'Leads por mês'}</dt><dd>200</dd></div>
+          <div><dt>{en ? 'Unanswered inquiries' : 'Leads sem resposta'}</dt><dd>60</dd></div>
+          <div><dt>{en ? 'Assumed conversion' : 'Conversão assumida'}</dt><dd>8%</dd></div>
+          <div><dt>{en ? 'Average sale / contribution margin' : 'Ticket médio / margem de contribuição'}</dt><dd>{en ? 'R$1,200 / 40%' : 'R$ 1.200 / 40%'}</dd></div>
+        </dl>
+        <div class="example-output"><span>{en ? 'Potential monthly contribution' : 'Possível recuperação mensal'}</span><strong>{en ? 'R$2,304' : 'R$ 2.304'}</strong></div>
+        <p>{en ? 'Illustrative estimate, not observed revenue. Recovery and conversion are not guaranteed.' : 'Estimativa ilustrativa, não receita observada. Recuperação e conversão não são garantidas.'}</p>
+        <a href="/raio-x-vendas/">{en ? 'Run a free diagnosis (PT)' : 'Fazer diagnóstico grátis'} <span aria-hidden="true">↗</span></a>
+      </aside>
+    </div>
+    <section class="workspace-body editorial-highlights" aria-labelledby="highlights-title">
+      <div class="section-bar"><h2 id="highlights-title">{en ? 'Start with a real problem' : 'Comece por um problema real'}</h2></div>
+      <div class="highlight-grid">{highlights.map(item => <article class="highlight"><span class="highlight-label">{item.label}</span><h3>{item.title}</h3><p>{item.detail}</p><a href={item.href}>{item.link} <span aria-hidden="true">↗</span></a></article>)}</div>
+    </section>
+
     <section class="experiments" aria-labelledby="experiments-title">
       <div class="section-bar"><h2 id="experiments-title">{en ? 'Experiments' : 'Experimentos'}</h2></div>
       <p>{en ? 'Independent simulations and exploratory projects.' : 'Simulações independentes e projetos exploratórios.'}</p>
@@ -118,17 +133,15 @@ const highlights = [
 
 <style>
   .product-home { --mint:var(--lab-accent); --soft:#aeb8b1; --edge:#303a35; --surface:#191e1b; }
-  .product-hero { min-height:0; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); align-items:start; gap:clamp(1.5rem,4vw,4rem); text-align:left; padding-block:clamp(2rem,6vw,5rem) clamp(2rem,5vw,4rem); }
-  .hero-copy { max-width:54rem; margin-inline:0; }
-  .eyebrow { color:var(--mint); font:500 .76rem/1.5 var(--lab-mono); letter-spacing:.11em; margin-block-end:1.2rem; }
-  .status-dot { display:inline-block; width:.45rem; height:.45rem; margin-right:.55rem; border-radius:50%; background:var(--mint); }
-  .product-hero h1 { font-size:clamp(2.75rem,5vw,5.25rem); line-height:1.03; letter-spacing:-.065em; font-weight:680; text-wrap:balance; }
-  .product-hero h1 em { color:var(--mint); }
-  .product-hero .intro { max-width:52ch; margin:1.5rem 0; color:var(--soft); font-size:clamp(1rem,1.5vw,1.25rem); line-height:1.65; }
-  .hero-actions { display:flex; flex-wrap:wrap; justify-content:flex-start; gap:.65rem; }
-  .hero-actions .button { font:600 .95rem var(--lab-sans); border-radius:var(--vl-radius-control); min-height:46px; gap:.65rem; padding:.75rem 1.2rem; }
-  .hero-actions .primary { color:var(--vl-color-on-accent); background:var(--mint); border-color:var(--mint); }
-  .hero-actions .secondary { border-color:var(--edge); color:inherit; background:transparent; }
+  .atlas-cover { isolation:isolate; position:relative; overflow:hidden; display:flex; align-items:flex-end; min-height:clamp(17rem,29vw,25rem); margin-block:1rem 2rem; padding:clamp(1.2rem,4vw,3.5rem); background:#151914; color:#faf8ed; border-block:1px solid var(--edge); }
+  .relief { position:absolute; z-index:-1; right:0; bottom:0; width:67%; height:100%; }
+  .relief path { fill:#111610; stroke:#c4df79; stroke-width:1; }
+  .cover-type { max-width:53%; }
+  .atlas-cover h1 { color:inherit; font:650 clamp(3.2rem,7vw,6.5rem)/.88 var(--lab-sans); letter-spacing:-.075em; margin:0; }
+  .atlas-cover h1 em { font-family:Georgia,serif; font-weight:400; letter-spacing:-.07em; }
+  .cover-type p { font-size:1rem; line-height:1.45; max-width:33ch; margin:1.15rem 0 0; }
+  .workbench { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(1rem,4vw,3rem); align-items:start; margin-bottom:3rem; }
+  .product-catalog { scroll-margin-top:5rem; }
   .finder { max-width:42rem; margin:1.6rem 0 0; text-align:left; }
   .finder > p { font-size:.85rem; color:var(--soft); }
   .finder :global(.ai-entry) { background:#1c221e; border:1px solid #414d45; border-radius:var(--vl-radius-panel); padding:.8rem; margin:.55rem 0 0; font:.95rem/1.5 var(--lab-sans); }
@@ -150,6 +163,8 @@ const highlights = [
   .resource-group summary { display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; gap:clamp(.5rem,2vw,1.25rem); padding:1rem; min-height:4rem; cursor:pointer; list-style:none; }
   .resource-group summary::-webkit-details-marker { display:none; }
   .resource-group svg,.disclosure-arrow { color:var(--mint); }
+  .resource-group summary svg { padding:.4rem; box-sizing:content-box; background:#25311e; border-radius:.4rem; }
+  .resource-group strong { font:600 clamp(1.05rem,2vw,1.5rem)/1.15 var(--lab-sans); letter-spacing:-.035em; }
   .resource-count { color:var(--soft); font:500 .8rem var(--lab-mono); }
   .disclosure-arrow { width:.5rem; height:.5rem; border:solid currentColor; border-width:1.5px 1.5px 0 0; transform:rotate(45deg); }
   .resource-group[open] .disclosure-arrow { transform:rotate(135deg); }
@@ -162,7 +177,14 @@ const highlights = [
   .product-catalog :focus-visible { outline:2px solid var(--mint); outline-offset:2px; }
   @media (prefers-reduced-motion:no-preference) { .disclosure-arrow { transition:transform .16s ease; } }
   @media (max-width:360px) { .resource-group summary { grid-template-columns:auto minmax(0,1fr) auto; } .resource-count { grid-column:2; } .disclosure-arrow { grid-column:3; grid-row:1 / span 2; } }
-  @media(max-width:760px) { .highlight-grid { grid-template-columns:1fr; } .product-hero { grid-template-columns:minmax(0,1fr); padding-block:2rem; } .product-hero h1 { font-size:clamp(2.7rem,10vw,4.8rem); } }
+  @media(max-width:760px) {
+    .highlight-grid,.workbench { grid-template-columns:minmax(0,1fr); }
+    .atlas-cover { margin-top:.6rem; min-height:16rem; padding:1.25rem; align-items:flex-end; }
+    .relief { width:100%; height:88%; bottom:auto; top:-7%; right:-18%; opacity:.84; }
+    .cover-type { max-width:100%; }
+    .cover-type h1 { font-size:clamp(3.15rem,13vw,5.3rem); text-shadow:0 2px 8px #111610; }
+    .cover-type p { max-width:29ch; margin-top:.8rem; }
+  }
   @media(prefers-reduced-motion:no-preference) { .highlight { transition:border-color .18s ease,transform .18s ease; } .highlight:hover { border-color:var(--mint); transform:translateY(-2px); } }
   .diagnosis-preview { min-width:0; border:1px solid var(--edge); border-radius:var(--vl-radius-panel); background:var(--surface); padding:clamp(1rem,3vw,2rem); align-self:start; }
   .example-tag { display:inline-block; color:var(--mint); font:500 .73rem/1.4 var(--lab-mono); letter-spacing:.08em; }
@@ -178,5 +200,5 @@ const highlights = [
   .diagnosis-preview a,.experiment-links a { color:var(--mint); display:inline-flex; align-items:center; min-height:44px; text-underline-offset:4px; }
   .experiments { padding-bottom:3rem; }
   .experiment-links { display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; }
-  @media(max-width:520px) { .product-hero h1 { font-size:clamp(2.25rem,10vw,3.3rem); } .hero-actions .button { width:100%; justify-content:center; } }
+
 </style>
